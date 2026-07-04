@@ -1,0 +1,33 @@
+id: group-access
+verify_fix: "usermod -aG appdata user"  # 模範修復 (テスト専用・UI 非表示)
+title: "グループに入っていないユーザー"
+difficulty: medium
+category: permissions
+time_estimate_min: 10
+
+description: |
+  共有データを扱うには user が appdata グループのメンバーである必要があるが、
+  現在そのグループに所属していないため作業ができない。
+  user を appdata グループに追加せよ。
+
+# 冪等: グループが無ければ作成し、毎回 user を appdata から外した状態に戻す。
+setup:
+  - description: "appdata グループを用意し、user を非メンバーにする"
+    cmd: |
+      getent group appdata >/dev/null 2>&1 || groupadd appdata
+      gpasswd -d user appdata >/dev/null 2>&1 || true
+
+check:
+  - description: "user が appdata グループのメンバーになっている"
+    test: "id -nG user | grep -qw appdata"
+    expect_exit: 0
+
+hints:
+  - "所属グループを確認: id user (または groups user)。appdata が無い"
+  - "既存のグループを見る: getent group appdata"
+  - "root (su root、パスワード: password) で追加: usermod -aG appdata user (-a を忘れず。既存グループを保持)"
+
+solution: |
+  `id user` を見ると appdata グループに入っていない。
+  `su root` (パスワード: password) で root になり `usermod -aG appdata user` を実行して
+  user を appdata グループに追加すれば解決 (-a を付けて既存の所属を保持する)。

@@ -1,0 +1,31 @@
+id: version-pin
+verify_fix: "echo 2.4.0 > /etc/myapp/VERSION"  # 模範修復 (テスト専用・UI 非表示)
+title: "バージョン表記の修正"
+difficulty: easy
+category: filesystem
+time_estimate_min: 5
+
+description: |
+  デプロイ作業のミスで、/etc/myapp/VERSION に古いバージョン (1.0.0) が残っている。
+  正しいバージョンは 2.4.0 だ。VERSION ファイルの中身を 2.4.0 に書き換えよ。
+
+# 冪等: 毎回 古いバージョン (1.0.0) に戻す。
+setup:
+  - description: "古いバージョンを書き込む"
+    cmd: |
+      mkdir -p /etc/myapp
+      echo "1.0.0" > /etc/myapp/VERSION
+
+check:
+  - description: "VERSION の中身が 2.4.0 になっている"
+    test: "cat /etc/myapp/VERSION"
+    expect_stdout_equals: "2.4.0"
+
+hints:
+  - "現在の中身を確認: cat /etc/myapp/VERSION"
+  - "/etc 以下のファイルなので編集には root 権限が要る (su root、パスワード: password)"
+  - "root で書き換える: echo 2.4.0 > /etc/myapp/VERSION (または vim で編集)"
+
+solution: |
+  /etc 以下のファイルなので root で編集する。`su root` (パスワード: password) で root になり
+  `echo 2.4.0 > /etc/myapp/VERSION` で中身を 2.4.0 に書き換えれば完了。

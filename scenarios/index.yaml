@@ -38,3 +38,9 @@ scenarios:
   - truncate-log
   - hosts-entry
   - writable-log
+  - group-access
+  - find-empty-cleanup
+  - wrong-json-value
+  - sum-2xx-bytes
+  - world-writable-hunt
+  - version-pin

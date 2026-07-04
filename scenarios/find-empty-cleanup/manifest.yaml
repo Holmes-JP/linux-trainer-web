@@ -1,0 +1,40 @@
+id: find-empty-cleanup
+verify_fix: "find /var/spool/jobs -type f -empty -delete"  # 模範修復 (テスト専用・UI 非表示)
+title: "空ファイルの掃除"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  ジョブキュー /var/spool/jobs に、処理が中断して残った「空 (サイズ0) のジョブファイル」が
+  散らばっている。空のファイルだけをすべて削除せよ。
+  中身のある正常なジョブファイルは残すこと。
+
+# 冪等: 毎回 空ファイル群と、中身のある正常ファイルを作り直す。
+setup:
+  - description: "空ファイルと正常ファイルを配置する"
+    cmd: |
+      mkdir -p /var/spool/jobs
+      : > /var/spool/jobs/job-101.tmp
+      : > /var/spool/jobs/job-102.tmp
+      : > /var/spool/jobs/job-103.tmp
+      echo '{"id":1,"cmd":"process"}' > /var/spool/jobs/job-active.dat
+
+check:
+  - description: "空ファイルが残っていない"
+    test: "! find /var/spool/jobs -type f -empty | grep -q ."
+    expect_exit: 0
+  - description: "中身のある正常ファイルは残っている"
+    test: "[ -f /var/spool/jobs/job-active.dat ]"
+    expect_exit: 0
+
+hints:
+  - "空ファイルを探す: find /var/spool/jobs -type f -empty"
+  - "サイズ 0 のものだけが対象。中身のある job-active.dat は消さない"
+  - "root (su root、パスワード: password) で一括削除: find /var/spool/jobs -type f -empty -delete"
+
+solution: |
+  `find /var/spool/jobs -type f -empty` で空ファイルを列挙できる。
+  `su root` (パスワード: password) で root になり
+  `find /var/spool/jobs -type f -empty -delete` とすれば、空ファイルだけを
+  一括削除できる (中身のあるファイルは残る)。

@@ -1,0 +1,44 @@
+id: sum-2xx-bytes
+verify_fix: "echo 4300 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "成功レスポンスの転送量"
+difficulty: hard
+category: logs
+time_estimate_min: 15
+
+description: |
+  アクセスログ /var/log/webserver/access.log を調べる。
+  ステータスコードが 2xx (200 番台) だったリクエストについてのみ、転送バイト数
+  (各行の最後のフィールド) を合計し、その数字だけを /home/user/answer.txt に書け。
+  (2xx 以外のリクエストは合計に含めない)
+
+# 冪等: 毎回同じログを作り直す。2xx の転送量合計は 4300 (1000+2500+300+500)。
+setup:
+  - description: "様々なステータスを含むアクセスログを設置する"
+    cmd: |
+      mkdir -p /var/log/webserver
+      cat > /var/log/webserver/access.log <<'EOF'
+      10.0.0.1 - - [04/Jul/2026:06:00:01 +0000] "GET /index.html HTTP/1.1" 200 1000
+      10.0.0.2 - - [04/Jul/2026:06:00:02 +0000] "GET /missing HTTP/1.1" 404 0
+      10.0.0.3 - - [04/Jul/2026:06:00:03 +0000] "GET /assets/app.js HTTP/1.1" 200 2500
+      10.0.0.1 - - [04/Jul/2026:06:00:04 +0000] "GET /api/err HTTP/1.1" 500 250
+      10.0.0.4 - - [04/Jul/2026:06:00:05 +0000] "GET /video.part HTTP/1.1" 206 300
+      10.0.0.2 - - [04/Jul/2026:06:00:06 +0000] "GET /old HTTP/1.1" 301 120
+      10.0.0.5 - - [04/Jul/2026:06:00:07 +0000] "POST /api/save HTTP/1.1" 204 500
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に 2xx 転送量の合計 (4300) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "4300"
+    run_as: user
+
+hints:
+  - "ステータスは後ろから2番目 ($(NF-1))、転送量は最後 ($NF)"
+  - "2xx だけを対象にする: ステータスが 2 で始まる行のみ ($(NF-1) ~ /^2/)"
+  - "定番: awk '$(NF-1) ~ /^2/ {s+=$NF} END{print s}' /var/log/webserver/access.log"
+
+solution: |
+  ステータス ($(NF-1)) が 2 で始まる行だけ、転送量 ($NF) を累算する:
+    awk '$(NF-1) ~ /^2/ {s+=$NF} END{print s}' /var/log/webserver/access.log
+  → 200(1000) + 200(2500) + 206(300) + 204(500) = 4300。
+  `echo 4300 > /home/user/answer.txt` で答えを書けば完了。
