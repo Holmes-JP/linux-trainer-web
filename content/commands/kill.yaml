@@ -1,0 +1,23 @@
+name: kill
+summary: プロセスにシグナルを送る (代表的な使い道は終了させること)
+group: processes
+synopsis: "kill [-シグナル] PID..."
+options:
+  - flag: "(指定なし)"
+    desc: TERM (15) を送る。後片付けの機会を与える「丁寧な終了依頼」
+  - flag: "-9"
+    desc: KILL を送る。無視できない強制終了。TERM が効かないときの最終手段
+  - flag: "-HUP"
+    desc: HUP (1) を送る。デーモンによっては設定の再読み込みとして扱う
+  - flag: "-l"
+    desc: シグナルの一覧を表示する
+examples:
+  - cmd: kill 1234
+    desc: PID 1234 のプロセスに通常の終了を依頼する
+  - cmd: kill -9 1234
+    desc: 応答しないプロセスを強制終了する
+related_commands: [ps]
+related_articles: [processes-and-signals]
+note: >-
+  kill には PID が必要。まず ps aux や pgrep で番号を調べる。
+  名前でまとめて止めたいときは pkill 名前 も使える。

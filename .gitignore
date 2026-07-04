@@ -11,3 +11,6 @@ nginx_main_error.log
 # トレーナー開発で生成される一時物 (E2E スクショ等)
 scripts/*.png
 design-import/
+
+# 解説コンテンツの検索インデックス (scripts/build-content-index.mjs が生成)
+content/search-index.json

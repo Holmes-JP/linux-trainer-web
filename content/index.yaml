@@ -1,0 +1,17 @@
+# 解説コンテンツの一覧。
+# scripts/build-content-index.mjs がこのリストを元に各ファイルを検証し、
+# 全文検索用の content/search-index.json を生成する (dev/build の前に自動実行)。
+commands:
+  - ls
+  - cd
+  - cat
+  - chmod
+  - chown
+  - ps
+  - kill
+  - grep
+  - find
+  - df
+articles:
+  - permissions
+  - processes-and-signals

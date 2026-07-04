@@ -1,0 +1,21 @@
+name: ps
+summary: 現在動いているプロセスの一覧を表示する
+group: processes
+synopsis: "ps [オプション]"
+options:
+  - flag: "aux"
+    desc: 全ユーザーの全プロセスを詳細付きで表示する定番の組み合わせ
+  - flag: "-ef"
+    desc: aux と似た別流儀。PPID (親プロセス) を確認したいときはこちら
+examples:
+  - cmd: ps aux
+    desc: 全プロセスを一覧する。USER / PID / CPU% / コマンド名が見える
+  - cmd: ps aux | grep nginx
+    desc: 特定の名前のプロセスが動いているか確認する
+  - cmd: ps -ef | grep 1234
+    desc: PID 1234 の素性 (親プロセスや起動コマンド) を調べる
+related_commands: [kill, grep]
+related_articles: [processes-and-signals]
+note: >-
+  `ps aux | grep 名前` は grep 自身も結果に混ざる。確実に判定したいなら
+  pgrep -x 名前 (完全一致) が便利。

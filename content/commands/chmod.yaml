@@ -1,0 +1,24 @@
+name: chmod
+summary: ファイルやディレクトリの権限 (パーミッション) を変更する
+group: permissions
+synopsis: "chmod [オプション] モード ファイル..."
+options:
+  - flag: "-R"
+    desc: ディレクトリの中身ごと再帰的に変更する
+  - flag: "u+x など記号指定"
+    desc: u(所有者)/g(グループ)/o(その他) に r/w/x を + で足し - で外す
+  - flag: "644 など数値指定"
+    desc: r=4, w=2, x=1 の合計を「所有者・グループ・その他」の順に3桁で指定
+examples:
+  - cmd: chmod 644 /home/user/flag.txt
+    desc: 所有者は読み書き、グループとその他は読み取りのみにする (ファイルの定番)
+  - cmd: chmod 755 script.sh
+    desc: 実行権限を付ける。755 は実行ファイル・ディレクトリの定番
+  - cmd: chmod u+x deploy.sh
+    desc: 所有者にだけ実行権限を足す (記号指定)
+related_commands: [chown, ls]
+related_articles: [permissions]
+note: >-
+  権限の変更ができるのはそのファイルの所有者と root だけ。この演習環境では
+  一般ユーザーの chmod が効かない場面があるため、修復は su root
+  (パスワード: password) で root になってから行うのが確実。

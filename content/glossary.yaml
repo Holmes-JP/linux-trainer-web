@@ -1,0 +1,62 @@
+# 用語集。terms の並び順のまま表示される。
+terms:
+  - term: パーミッション
+    reading: permission
+    def: >-
+      ファイルやディレクトリごとに設定される「誰が何をしてよいか」の権限。
+      読み (r)・書き (w)・実行 (x) を、所有者・グループ・その他の3つの立場に分けて持つ。
+    related_articles: [permissions]
+    related_commands: [chmod, ls]
+  - term: root
+    reading: ルート
+    def: >-
+      Linux の管理者ユーザー。パーミッションの制約をほぼ受けず、システムのあらゆる操作ができる。
+      「ルートディレクトリ (/)」とは別物なので文脈で区別する。
+    related_articles: [permissions]
+  - term: PID
+    reading: ピーアイディー
+    def: >-
+      プロセスID。動いているプロセス1つ1つに振られる一意な番号。
+      kill などプロセスを操作するコマンドは PID で対象を指定する。
+    related_articles: [processes-and-signals]
+    related_commands: [ps, kill]
+  - term: シグナル
+    reading: signal
+    def: >-
+      動いているプロセスへ送る割り込み通知。TERM (終了依頼)、KILL (強制終了)、
+      HUP (再読み込み) などの種類があり、kill コマンドで送る。
+    related_articles: [processes-and-signals]
+    related_commands: [kill]
+  - term: シェル
+    reading: shell
+    def: >-
+      ユーザーが打ったコマンドを解釈して実行するプログラム。この演習環境では bash。
+      プロンプト ($ や #) を表示して入力を待っているのがシェル。
+  - term: 標準出力 / 標準エラー出力
+    reading: stdout / stderr
+    def: >-
+      コマンドの出力には2系統ある。正常な結果は標準出力 (1)、エラーメッセージは標準エラー出力 (2)。
+      「2>/dev/null」はエラー出力だけを捨てる書き方。
+  - term: 終了コード
+    reading: exit code
+    def: >-
+      コマンドが終わるときに残す成否の数値。0 が成功、それ以外は失敗。
+      直前のコマンドの終了コードは「echo $?」で確認できる。
+  - term: デーモン
+    reading: daemon
+    def: >-
+      画面を持たずバックグラウンドで常駐し続けるプロセス。Web サーバーや SSH サーバーなど、
+      「サービス」の実体。名前が d で終わるものが多い (sshd, crond など)。
+    related_articles: [processes-and-signals]
+  - term: シンボリックリンク
+    reading: symbolic link
+    def: >-
+      別のパスを指す「ショートカット」のようなファイル。ls -l では l で始まり、
+      「リンク名 -> 実体」と表示される。指す先が消えるとリンク切れになる。
+    related_commands: [ls]
+  - term: inode
+    reading: アイノード
+    def: >-
+      ファイルの実体を管理する台帳の番号。ファイルシステムごとに総数が決まっており、
+      容量が空いていても inode を使い切ると新しいファイルを作れなくなる。
+    related_commands: [df]

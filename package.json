@@ -3,9 +3,9 @@
 	"version": "2.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"test": "vitest run"
+		"dev": "node scripts/build-content-index.mjs && vite dev",
+		"build": "node scripts/build-content-index.mjs && vite build",
+		"test": "node scripts/build-content-index.mjs && vitest run"
 	},
 	"devDependencies": {
 		"@anthropic-ai/sdk": "^0.33.0",
@@ -23,6 +23,7 @@
 		"html2canvas-pro": "^1.5.8",
 		"js-yaml": "^5.2.1",
 		"labs": "git+https://github.com/leaningtech/labs.git",
+		"marked": "^18.0.5",
 		"node-html-parser": "^6.1.13",
 		"playwright": "^1.61.1",
 		"postcss": "^8.4.47",

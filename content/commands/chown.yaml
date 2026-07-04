@@ -1,0 +1,21 @@
+name: chown
+summary: ファイルやディレクトリの所有者・グループを変更する
+group: permissions
+synopsis: "chown [オプション] 所有者[:グループ] ファイル..."
+options:
+  - flag: "user:group"
+    desc: 所有者とグループを同時に変更する (例 user:www-data)
+  - flag: ":group"
+    desc: グループだけを変更する (chgrp と同じ効果)
+  - flag: "-R"
+    desc: ディレクトリの中身ごと再帰的に変更する
+examples:
+  - cmd: chown user:user /home/user/report.txt
+    desc: root が作ってしまったファイルを本来の持ち主に返す
+  - cmd: chown -R www-data:www-data /var/www/html
+    desc: Web 公開ディレクトリ一式をサービス用ユーザーの持ち物にする
+related_commands: [chmod, ls]
+related_articles: [permissions]
+note: >-
+  所有者の変更は root にしかできない (自分のファイルを他人に「あげる」ことも不可)。
+  ls -l の3列目 (所有者) と4列目 (グループ) で現状を確認してから変更する。

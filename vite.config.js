@@ -67,7 +67,9 @@ export default defineConfig({
 				{ src: 'assets/', dest: '' },
 				{ src: 'documents/', dest: '' },
 				// シナリオ manifest (scenarios/<id>/manifest.yaml) を静的配信する
-				{ src: 'scenarios/', dest: '' }
+				{ src: 'scenarios/', dest: '' },
+				// 解説コンテンツ (commands/articles/glossary + search-index.json) を静的配信する
+				{ src: 'content/', dest: '' }
 			]
 		})
 	]

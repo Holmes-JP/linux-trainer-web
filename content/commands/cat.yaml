@@ -1,0 +1,20 @@
+name: cat
+summary: ファイルの中身をそのまま表示する
+group: files
+synopsis: "cat [オプション] [ファイル...]"
+options:
+  - flag: "-n"
+    desc: 行番号を付けて表示する
+  - flag: "-A"
+    desc: 改行やタブなど見えない文字も記号で表示する (設定ファイルの調査に)
+examples:
+  - cmd: cat /etc/hostname
+    desc: 短いファイルの中身をさっと確認する
+  - cmd: cat /var/log/app.log | grep ERROR
+    desc: 表示をパイプで grep に渡して絞り込む
+  - cmd: cat file1 file2 > merged.txt
+    desc: 複数ファイルを連結して1つに書き出す (cat = concatenate)
+related_commands: [grep, ls]
+note: >-
+  長いファイルを cat すると画面が流れてしまう。1画面ずつ読みたいときは
+  less、先頭や末尾だけ見たいときは head / tail を使い分ける。

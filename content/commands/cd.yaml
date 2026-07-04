@@ -1,0 +1,20 @@
+name: cd
+summary: 作業ディレクトリ (今いる場所) を移動する
+group: files
+synopsis: "cd [ディレクトリ]"
+options:
+  - flag: "(引数なし)"
+    desc: 自分のホームディレクトリ (~) に戻る
+  - flag: "-"
+    desc: 直前にいたディレクトリに戻る (行ったり来たりに便利)
+examples:
+  - cmd: cd /var/log
+    desc: 絶対パスで移動する
+  - cmd: cd ..
+    desc: 1つ上の階層に移動する
+  - cmd: "cd && pwd"
+    desc: ホームに戻り、今いる場所を確認する
+related_commands: [ls, find]
+note: >-
+  cd はプログラムではなくシェルの組み込みコマンド。移動できないときは
+  「そのディレクトリが存在しないか」「実行 (x) 権限が無いか」を疑う。

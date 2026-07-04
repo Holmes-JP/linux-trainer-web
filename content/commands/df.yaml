@@ -1,0 +1,21 @@
+name: df
+summary: ファイルシステム (ディスク) ごとの使用量と空き容量を表示する
+group: disk
+synopsis: "df [オプション] [パス]"
+options:
+  - flag: "-h"
+    desc: サイズを読みやすい単位 (K/M/G) で表示する
+  - flag: "-i"
+    desc: 容量ではなく inode (ファイル数の上限) の使用状況を表示する
+examples:
+  - cmd: df -h
+    desc: 全ファイルシステムの使用率を確認する。Use% が 100% 近ければ要調査
+  - cmd: df -h /var
+    desc: 特定のパスがどのファイルシステムに載っているかと、その空きを見る
+  - cmd: df -i
+    desc: 「容量は空いているのに書き込めない」ときは inode 枯渇を疑う
+related_commands: [ls, find]
+note: >-
+  df は「ファイルシステム全体」の集計。「どのディレクトリが太っているか」を
+  掘り下げるときは du を使う (この演習環境の du はブロック集計の都合で
+  -sb のようにバイト単位指定が確実)。

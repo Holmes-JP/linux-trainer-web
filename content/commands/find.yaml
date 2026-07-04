@@ -1,0 +1,28 @@
+name: find
+summary: 条件を指定してファイルやディレクトリを探す
+group: files
+synopsis: "find 起点パス [条件...] [アクション]"
+options:
+  - flag: "-name パターン"
+    desc: 名前で探す (例 -name "*.log")。大文字小文字を無視するなら -iname
+  - flag: "-type f / -type d"
+    desc: ファイルだけ / ディレクトリだけに絞る
+  - flag: "-size +1M"
+    desc: サイズで絞る (+1M = 1MB より大きい)
+  - flag: "-user 名前"
+    desc: 所有者で絞る (例 -user root)
+  - flag: "-mmin -10"
+    desc: 更新時刻で絞る (-10 = 10分以内に更新)
+  - flag: "-exec cmd {} \\;"
+    desc: 見つけた各ファイルにコマンドを実行する ({} が見つけたパスに置き換わる)
+examples:
+  - cmd: find /etc -name "nginx.conf"
+    desc: 設定ファイルの場所を探す
+  - cmd: find /var -size +10M -type f
+    desc: ディスクを圧迫している大きなファイルを探す
+  - cmd: find /home -user root -type f
+    desc: root の持ち物になってしまったファイルを探す
+related_commands: [ls, grep, df]
+note: >-
+  権限のないディレクトリで "Permission denied" が大量に出るときは
+  `2>/dev/null` を末尾に付けてエラー出力を捨てると結果が読みやすい。
