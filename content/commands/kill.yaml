@@ -18,6 +18,7 @@ examples:
     desc: 応答しないプロセスを強制終了する
 related_commands: [ps]
 related_articles: [processes-and-signals]
+related_scenarios: [runaway-loop, kill-specific]
 note: >-
   kill には PID が必要。まず ps aux や pgrep で番号を調べる。
   名前でまとめて止めたいときは pkill 名前 も使える。

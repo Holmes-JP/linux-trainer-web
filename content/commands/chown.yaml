@@ -16,6 +16,7 @@ examples:
     desc: Web 公開ディレクトリ一式をサービス用ユーザーの持ち物にする
 related_commands: [chmod, ls]
 related_articles: [permissions]
+related_scenarios: [recursive-ownership, find-root-owned, wrong-group]
 note: >-
   所有者の変更は root にしかできない (自分のファイルを他人に「あげる」ことも不可)。
   ls -l の3列目 (所有者) と4列目 (グループ) で現状を確認してから変更する。

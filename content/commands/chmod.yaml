@@ -18,6 +18,7 @@ examples:
     desc: 所有者にだけ実行権限を足す (記号指定)
 related_commands: [chown, ls]
 related_articles: [permissions]
+related_scenarios: [locked-flag, web-permissions, script-not-executable]
 note: >-
   権限の変更ができるのはそのファイルの所有者と root だけ。この演習環境では
   一般ユーザーの chmod が効かない場面があるため、修復は su root

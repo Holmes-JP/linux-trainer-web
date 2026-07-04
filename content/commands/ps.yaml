@@ -16,6 +16,7 @@ examples:
     desc: PID 1234 の素性 (親プロセスや起動コマンド) を調べる
 related_commands: [kill, grep]
 related_articles: [processes-and-signals]
+related_scenarios: [rogue-process, process-count]
 note: >-
   `ps aux | grep 名前` は grep 自身も結果に混ざる。確実に判定したいなら
   pgrep -x 名前 (完全一致) が便利。

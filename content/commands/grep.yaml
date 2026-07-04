@@ -23,6 +23,7 @@ examples:
   - cmd: grep -rn listen /etc/nginx/
     desc: 設定ディレクトリ全体からキーワードの場所を探す
 related_commands: [cat, find]
+related_scenarios: [grep-which-file, find-error, count-warnings]
 note: >-
   「どのファイルに書いてあるか分からない」ときは grep -r、
   「どこにあるファイルか分からない」ときは find。組み合わせると強力。

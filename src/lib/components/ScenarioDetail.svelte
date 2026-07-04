@@ -1,15 +1,30 @@
 <script>
 	// シナリオ詳細ページ (一覧 → 詳細 → 挑戦 の中間)。
 	// 課題内容 / 想定コマンド / 攻略のコツ を表示し、そこからマシンを起動する。
+	import { onMount } from 'svelte';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { base } from '$app/paths';
 	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
 	import { progress } from '$lib/stores/progress';
 	import { fmtDuration } from '$lib/util/format';
+	import { relatedForScenario } from '$lib/learn/related';
+	import RelatedLinks from '$lib/components/learn/RelatedLinks.svelte';
 
 	export let scenario = null;
 	export let scenarioId = '';
 	export let errorMsg = '';
+
+	// 関連する解説 (/learn)。取得に失敗しても詳細ページ自体は成立するので静かに非表示にする
+	let relatedDocs = [];
+	onMount(async () => {
+		try {
+			relatedDocs = await relatedForScenario(scenarioId);
+		} catch {
+			relatedDocs = [];
+		}
+	});
+	$: relArticles = relatedDocs.filter((r) => r.type === 'article');
+	$: relCommands = relatedDocs.filter((r) => r.type === 'command').map((r) => r.id);
 
 	$: record = $progress.completed[scenarioId];
 
@@ -146,6 +161,11 @@
 					</li>
 				</ul>
 			</section>
+
+			<!-- Related learn docs (取得できたときだけ出る) -->
+			{#if relatedDocs.length}
+				<RelatedLinks heading="関連する解説 — 仕組みから調べる" articles={relArticles} commands={relCommands} />
+			{/if}
 
 			<!-- Launch -->
 			<a

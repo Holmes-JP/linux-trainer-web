@@ -15,6 +15,7 @@ examples:
   - cmd: df -i
     desc: 「容量は空いているのに書き込めない」ときは inode 枯渇を疑う
 related_commands: [ls, find]
+related_scenarios: [log-flood, disk-hog]
 note: >-
   df は「ファイルシステム全体」の集計。「どのディレクトリが太っているか」を
   掘り下げるときは du を使う (この演習環境の du はブロック集計の都合で

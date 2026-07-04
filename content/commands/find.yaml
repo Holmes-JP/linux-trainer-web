@@ -23,6 +23,7 @@ examples:
   - cmd: find /home -user root -type f
     desc: root の持ち物になってしまったファイルを探す
 related_commands: [ls, grep, df]
+related_scenarios: [find-big-file, find-root-owned, find-empty-cleanup]
 note: >-
   権限のないディレクトリで "Permission denied" が大量に出るときは
   `2>/dev/null` を末尾に付けてエラー出力を捨てると結果が読みやすい。
