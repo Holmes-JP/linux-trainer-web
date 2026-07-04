@@ -1,0 +1,43 @@
+id: find-error
+title: "ログのエラー件数"
+difficulty: easy
+category: logs
+time_estimate_min: 5
+
+description: |
+  アプリのログ /var/log/app/app.log を調べたい。
+  このログの中で「ERROR」と書かれた行の数を数え、その数字だけを
+  /home/user/answer.txt に書き込め。
+
+# 冪等: 毎回同じログを作り直す。ERROR 行はちょうど 3 行。
+# 注意: for/seq ループや yes|head は hang するため固定内容を heredoc で書く。
+setup:
+  - description: "調査対象のログを設置する"
+    cmd: |
+      mkdir -p /var/log/app
+      cat > /var/log/app/app.log <<'EOF'
+      2026-07-04 01:00:00 INFO  service started
+      2026-07-04 01:00:05 INFO  handling request /api/items
+      2026-07-04 01:00:06 ERROR failed to connect to database
+      2026-07-04 01:00:08 INFO  retrying connection
+      2026-07-04 01:00:09 ERROR failed to connect to database
+      2026-07-04 01:00:12 WARN  slow response detected
+      2026-07-04 01:00:15 INFO  request completed
+      2026-07-04 01:00:20 ERROR timeout while reading upstream
+      2026-07-04 01:00:25 INFO  shutting down
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に正しい件数 (3) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "3"
+    run_as: user
+
+hints:
+  - "ログの中身を見る: cat /var/log/app/app.log"
+  - "文字列を含む行を数えるオプション: grep -c"
+  - "grep -c ERROR /var/log/app/app.log の結果を書き込む: echo 3 > /home/user/answer.txt"
+
+solution: |
+  `grep -c ERROR /var/log/app/app.log` で ERROR を含む行数を数えると 3。
+  `echo 3 > /home/user/answer.txt` で答えを書けば完了。

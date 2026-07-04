@@ -1,0 +1,45 @@
+id: loose-permissions
+title: "緩すぎるパーミッション"
+difficulty: hard
+category: permissions
+time_estimate_min: 15
+
+description: |
+  セキュリティ監査で2つの問題が指摘された。
+    1. デプロイスクリプト /usr/local/bin/deploy.sh が誰でも書き換え可能 (world-writable)
+    2. 秘密情報ファイル /etc/deploy/secrets.env が所有者以外にも読める
+  次を満たすように権限を締めよ:
+    - deploy.sh: 所有者以外の書き込みを禁止する (実行は可能なまま)
+    - secrets.env: 所有者だけが読み書きできる (0600)
+
+# 冪等: 毎回「緩い権限」の状態に戻す。
+setup:
+  - description: "スクリプトと秘密ファイルを緩い権限で設置する"
+    cmd: |
+      mkdir -p /etc/deploy /usr/local/bin
+      printf '#!/bin/sh\necho deploying...\n' > /usr/local/bin/deploy.sh
+      chmod 0777 /usr/local/bin/deploy.sh
+      printf 'API_TOKEN=secret123\nDB_PASSWORD=hunter2\n' > /etc/deploy/secrets.env
+      chmod 0644 /etc/deploy/secrets.env
+
+check:
+  - description: "deploy.sh がグループ/他ユーザーから書き込み不可"
+    test: "find /usr/local/bin/deploy.sh -perm -0022 | grep -q ."
+    expect_exit: 1
+  - description: "deploy.sh は所有者が実行可能なまま"
+    test: "[ -x /usr/local/bin/deploy.sh ]"
+    expect_exit: 0
+  - description: "secrets.env が 0600 (所有者のみ読み書き)"
+    test: '[ "$(stat -c "%a" /etc/deploy/secrets.env)" = "600" ]'
+    expect_exit: 0
+
+hints:
+  - "現在の権限を確認: ls -l /usr/local/bin/deploy.sh /etc/deploy/secrets.env"
+  - "deploy.sh は 777 (rwxrwxrwx) で誰でも書ける。所有者だけ書ける 755 (rwxr-xr-x) にする"
+  - "root (su root、パスワード: password) で: chmod 755 /usr/local/bin/deploy.sh; chmod 600 /etc/deploy/secrets.env"
+
+solution: |
+  `ls -l` で deploy.sh が 777、secrets.env が 644 と分かる。
+  `su root` (パスワード: password) で root になり権限を締める:
+    chmod 755 /usr/local/bin/deploy.sh    # rwxr-xr-x: 所有者以外は書けない、実行は可能
+    chmod 600 /etc/deploy/secrets.env     # rw-------: 所有者だけ

@@ -1,0 +1,35 @@
+id: runaway-loop
+title: "暴走した負荷テストプロセス"
+difficulty: easy
+category: processes
+time_estimate_min: 5
+
+description: |
+  負荷テストの後片付けを忘れ、テスト用プロセス「busyloop」が回りっぱなしになっている。
+  このプロセスを停止せよ。(実行ファイルの削除までは不要。停止できればよい)
+
+# 冪等: 既に動いていれば起動しない。停止されても再 setup で復活する。
+# 注意: プロセス検出は pgrep -x busyloop (comm 完全一致)。起動は setsid で detach。
+setup:
+  - description: "負荷テストプロセスを起動する"
+    cmd: |
+      if ! pgrep -x busyloop > /dev/null; then
+        printf '#!/bin/sh\nwhile true; do :; sleep 2; done\n' > /usr/local/bin/busyloop
+        chmod 755 /usr/local/bin/busyloop
+        setsid /usr/local/bin/busyloop </dev/null >/dev/null 2>&1 &
+        sleep 1
+      fi
+
+check:
+  - description: "busyloop プロセスが停止している"
+    test: "pgrep -x busyloop"
+    expect_exit: 1
+
+hints:
+  - "動いているプロセスを確認: ps aux または pgrep -a busyloop"
+  - "プロセスは root が起動している。停止には root 権限が要る (su root、パスワード: password)"
+  - "名前で停止する: pkill busyloop (または kill <PID>)"
+
+solution: |
+  `pgrep -a busyloop` で PID を確認し、`su root` (パスワード: password) で root になって
+  `pkill busyloop` (または `kill <PID>`) で停止すれば完了。

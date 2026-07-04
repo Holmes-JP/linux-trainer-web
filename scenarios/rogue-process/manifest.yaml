@@ -1,0 +1,42 @@
+id: rogue-process
+title: "不審なプロセス"
+difficulty: medium
+category: processes
+time_estimate_min: 10
+
+description: |
+  このサーバーに見覚えのないプロセス「cryptominer」が常駐している。
+  何者かが仕込んだ不要なプログラムだ。
+  プロセスを停止し、再発防止のため実行ファイル本体も削除せよ。
+
+# 冪等: 既に動いていれば起動しない。ユーザーが消しても再 setup で復活する
+# 注意: プロセス検出は必ず `pgrep -x cryptominer` (comm 完全一致) を使う。
+#       `pgrep -f cryptominer` は setup/check を実行するラッパー自身の cmdline
+#       (パスに cryptominer を含む) にマッチしてしまうため使わない。
+setup:
+  - description: "不審なプロセスを仕込んで起動する"
+    cmd: |
+      if ! pgrep -x cryptominer > /dev/null; then
+        printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/bin/cryptominer
+        chmod 755 /usr/local/bin/cryptominer
+        # nohup & は CheerpX では即死する。setsid で新セッションに detach すると生存する
+        setsid /usr/local/bin/cryptominer </dev/null >/dev/null 2>&1 &
+        sleep 1
+      fi
+
+check:
+  - description: "cryptominer プロセスが動いていない"
+    test: "pgrep -x cryptominer"
+    expect_exit: 1
+  - description: "実行ファイル本体が削除されている"
+    test: "[ ! -f /usr/local/bin/cryptominer ]"
+    expect_exit: 0
+
+hints:
+  - "動いているプロセスを一覧する: ps aux (または top)"
+  - "名前でプロセスを探す: pgrep -a cryptominer"
+  - "root (su root、パスワード: password) になって kill <PID> し、実行ファイルは which や ls で場所を確認して rm"
+
+solution: |
+  `pgrep -a cryptominer` で PID を特定し、`su root` (パスワード: password) で root になって
+  `pkill cryptominer` で停止。本体は `rm /usr/local/bin/cryptominer` で削除すれば完了。

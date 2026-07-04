@@ -1,0 +1,38 @@
+id: find-big-file
+title: "どこかに潜む巨大ファイル"
+difficulty: medium
+category: disk
+time_estimate_min: 10
+
+description: |
+  /var/lib/app 以下のディスク使用量が膨れ上がっている。深いディレクトリ階層の
+  どこかに巨大ファイルが1つ隠れているらしい。それを探し出して削除し、
+  /var/lib/app の合計を 1MB 以下にせよ。(通常のデータファイルは残すこと)
+
+# 冪等: 毎回、深い階層に 7MB の巨大ファイルと、正常な小さいファイルを配置する。
+# 注意: /dev/zero は無いので /dev/urandom を使う。
+setup:
+  - description: "深い階層に巨大ファイルを隠す"
+    cmd: |
+      mkdir -p /var/lib/app/cache/data
+      head -c 7340032 /dev/urandom > /var/lib/app/cache/data/blob.bin   # 7MB (これが原因)
+      printf 'id,name\n1,alice\n2,bob\n' > /var/lib/app/app.db           # 正常データ (残す)
+      printf 'cache-index-v1\n' > /var/lib/app/cache/index.meta          # 正常 (残す)
+
+check:
+  - description: "/var/lib/app が合計 1MB 以下に減っている"
+    test: '[ "$(du -sb /var/lib/app | cut -f1)" -le 1048576 ]'
+    expect_exit: 0
+  - description: "正常なデータ app.db が残っている"
+    test: "[ -f /var/lib/app/app.db ]"
+    expect_exit: 0
+
+hints:
+  - "サイズの大きいファイルを再帰的に探す: find /var/lib/app -type f -size +1M"
+  - "ls -lS では1階層しか見えない。find なら階層を跨いで探せる"
+  - "見つけたら root (su root、パスワード: password) で削除: rm /var/lib/app/cache/data/blob.bin"
+
+solution: |
+  `find /var/lib/app -type f -size +1M` で /var/lib/app/cache/data/blob.bin (7MB) が見つかる。
+  `su root` (パスワード: password) で root になり `rm /var/lib/app/cache/data/blob.bin` で削除。
+  app.db などの正常ファイルは残す。これで合計は 1MB 以下になる。

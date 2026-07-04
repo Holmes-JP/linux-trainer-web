@@ -14,7 +14,16 @@
 
 	export let configObj = null;
 	export let processCallback = null;
+	// シナリオ機構 (src/lib/scenario/) が control channel を張るためのフック。
+	// CheerpX 初期化完了時に (cx, ctrlDevice) で呼ばれる。
+	export let cxReadyCallback = null;
 	export let cacheId = null;
+	// bare: fork の Nav/SideBar を描画せず、ターミナル (#console) だけを親要素いっぱいに出す。
+	// 挑戦画面 (Refined - Challenge) の専用レイアウトに埋め込むためのモード。
+	export let bare = false;
+	// ターミナルの見た目 (Refined デザインに合わせるための注入点)
+	export let termFontFamily = "monospace";
+	export let termTheme = null;
 	export let cpuActivityEvents = [];
 	export let diskLatencies = [];
 	export let activityEventsInterval = 0;
@@ -189,7 +198,7 @@
 		const { Terminal } = await import('@xterm/xterm');
 		const { FitAddon } = await import('@xterm/addon-fit');
 		const { WebLinksAddon } = await import('@xterm/addon-web-links');
-		term = new Terminal({cursorBlink:true, convertEol:true, fontFamily:"monospace", fontWeight: 400, fontWeightBold: 700, fontSize: computeXTermFontSize()});
+		term = new Terminal({cursorBlink:true, convertEol:true, fontFamily:termFontFamily, fontWeight: 400, fontWeightBold: 700, fontSize: computeXTermFontSize(), ...(termTheme ? { theme: termTheme } : {})});
 		fitAddon = new FitAddon();
 		term.loadAddon(fitAddon);
 		var linkAddon = new WebLinksAddon();
@@ -282,6 +291,8 @@
 		}
 		blockCache = await CheerpX.IDBDevice.create(cacheId);
 		var overlayDevice = await CheerpX.OverlayDevice.create(blockDevice, blockCache);
+		// setup/check の stdout 回収用 (VM 内 /ctrl ↔ JS の readFileAsBlob)
+		var ctrlDevice = await CheerpX.IDBDevice.create(cacheId + "_ctrl");
 		var webDevice = await CheerpX.WebDevice.create("");
 		var documentsDevice = await CheerpX.WebDevice.create("documents");
 		var dataDevice = await CheerpX.DataDevice.create();
@@ -301,7 +312,9 @@
 			// The Linux 'sysfs' filesystem which is used to enumerate emulated devices
 			{type:"sys", path:"/sys"},
 			// Convenient access to sample documents in the user directory
-			{type:"dir", dev:documentsDevice, path:"/home/user/documents"}
+			{type:"dir", dev:documentsDevice, path:"/home/user/documents"},
+			// Control channel: setup/check コマンドの出力回収先
+			{type:"dir", dev:ctrlDevice, path:"/ctrl"}
 		];
 		try
 		{
@@ -325,6 +338,8 @@
 			setScreenSize(display);
 			cx.setActivateConsole(handleActivateConsole);
 		}
+		if(cxReadyCallback)
+			cxReadyCallback(cx, ctrlDevice);
 		// Run the command in a loop, in case the user exits
 		while (true)
 		{
@@ -354,6 +369,19 @@
 		await blockCache.reset();
 		location.reload();
 	}
+	// シナリオ機構から VM を初期状態へ戻すための公開メソッド。
+	// overlay (blockCache) を消して reload → fresh boot + setup 再実行で「壊れた初期状態」に戻る。
+	export async function resetVM()
+	{
+		await handleReset();
+	}
+	// レイアウト変更 (パネル折りたたみ等) 後に xterm をコンテナサイズへ再フィットする。
+	// window resize では innerWidth が変わらず handleResize が早期 return するため、明示的に呼ぶ。
+	export function refit()
+	{
+		if(term && fitAddon)
+			triggerResize();
+	}
 	async function handleTool(tool)
 	{
 		return await handleToolImpl(tool, term);
@@ -368,6 +396,11 @@
 	}
 </script>
 
+{#if bare}
+	<!-- bare モード: 親 (挑戦画面のターミナル列) が position:relative で定サイズを与える。
+	     Nav/SideBar は描画せず、xterm の #console だけを埋め込む。 -->
+	<div class="absolute inset-0 p-2 scrollbar" id="console"></div>
+{:else}
 <main class="relative w-full h-full">
 	<Nav />
 	<div class="absolute top-10 bottom-0 left-0 right-0">
@@ -383,3 +416,4 @@
 		</div>
 	</div>
 </main>
+{/if}

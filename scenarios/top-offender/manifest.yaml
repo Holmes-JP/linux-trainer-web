@@ -1,0 +1,48 @@
+id: top-offender
+title: "最も多くエラーを出したIP"
+difficulty: hard
+category: logs
+time_estimate_min: 20
+
+description: |
+  アクセスログ /var/log/webserver/access.log を解析する。
+  HTTP ステータス 404 (Not Found) を「最も多く」引き起こした送信元 IP アドレスを特定し、
+  その IP アドレスだけを /home/user/answer.txt に書き込め。
+  (複数のログ行を集計する必要がある)
+
+# 冪等: 毎回同じログを作り直す。404 の最多は 10.0.0.66 (4回)。他は 10.0.0.42(2), 10.0.0.99(1)。
+# 注意: for/seq ループや yes|head は hang するため固定内容を heredoc で書く。
+setup:
+  - description: "集計対象のアクセスログを設置する"
+    cmd: |
+      mkdir -p /var/log/webserver
+      cat > /var/log/webserver/access.log <<'EOF'
+      10.0.0.66 - - [04/Jul/2026:02:00:01 +0000] "GET /missing1 HTTP/1.1" 404 120
+      10.0.0.10 - - [04/Jul/2026:02:00:02 +0000] "GET /index.html HTTP/1.1" 200 3000
+      10.0.0.42 - - [04/Jul/2026:02:00:03 +0000] "GET /nope HTTP/1.1" 404 118
+      10.0.0.66 - - [04/Jul/2026:02:00:04 +0000] "GET /missing2 HTTP/1.1" 404 121
+      10.0.0.99 - - [04/Jul/2026:02:00:05 +0000] "GET /gone HTTP/1.1" 404 130
+      10.0.0.10 - - [04/Jul/2026:02:00:06 +0000] "GET /about HTTP/1.1" 200 900
+      10.0.0.66 - - [04/Jul/2026:02:00:07 +0000] "GET /missing3 HTTP/1.1" 404 119
+      10.0.0.42 - - [04/Jul/2026:02:00:08 +0000] "GET /absent HTTP/1.1" 404 118
+      10.0.0.10 - - [04/Jul/2026:02:00:09 +0000] "GET /api/ok HTTP/1.1" 200 1500
+      10.0.0.66 - - [04/Jul/2026:02:00:10 +0000] "GET /missing4 HTTP/1.1" 404 122
+      10.0.0.10 - - [04/Jul/2026:02:00:11 +0000] "GET /home HTTP/1.1" 200 800
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に最多IP (10.0.0.66) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "10.0.0.66"
+    run_as: user
+
+hints:
+  - "404 の行だけ抜き出す: awk '$(NF-1)==404' /var/log/webserver/access.log"
+  - "送信元 IP は各行の先頭フィールド ($1)。IP ごとに件数を数える: sort | uniq -c"
+  - "定番の集計: awk '$(NF-1)==404{print $1}' access.log | sort | uniq -c | sort -rn | head -1"
+
+solution: |
+  404 の行から送信元 IP を集計する定番パイプライン:
+    awk '$(NF-1)==404 {print $1}' /var/log/webserver/access.log | sort | uniq -c | sort -rn | head
+  → 10.0.0.66 が 4 回で最多。
+  `echo 10.0.0.66 > /home/user/answer.txt` で答えを書けば完了。

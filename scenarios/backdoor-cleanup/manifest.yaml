@@ -1,0 +1,56 @@
+id: backdoor-cleanup
+title: "バックドアの完全駆除"
+difficulty: hard
+category: processes
+time_estimate_min: 20
+
+description: |
+  侵入の痕跡が見つかった。攻撃者は不審なデーモン「backdoord」を仕込み、
+  さらに再起動後も復活するよう「持続化 (persistence)」の細工をしている。
+  次の3点をすべて満たすように、バックドアを完全に駆除せよ:
+    1. backdoord プロセスを停止する
+    2. 実行ファイル本体 /usr/local/sbin/backdoord を削除する
+    3. 自動起動の細工 /etc/rc.local.d/backdoor.sh を削除する
+  (どれか1つでも残っていると「駆除完了」にならない)
+
+# 冪等: 毎回 3つの痕跡を再設置する。プロセスは setsid で起動 (nohup & は即死する)。
+# 注意: プロセス検出は pgrep -x backdoord (comm 完全一致)。-f はラッパー誤マッチ。
+setup:
+  - description: "バックドアと持続化の細工を仕込む"
+    cmd: |
+      # 1. デーモン本体
+      mkdir -p /usr/local/sbin
+      printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/sbin/backdoord
+      chmod 755 /usr/local/sbin/backdoord
+      # 2. 起動 (既に動いていなければ)
+      if ! pgrep -x backdoord > /dev/null; then
+        setsid /usr/local/sbin/backdoord </dev/null >/dev/null 2>&1 &
+        sleep 1
+      fi
+      # 3. 持続化の細工
+      mkdir -p /etc/rc.local.d
+      printf '#!/bin/sh\n/usr/local/sbin/backdoord &\n' > /etc/rc.local.d/backdoor.sh
+      chmod 755 /etc/rc.local.d/backdoor.sh
+
+check:
+  - description: "backdoord プロセスが停止している"
+    test: "pgrep -x backdoord"
+    expect_exit: 1
+  - description: "実行ファイル本体が削除されている"
+    test: "[ ! -f /usr/local/sbin/backdoord ]"
+    expect_exit: 0
+  - description: "自動起動の細工が削除されている"
+    test: "[ ! -f /etc/rc.local.d/backdoor.sh ]"
+    expect_exit: 0
+
+hints:
+  - "まず全体像を掴む: ps aux で不審なプロセス、pgrep -a backdoord で PID を確認"
+  - "root (su root、パスワード: password) で kill / rm する。プロセスを消しただけでは持続化が残る"
+  - "持続化の在りかを探す: grep -rl backdoord /etc 2>/dev/null。見つけた細工ファイルも rm する"
+
+solution: |
+  `su root` (パスワード: password) で root になり、3点すべてを処理する:
+    1. pkill backdoord            # プロセス停止
+    2. rm /usr/local/sbin/backdoord   # 本体削除
+    3. rm /etc/rc.local.d/backdoor.sh # 持続化の細工削除
+  `grep -rl backdoord /etc` で持続化ファイルを見つけられる。3つすべて消して駆除完了。

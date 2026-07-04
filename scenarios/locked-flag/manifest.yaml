@@ -1,0 +1,46 @@
+# scenarios/locked-flag/manifest.yaml (Spec.md §4)
+id: locked-flag
+title: "読めなくなった flag.txt"
+difficulty: easy
+category: permissions
+time_estimate_min: 5
+
+description: |
+  ホームディレクトリに大事なメモ /home/user/flag.txt があるが、
+  いつの間にか読めなくなってしまった。原因を調査し、user が中身を読めるように修復せよ。
+
+# --- 起動時に一度だけ実行し、箱を「壊す」(root で実行される) ---
+# 冪等であること (reload / 再挑戦で二重実行されても壊れない)
+setup:
+  - description: "flag.txt を作成しパーミッションを破壊する"
+    cmd: |
+      # 冪等: ファイルが既にあれば内容は上書きしない
+      [ -f /home/user/flag.txt ] || echo "FLAG{M1-VERTICAL-SLICE-OK}" > /home/user/flag.txt
+      chown 1000:1000 /home/user/flag.txt
+      chmod 000 /home/user/flag.txt
+
+# --- 修復完了の判定。全 check が pass で合格。「最終状態」で判定する ---
+# run_as: user は uid 1000 として実行 (省略時は root)
+check:
+  - description: "user が flag.txt を読める"
+    test: "cat /home/user/flag.txt"
+    expect_exit: 0
+    run_as: user
+  - description: "flag.txt の中身が失われていない"
+    test: "cat /home/user/flag.txt"
+    expect_stdout_contains: "FLAG{M1-VERTICAL-SLICE-OK}"
+    run_as: user
+
+# --- 段階的ヒント (1つずつ開示) ---
+hints:
+  - "まず状態を確認: ls -l /home/user/flag.txt"
+  - "パーミッションが 000 (---------) になっている。修復には root 権限が必要 (su root、パスワードは password)"
+  - "root になったら chmod で読み取り権限を戻す: chmod 644 /home/user/flag.txt"
+
+# --- 参考解答 ---
+# 注意: CheerpX では非 root ユーザーは自分の所有ファイルでも chmod できない (エミュレーション制約)。
+# パーミッション修復系シナリオは「su で root になって直す」導線で設計する。
+solution: |
+  flag.txt のパーミッションが 000 になっている。
+  `su root` (パスワード: password) で root になり、
+  `chmod 644 /home/user/flag.txt` で読み取り権限を戻せば修復完了。

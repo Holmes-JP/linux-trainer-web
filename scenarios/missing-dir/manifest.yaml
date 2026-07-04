@@ -1,0 +1,36 @@
+id: missing-dir
+title: "無くなったスプールディレクトリ"
+difficulty: easy
+category: filesystem
+time_estimate_min: 5
+
+description: |
+  アプリ myapp (user 権限で動作) は作業ファイルを /var/spool/myapp に書き込むが、
+  このディレクトリが存在せず起動に失敗する。
+  ディレクトリを作成し、user が書き込める状態にせよ。
+
+# 冪等: 毎回ディレクトリを消して「無い」状態に戻す。
+setup:
+  - description: "スプールディレクトリを削除する"
+    cmd: |
+      rm -rf /var/spool/myapp
+
+check:
+  - description: "/var/spool/myapp が存在する"
+    test: "[ -d /var/spool/myapp ]"
+    expect_exit: 0
+  - description: "user が spool にファイルを作成できる"
+    test: "touch /var/spool/myapp/.wtest && rm -f /var/spool/myapp/.wtest"
+    expect_exit: 0
+    run_as: user
+
+hints:
+  - "ディレクトリの有無を確認: ls -ld /var/spool/myapp (No such file or directory と出る)"
+  - "/var 以下にディレクトリを作るには root 権限が要る (su root、パスワード: password)"
+  - "作成して所有者を user にする: mkdir -p /var/spool/myapp; chown user:user /var/spool/myapp"
+
+solution: |
+  `su root` (パスワード: password) で root になり、ディレクトリを作って所有者を user にする:
+    mkdir -p /var/spool/myapp
+    chown user:user /var/spool/myapp
+  (または chmod 777) で user が書き込めるようにすれば完了。

@@ -1,0 +1,37 @@
+id: wrong-config
+title: "無効化されたAPIゲートウェイ"
+difficulty: medium
+category: services
+time_estimate_min: 10
+
+description: |
+  API ゲートウェイが全リクエストを拒否している。設定ファイル
+  /etc/api-gateway/gateway.conf を見ると、サービスが無効化 (enabled = false) されている。
+  設定を修正してゲートウェイを有効化せよ (enabled = true にする)。
+
+# 冪等: 毎回 enabled = false に戻す (行が無ければ足す)。
+setup:
+  - description: "ゲートウェイ設定を無効化した状態にする"
+    cmd: |
+      mkdir -p /etc/api-gateway
+      cat > /etc/api-gateway/gateway.conf <<'EOF'
+      service = api-gateway
+      listen_port = 8080
+      enabled = false
+      max_connections = 256
+      EOF
+
+check:
+  - description: "gateway.conf で enabled = true になっている"
+    test: "grep -q '^enabled = true' /etc/api-gateway/gateway.conf"
+    expect_exit: 0
+
+hints:
+  - "設定を確認: cat /etc/api-gateway/gateway.conf"
+  - "enabled = false の行を true に書き換える。編集には root 権限が要る (su root、パスワード: password)"
+  - "エディタ (vim/nano) で直すか、sed で置換: sed -i 's/^enabled = false/enabled = true/' /etc/api-gateway/gateway.conf"
+
+solution: |
+  `su root` (パスワード: password) で root になり、設定の enabled を true にする:
+    sed -i 's/^enabled = false/enabled = true/' /etc/api-gateway/gateway.conf
+  (または vim /etc/api-gateway/gateway.conf で該当行を編集)。これで有効化されて完了。

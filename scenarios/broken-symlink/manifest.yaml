@@ -1,0 +1,38 @@
+id: broken-symlink
+title: "壊れたシンボリックリンク"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  アプリは設定を /etc/webapp/current.conf 経由で読むが、このシンボリックリンクの
+  リンク先が存在せず「壊れたリンク」になっている。
+  正しい設定ファイルを指すようにリンクを張り直し、current.conf から設定を読めるようにせよ。
+
+# 冪等: 毎回「正しい設定ファイル + 壊れたリンク」の状態に戻す (ln -sfn で上書き)。
+setup:
+  - description: "正しい設定を置き、current.conf を存在しない先へ向ける"
+    cmd: |
+      mkdir -p /etc/webapp
+      printf 'server_name = prod\nworkers = 4\n' > /etc/webapp/settings.prod.conf
+      # current.conf を存在しないファイルへのリンクにする (壊れたリンク)
+      ln -sfn /etc/webapp/settings.OLD.conf /etc/webapp/current.conf
+      rm -f /etc/webapp/settings.OLD.conf
+
+check:
+  - description: "current.conf 経由で設定が読める"
+    test: "cat /etc/webapp/current.conf"
+    expect_exit: 0
+  - description: "正しい設定 (server_name = prod) を指している"
+    test: "grep -q 'server_name = prod' /etc/webapp/current.conf"
+    expect_exit: 0
+
+hints:
+  - "リンクの状態を確認: ls -l /etc/webapp/current.conf (リンク先が赤く表示される)"
+  - "リンク先が存在しない。実在する設定ファイルを探す: ls -l /etc/webapp/"
+  - "root (su root、パスワード: password) でリンクを張り直す: ln -sfn /etc/webapp/settings.prod.conf /etc/webapp/current.conf"
+
+solution: |
+  `ls -l /etc/webapp/current.conf` を見ると settings.OLD.conf (存在しない) を指す壊れたリンク。
+  実在するのは settings.prod.conf。`su root` (パスワード: password) で root になり、
+  `ln -sfn /etc/webapp/settings.prod.conf /etc/webapp/current.conf` で張り直せば完了。

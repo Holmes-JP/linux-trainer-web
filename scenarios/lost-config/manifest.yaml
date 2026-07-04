@@ -1,0 +1,36 @@
+id: lost-config
+title: "消えた設定ファイル"
+difficulty: easy
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  アプリケーション myapp が設定ファイル /etc/myapp/app.conf を読めず起動しない。
+  直前のメンテナンス作業で誤って消してしまったらしい。
+  設定ファイルを復元し、myapp が読める状態に戻せ。
+
+# 冪等: バックアップは初回のみ作成。ユーザーが復元しても再 setup で再び「消えた」状態に戻る
+setup:
+  - description: "バックアップを配置し、本体の設定ファイルを消す"
+    cmd: |
+      mkdir -p /etc/myapp
+      [ -f /etc/myapp/app.conf.bak ] || printf 'port=8080\nmode=production\nlog_level=info\n' > /etc/myapp/app.conf.bak
+      rm -f /etc/myapp/app.conf
+
+check:
+  - description: "/etc/myapp/app.conf が存在する"
+    test: "[ -f /etc/myapp/app.conf ]"
+    expect_exit: 0
+  - description: "設定内容が正しい (port=8080 を含む)"
+    test: "grep -q '^port=8080' /etc/myapp/app.conf"
+    expect_exit: 0
+
+hints:
+  - "まず /etc/myapp の中を見てみよう: ls -la /etc/myapp"
+  - "それらしいファイルが残っていないか探す: find /etc -name 'app.conf*'"
+  - "バックアップからの復元は root で: su root (パスワード: password) → cp"
+
+solution: |
+  /etc/myapp/app.conf.bak というバックアップが残っている。
+  `su root` (パスワード: password) で root になり、
+  `cp /etc/myapp/app.conf.bak /etc/myapp/app.conf` で復元すれば完了。

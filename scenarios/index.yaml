@@ -1,0 +1,23 @@
+# 利用可能なシナリオの一覧。ScenarioList はこれを読んで各 manifest を取得する。
+# 追加時はディレクトリ (scenarios/<id>/manifest.yaml) を作ってここに1行足す。
+scenarios:
+  - locked-flag
+  - lost-config
+  - rogue-process
+  - log-flood
+  - dead-service
+  - log-detective
+  - backdoor-cleanup
+  - broken-symlink
+  - top-offender
+  - web-permissions
+  - disk-hog
+  - flaky-service
+  - loose-permissions
+  - recursive-ownership
+  - find-error
+  - runaway-loop
+  - find-big-file
+  - missing-dir
+  - stopped-service
+  - wrong-config

@@ -1,0 +1,54 @@
+id: log-detective
+title: "アクセスログの調査"
+difficulty: medium
+category: logs
+time_estimate_min: 10
+
+description: |
+  Web サーバーのアクセスログ /var/log/webserver/access.log を調査したい。
+  このログの中で HTTP ステータスコードが 500 (サーバーエラー) だったリクエストの
+  「件数」を数え、その数字だけを /home/user/answer.txt に書き込め。
+  (ヒント: ステータスコードはリクエスト行の後ろの数値フィールド)
+
+# 冪等: ログは毎回同じ内容で作り直す (無条件上書き)。answer.txt はユーザーが作る。
+# 注意: シェルの for/seq ループや yes|head は CheerpX で hang するため、固定内容を heredoc で書く。
+#       このログの status==500 の行はちょうど 6 行。バイト数に 500 を含む decoy 行 (200 5001 等) を
+#       混ぜてあるので、素朴な `grep 500` では 6 にならない (正しくは status フィールドで数える)。
+setup:
+  - description: "調査対象のアクセスログを設置する"
+    cmd: |
+      mkdir -p /var/log/webserver
+      cat > /var/log/webserver/access.log <<'EOF'
+      10.0.0.11 - - [04/Jul/2026:01:00:01 +0000] "GET /index.html HTTP/1.1" 200 5001
+      10.0.0.12 - - [04/Jul/2026:01:00:02 +0000] "GET /api/users HTTP/1.1" 500 812
+      10.0.0.13 - - [04/Jul/2026:01:00:03 +0000] "GET /favicon.ico HTTP/1.1" 404 132
+      10.0.0.14 - - [04/Jul/2026:01:00:04 +0000] "POST /api/order HTTP/1.1" 500 940
+      10.0.0.15 - - [04/Jul/2026:01:00:05 +0000] "GET /about HTTP/1.1" 200 1500
+      10.0.0.16 - - [04/Jul/2026:01:00:06 +0000] "GET /api/items HTTP/1.1" 200 5002
+      10.0.0.17 - - [04/Jul/2026:01:00:07 +0000] "GET /api/report HTTP/1.1" 500 77
+      10.0.0.18 - - [04/Jul/2026:01:00:08 +0000] "GET /health HTTP/1.1" 200 12
+      10.0.0.19 - - [04/Jul/2026:01:00:09 +0000] "POST /api/login HTTP/1.1" 500 233
+      10.0.0.20 - - [04/Jul/2026:01:00:10 +0000] "GET /static/app.js HTTP/1.1" 200 45000
+      10.0.0.21 - - [04/Jul/2026:01:00:11 +0000] "GET /api/search HTTP/1.1" 404 88
+      10.0.0.22 - - [04/Jul/2026:01:00:12 +0000] "POST /api/pay HTTP/1.1" 500 501
+      10.0.0.23 - - [04/Jul/2026:01:00:13 +0000] "GET /contact HTTP/1.1" 200 1500
+      10.0.0.24 - - [04/Jul/2026:01:00:14 +0000] "GET /api/status HTTP/1.1" 500 5000
+      10.0.0.25 - - [04/Jul/2026:01:00:15 +0000] "GET /robots.txt HTTP/1.1" 200 64
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に正しい件数 (6) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "6"
+    run_as: user
+
+hints:
+  - "ログの中身を見る: cat /var/log/webserver/access.log"
+  - "ステータスコードは各行の後ろから2番目のフィールド。awk で取り出せる: awk '{print $(NF-1)}' access.log"
+  - "500 の行だけ数える: awk '$(NF-1)==500' /var/log/webserver/access.log | wc -l。結果を answer.txt へ: echo 6 > /home/user/answer.txt"
+
+solution: |
+  ステータスコードはリクエスト行 ("...HTTP/1.1") の直後のフィールド (後ろから2番目) にある。
+  `awk '$(NF-1)==500' /var/log/webserver/access.log | wc -l` で数えると 6 件。
+  (素朴な `grep -c 500` はバイト数に 500 を含む行も数えてしまい不正確)。
+  `echo 6 > /home/user/answer.txt` で答えを書けば完了。

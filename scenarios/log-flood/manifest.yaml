@@ -1,0 +1,36 @@
+id: log-flood
+title: "ログでディスクが溢れそう"
+difficulty: easy
+category: disk
+time_estimate_min: 10
+
+description: |
+  監視から「ディスク使用量が急増している」とアラートが来た。
+  原因は Web アプリのログ肥大化らしい。/var/log/webapp 以下を調査し、
+  肥大化したログを整理してディスクを解放せよ (合計 1MB 以下にする)。
+
+# 冪等: 毎回 8MB のログを作り直す (無条件上書き。中断された前回の残骸に影響されない)。
+# 注意: CheerpX では /dev/zero が無く、パイプ (yes|head) や for ループは hang する。
+#       /dev/urandom からの head -c は高速なので、これで 8MB のファイルを作る。
+setup:
+  - description: "肥大化したログファイルを作る"
+    cmd: |
+      mkdir -p /var/log/webapp
+      head -c 8388608 /dev/urandom > /var/log/webapp/access.log
+
+# 注意: CheerpX の ext2 は st_blocks=0 を返すため `du` のブロック集計 (du -sh 等) は常に 0。
+#       実サイズ (apparent size) を見る `du -sb` / `du -b` / `ls -l` で判定・調査する。
+check:
+  - description: "/var/log/webapp が合計 1MB 以下に整理されている"
+    test: '[ "$(du -sb /var/log/webapp | cut -f1)" -le 1048576 ]'
+    expect_exit: 0
+
+hints:
+  - "ディレクトリ内のファイルサイズを大きい順に見る: ls -lhS /var/log/webapp"
+  - "実サイズで集計する (この環境では du -h ではなく apparent-size を使う): du -ab /var/log/webapp | sort -rn | head"
+  - "root (su root、パスワード: password) で削除 (rm) するか、空に切り詰める (: > ファイル名)"
+
+solution: |
+  `ls -lhS /var/log/webapp` で access.log が 8MB に肥大化しているのが分かる。
+  `su root` (パスワード: password) で root になり、
+  `rm /var/log/webapp/access.log` (または `: > /var/log/webapp/access.log` で切り詰め) すれば完了。

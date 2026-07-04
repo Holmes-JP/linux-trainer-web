@@ -1,0 +1,35 @@
+id: web-permissions
+title: "書き込めないアップロード先"
+difficulty: medium
+category: permissions
+time_estimate_min: 10
+
+description: |
+  Web アプリ (user 権限で動作) が、アップロード保存先 /var/www/html/uploads に
+  ファイルを書き込めずエラーになっている。ディレクトリの所有者・権限を調べ、
+  user がこのディレクトリに書き込めるように修復せよ。
+
+# 冪等: 毎回 root 所有・書き込み不可 (755) の状態に戻す。
+setup:
+  - description: "アップロード先を作り、user が書けない状態にする"
+    cmd: |
+      mkdir -p /var/www/html/uploads
+      chown 0:0 /var/www/html/uploads
+      chmod 755 /var/www/html/uploads
+
+check:
+  - description: "user が uploads にファイルを作成できる"
+    test: "touch /var/www/html/uploads/.writetest && rm -f /var/www/html/uploads/.writetest"
+    expect_exit: 0
+    run_as: user
+
+hints:
+  - "ディレクトリの所有者と権限を確認: ls -ld /var/www/html/uploads"
+  - "所有者が root で、その他ユーザーに書き込み権 (w) が無いことが分かる。id で自分のユーザーを確認"
+  - "root (su root、パスワード: password) で所有者を user に変える: chown user:user /var/www/html/uploads (または chmod 777)"
+
+solution: |
+  `ls -ld /var/www/html/uploads` を見ると root 所有・755 (その他ユーザーは書き込み不可)。
+  アプリは user 権限で動くので書き込めない。
+  `su root` (パスワード: password) で root になり `chown user:user /var/www/html/uploads`
+  (もしくは `chmod 775` / `chmod 777`) で user が書けるようにすれば完了。

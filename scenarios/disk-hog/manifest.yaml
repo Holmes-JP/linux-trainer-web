@@ -1,0 +1,39 @@
+id: disk-hog
+title: "ディスクを食い潰す不要ファイル"
+difficulty: hard
+category: disk
+time_estimate_min: 15
+
+description: |
+  /var/data のディスク使用量が急増している。中には巨大な不要ファイルがある一方で、
+  消してはいけない重要ファイル important.db も同居している。
+  /var/data の合計サイズを 1MB 以下に減らせ。ただし important.db は残すこと。
+  (重要ファイルまで消してしまうと失格)
+
+# 冪等: 毎回 巨大 junk 2つ + 重要ファイル (小) を作り直す。
+# 注意: /dev/zero は無いので /dev/urandom を使う。
+setup:
+  - description: "巨大な不要ファイルと重要ファイルを配置する"
+    cmd: |
+      mkdir -p /var/data
+      head -c 6291456 /dev/urandom > /var/data/dump1.bin      # 6MB 不要
+      head -c 5242880 /dev/urandom > /var/data/cache.tmp       # 5MB 不要
+      head -c 102400  /dev/urandom > /var/data/important.db    # 100KB 重要 (残す)
+
+check:
+  - description: "/var/data が合計 1MB 以下に減っている"
+    test: '[ "$(du -sb /var/data | cut -f1)" -le 1048576 ]'
+    expect_exit: 0
+  - description: "重要ファイル important.db が残っている"
+    test: "[ -f /var/data/important.db ]"
+    expect_exit: 0
+
+hints:
+  - "ファイルごとの実サイズを大きい順に: ls -lS /var/data (この環境では du -h は 0 になるので ls を使う)"
+  - "どれが不要でどれが重要か名前から判断する。important.db は消さない"
+  - "root (su root、パスワード: password) で不要な2つだけ削除: rm /var/data/dump1.bin /var/data/cache.tmp"
+
+solution: |
+  `ls -lS /var/data` で dump1.bin (6MB) と cache.tmp (5MB) が巨大、important.db は 100KB と分かる。
+  `su root` (パスワード: password) で root になり、不要な2つだけ削除する:
+  `rm /var/data/dump1.bin /var/data/cache.tmp`。important.db は残す。これで合計は 1MB 以下になる。

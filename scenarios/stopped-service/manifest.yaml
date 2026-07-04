@@ -1,0 +1,48 @@
+id: stopped-service
+title: "止まっているサービスを起動する"
+difficulty: easy
+category: services
+time_estimate_min: 5
+
+description: |
+  死活監視デーモン heartbeatd (/usr/local/sbin/heartbeatd) が停止している。
+  init スクリプト (/etc/init.d/heartbeat) を使って起動し、常駐させよ。
+  (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
+
+# 冪等: 本体と init を毎回設置し、サービスは停止した状態にする (障害は「止まっているだけ」)。
+# 注意: プロセス検出は pgrep -x heartbeatd。本体(heartbeatd)と init(heartbeat)は名前を分ける。
+setup:
+  - description: "heartbeatd を設置し、停止状態にする"
+    cmd: |
+      cat > /usr/local/sbin/heartbeatd <<'EOF'
+      #!/bin/sh
+      while true; do sleep 3; done
+      EOF
+      chmod 755 /usr/local/sbin/heartbeatd
+      cat > /etc/init.d/heartbeat <<'EOF'
+      #!/bin/sh
+      BIN=/usr/local/sbin/heartbeatd
+      case "$1" in
+        start) setsid "$BIN" </dev/null >/dev/null 2>&1 & echo "heartbeat started" ;;
+        stop) pkill -x heartbeatd && echo "heartbeat stopped" ;;
+        status) pgrep -x heartbeatd >/dev/null && echo "running" || { echo "stopped"; exit 3; } ;;
+        *) echo "usage: $0 {start|stop|status}"; exit 2 ;;
+      esac
+      EOF
+      chmod 755 /etc/init.d/heartbeat
+      pkill -x heartbeatd 2>/dev/null || true
+
+check:
+  - description: "heartbeatd プロセスが常駐している"
+    test: "pgrep -x heartbeatd"
+    expect_exit: 0
+
+hints:
+  - "状態を確認: /etc/init.d/heartbeat status (stopped と出る)"
+  - "サービスの起動は root 権限で (su root、パスワード: password)"
+  - "起動する: service heartbeat start (または /etc/init.d/heartbeat start)"
+
+solution: |
+  `su root` (パスワード: password) で root になり `service heartbeat start`
+  (または `/etc/init.d/heartbeat start`) を実行すれば heartbeatd が常駐して完了。
+  今回は設定に問題は無く、単にサービスが止まっていただけ。

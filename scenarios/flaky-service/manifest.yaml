@@ -1,0 +1,66 @@
+id: flaky-service
+title: "起動しても即死するサービス"
+difficulty: hard
+category: services
+time_estimate_min: 20
+
+description: |
+  監視デーモン monitord (/usr/local/sbin/monitord) を起動しようとしても、
+  すぐに落ちてしまい常駐しない。原因は1つではないかもしれない。
+  エラーログも手がかりに、monitord が常駐するまで修復せよ。
+  (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
+
+# 冪等: 毎回2つの障害を再現する — (1) 本体の実行権限を剥奪 (2) 必須データディレクトリを削除。
+# 注意: プロセス検出は pgrep -x monitord。本体(monitord)と init(monitor)は名前を分ける。
+#       起動は setsid で detach (nohup & は即死)。
+setup:
+  - description: "monitord と init を設置し、2つの障害を仕込む"
+    cmd: |
+      # デーモン本体: データディレクトリが無いと起動時にエラーを出して即終了する
+      cat > /usr/local/sbin/monitord <<'EOF'
+      #!/bin/sh
+      if [ ! -d /var/lib/monitord ]; then
+        echo "$(date) FATAL: data dir /var/lib/monitord is missing" >> /var/log/monitord.err
+        exit 1
+      fi
+      while true; do
+        echo "$(date) ok" >> /var/lib/monitord/state
+        sleep 3
+      done
+      EOF
+      # init スクリプト: 本体が実行可能でなければ起動を拒否する
+      cat > /etc/init.d/monitor <<'EOF'
+      #!/bin/sh
+      BIN=/usr/local/sbin/monitord
+      case "$1" in
+        start)
+          [ -x "$BIN" ] || { echo "monitor: $BIN is not executable" >&2; exit 1; }
+          setsid "$BIN" </dev/null >/dev/null 2>&1 &
+          echo "monitor started"
+          ;;
+        stop) pkill -x monitord && echo "monitor stopped" ;;
+        status) pgrep -x monitord >/dev/null && echo "running" || { echo "stopped"; exit 3; } ;;
+        *) echo "usage: $0 {start|stop|status}"; exit 2 ;;
+      esac
+      EOF
+      chmod 755 /etc/init.d/monitor
+      # 障害を仕込む
+      pkill -x monitord 2>/dev/null || true
+      chmod 644 /usr/local/sbin/monitord
+      rm -rf /var/lib/monitord
+
+check:
+  - description: "monitord プロセスが常駐している"
+    test: "pgrep -x monitord"
+    expect_exit: 0
+
+hints:
+  - "まず起動を試す: service monitor start (root で)。「not executable」と出る"
+  - "本体に実行権限を付けて再起動しても、すぐ落ちる。エラーログを見る: cat /var/log/monitord.err"
+  - "ログに『data dir /var/lib/monitord is missing』とある。root で mkdir -p /var/lib/monitord してから起動"
+
+solution: |
+  障害は2つある。`su root` (パスワード: password) で root になり両方直す:
+    1. chmod +x /usr/local/sbin/monitord      # init が起動を拒否する原因
+    2. mkdir -p /var/lib/monitord             # /var/log/monitord.err に出る即死の原因
+  そのうえで `service monitor start`。両方直さないと常駐しない (実行権限だけでは即死する)。

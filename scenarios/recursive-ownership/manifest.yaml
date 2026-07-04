@@ -1,0 +1,40 @@
+id: recursive-ownership
+title: "自分のファイルが触れない"
+difficulty: hard
+category: filesystem
+time_estimate_min: 15
+
+description: |
+  メンテナンス作業のミスで、user のプロジェクトディレクトリ /home/user/project の
+  所有権がディレクトリごと root に変わってしまった。おかげで user 自身が
+  自分のファイルを読み書きできない。所有権を user に戻し、再び読み書きできるようにせよ。
+
+# 冪等: 毎回 project 一式を作り直し、root 所有 + 他ユーザーアクセス不可にする。
+setup:
+  - description: "プロジェクトを作り、所有権を root に奪ってアクセスを封じる"
+    cmd: |
+      mkdir -p /home/user/project/src
+      printf 'print("hello")\n' > /home/user/project/src/main.py
+      printf 'name: proj\nversion: 1\n' > /home/user/project/config.yml
+      chown -R 0:0 /home/user/project
+      chmod -R go-rwx /home/user/project
+
+check:
+  - description: "user が config.yml を読める"
+    test: "cat /home/user/project/config.yml"
+    expect_exit: 0
+    run_as: user
+  - description: "user が src にファイルを書ける"
+    test: "touch /home/user/project/src/.wtest && rm -f /home/user/project/src/.wtest"
+    expect_exit: 0
+    run_as: user
+
+hints:
+  - "所有権を確認: ls -l /home/user/project (root:root になっている)。id で自分を確認"
+  - "自分のファイルなのに所有者が root なので触れない。再帰的に所有権を戻す必要がある"
+  - "root (su root、パスワード: password) で: chown -R user:user /home/user/project"
+
+solution: |
+  `ls -l /home/user/project` を見ると中身ごと root:root 所有で、user は触れない。
+  `su root` (パスワード: password) で root になり、再帰的に所有権を user へ戻す:
+  `chown -R user:user /home/user/project`。所有者に戻れば元の権限で読み書きできる。

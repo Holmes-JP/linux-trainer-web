@@ -1,0 +1,78 @@
+id: dead-service
+title: "起動しない監視サービス"
+difficulty: medium
+category: services
+time_estimate_min: 15
+
+description: |
+  このサーバーには監視サービス「sensor-agent」(デーモン本体は /usr/local/bin/sensord) が
+  常駐しているはずだが、停止したまま起動できなくなっている。
+  init スクリプト (/etc/init.d/sensor-agent) で起動を試みても立ち上がらない。
+  原因を調査し、サービスを起動せよ。
+  (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
+
+# 冪等: 本体と init スクリプトは毎回設置し、「実行権限を奪って停止」した壊れた状態に戻す。
+# 注意: プロセス検出は `pgrep -x sensord` (comm 完全一致)。
+#       - `-f` は setup/check ラッパー自身の cmdline に誤マッチするため使わない。
+#       - デーモン本体 (sensord) と init スクリプト (sensor-agent) は名前を分ける。
+#         同名だと init スクリプト自身の comm が pgrep に自己マッチしてしまう。
+#       - CheerpX ではデーモンの二重 fork が生存しないため、init は setsid で detach する。
+setup:
+  - description: "監視サービスを設置し、本体の実行権限を奪って停止する"
+    cmd: |
+      cat > /usr/local/bin/sensord <<'EOF'
+      #!/bin/sh
+      while true; do
+        echo "$(date) sensor ok" >> /var/log/sensord.log
+        sleep 3
+      done
+      EOF
+      cat > /etc/init.d/sensor-agent <<'EOF'
+      #!/bin/sh
+      BIN=/usr/local/bin/sensord
+      case "$1" in
+        start)
+          if [ ! -x "$BIN" ]; then
+            echo "sensor-agent: $BIN is not executable" >&2
+            exit 1
+          fi
+          setsid "$BIN" </dev/null >/dev/null 2>&1 &
+          echo "sensor-agent started"
+          ;;
+        stop)
+          pkill -x sensord && echo "sensor-agent stopped"
+          ;;
+        status)
+          if pgrep -x sensord >/dev/null; then
+            echo "sensor-agent is running"
+          else
+            echo "sensor-agent is stopped"
+            exit 3
+          fi
+          ;;
+        *) echo "usage: $0 {start|stop|status}"; exit 2 ;;
+      esac
+      EOF
+      chmod 755 /etc/init.d/sensor-agent
+      # 壊す: 本体の実行権限を奪い、サービスを停止する
+      pkill -x sensord 2>/dev/null || true
+      chmod 644 /usr/local/bin/sensord
+
+check:
+  - description: "sensord プロセスが動いている"
+    test: "pgrep -x sensord"
+    expect_exit: 0
+  - description: "init スクリプトの status が running を返す"
+    test: "/etc/init.d/sensor-agent status"
+    expect_stdout_contains: "running"
+
+hints:
+  - "まず状態を確認: /etc/init.d/sensor-agent status"
+  - "起動を試すとエラーが出る: service sensor-agent start (root で)。エラーメッセージをよく読む"
+  - "本体 /usr/local/bin/sensord の実行権限を確認 (ls -l)。root で chmod +x してから再起動"
+
+solution: |
+  `su root` (パスワード: password) で root になり `service sensor-agent start` を実行すると、
+  「/usr/local/bin/sensord is not executable」というエラーが出る。
+  `ls -l /usr/local/bin/sensord` で実行権限 (x) が無いことを確認し、
+  `chmod +x /usr/local/bin/sensord` してから `service sensor-agent start` で起動すれば完了。
