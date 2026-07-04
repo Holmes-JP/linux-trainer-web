@@ -1,0 +1,14 @@
+{
+  "name": "Linux トラブルシューティング演習",
+  "short_name": "Linux Trainer",
+  "description": "壊れた Debian サーバーをブラウザ上で調査・修復し自動採点する学習環境 (WebVM/CheerpX)",
+  "start_url": "/play",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0f0d",
+  "theme_color": "#0b0f0d",
+  "icons": [
+    { "src": "/tower.ico", "sizes": "48x48 32x32 16x16", "type": "image/x-icon" },
+    { "src": "/assets/pwa-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

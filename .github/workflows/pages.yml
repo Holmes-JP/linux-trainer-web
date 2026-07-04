@@ -1,0 +1,50 @@
+# トレーナー本体 (静的サイト) を GitHub Pages へ公開するワークフロー。
+#
+# 注意:
+#  - 無料の GitHub Pages は Public リポジトリが必要 (このリポは現在 Private)。
+#    Public 化する (または Pages 有効なプランにする) と使える。
+#  - github.io/<repo>/ のサブパス配信では、アプリが絶対パス (/play, /scenarios/…) を
+#    使うため base path 設定が必要。root 配信 (独自ドメイン) ならそのまま動く。
+#    サブパスで配信する場合は svelte.config.js に kit.paths.base を設定し、
+#    リンク/fetch を base 付きに調整すること。
+#  - COOP/COEP は Pages がヘッダを付けられないため serviceWorker.js が注入する
+#    (app.html で登録済み)。
+#
+# fork 由来の deploy.yml (ext2 ディスクイメージのビルド) とは別物。手動発火のみ。
+name: Deploy Trainer to Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

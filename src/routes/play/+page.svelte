@@ -227,7 +227,7 @@
 		       background:{t.bg}; color:{t.text}; font-family:{FONT_SANS};"
 	>
 		<!-- Top bar -->
-		<header style="display:flex; align-items:center; gap:20px; height:52px; flex-shrink:0; padding:0 20px; border-bottom:1px solid {t.border}; background:{t.surface};">
+		<header class="challenge-header" style="border-bottom:1px solid {t.border}; background:{t.surface};">
 			<a
 				href="/play"
 				id="back-to-list"
@@ -240,9 +240,9 @@
 				{#if scenario}
 					<span style="font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{scenario.title}</span>
 					<span style="font-family:{FONT_MONO}; font-size:11px; color:{diffColor[scenario.difficulty]}; border:1px solid {diffBorder[scenario.difficulty]}; border-radius:4px; padding:2px 8px; flex-shrink:0;">{scenario.difficulty.toUpperCase()}</span>
-					<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim}; flex-shrink:0;"><i class="{catIcons[scenario.category] ?? 'fas fa-terminal'}" style="margin-right:5px;"></i>{scenario.category}</span>
+					<span class="hide-mobile" style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim}; flex-shrink:0;"><i class="{catIcons[scenario.category] ?? 'fas fa-terminal'}" style="margin-right:5px;"></i>{scenario.category}</span>
 					{#if scenario.time_estimate_min}
-						<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim}; flex-shrink:0;"><i class="far fa-clock" style="margin-right:5px;"></i>~{scenario.time_estimate_min}min</span>
+						<span class="hide-mobile" style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim}; flex-shrink:0;"><i class="far fa-clock" style="margin-right:5px;"></i>~{scenario.time_estimate_min}min</span>
 					{/if}
 				{/if}
 			</div>
@@ -265,9 +265,9 @@
 			><i class="fas {panelCollapsed ? 'fa-angles-left' : 'fa-angles-right'}"></i></button>
 		</header>
 
-		<div style="display:flex; flex:1; min-height:0;">
+		<div class="challenge-body">
 			<!-- Terminal column -->
-			<div style="flex:1; min-width:0; background:{t.termBg}; display:flex; flex-direction:column;">
+			<div class="challenge-term" style="flex:1; min-width:0; background:{t.termBg}; display:flex; flex-direction:column;">
 				<div style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-bottom:1px solid {t.termBorder}; font-family:{FONT_MONO}; font-size:11px; color:{t.termDim}; flex-shrink:0;">
 					<i class="fas fa-terminal" style="font-size:10px;"></i>debian@webvm — /bin/bash
 				</div>
@@ -350,5 +350,49 @@
 	.panel-inner {
 		width: 400px;
 		height: 100%;
+	}
+	.challenge-header {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		height: 52px;
+		flex-shrink: 0;
+		padding: 0 20px;
+	}
+	.challenge-body {
+		display: flex;
+		flex: 1;
+		min-height: 0;
+	}
+
+	/* --- モバイル: ターミナルとパネルを縦積みに --- */
+	@media (max-width: 820px) {
+		.challenge-header {
+			gap: 12px;
+			padding: 0 12px;
+		}
+		.hide-mobile {
+			display: none !important;
+		}
+		.challenge-body {
+			flex-direction: column;
+		}
+		.challenge-term {
+			flex: 0 0 auto !important;
+			height: 50vh;
+		}
+		/* パネルは全幅・下段に。折りたたみの固定幅を打ち消す */
+		.panel-wrap {
+			width: 100% !important;
+			flex: 1;
+			min-height: 0;
+		}
+		.panel-inner {
+			width: 100%;
+		}
+		/* パネル折りたたみトグルはモバイルでは意味が薄いので隠す */
+		#panel-toggle {
+			display: none;
+		}
 	}
 </style>

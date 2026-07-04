@@ -21,11 +21,31 @@ npm test           # vitest (grader / loader のユニットテスト)
 ベースイメージ (Debian ext2) のビルドは GitHub Actions (`.github/workflows/deploy.yml`) を
 workflow_dispatch で手動実行する。ローカル開発は公開イメージ (`config_public_terminal.js`) を使う。
 
-## 画面
+## 画面 (3段フロー)
 
-- `/play` … シナリオ一覧 (難易度・カテゴリ・完了バッジ・進捗)。トップ `/` はここへリダイレクト。
-- `/play?id=<id>` … シナリオに挑戦。VM 起動 → setup で破壊 → ターミナルで修復 → Check で採点。
-  Task / Check / Hint / Solution / Reset の各パネルを備える。完了は localStorage に保存。
+- `/play` … シナリオ一覧。難易度/カテゴリのフィルタ、検索、ランダム挑戦、進捗ダッシュボード
+  (最短クリア時間つき)、進捗リセット、ライト/ダークテーマ切り替え。トップ `/` はここへリダイレクト。
+- `/play?id=<id>` … シナリオ詳細 (状況 / 想定コマンド / 攻略のコツ / 起動ボタン)。VM は起動しない。
+- `/play?id=<id>&start=1` … 挑戦。VM 起動 → setup で破壊 → ターミナルで修復 → Check で採点。
+  Task / Check / Hint / Solution / Reset パネル + ライブタイマー + パネル折りたたみ。`Ctrl+Enter` で採点。
+  完了 (最短時間つき) は localStorage に保存。モバイルではターミナルとパネルが縦積みになる。
+
+## デプロイ (GitHub Pages)
+
+`.github/workflows/pages.yml` を **手動発火 (workflow_dispatch)** すると `npm run build` → `build/` を Pages に公開する。
+注意:
+
+- 無料 Pages は **Public リポジトリ**が必要 (本リポジトリを Public 化する、または Pages 対応プラン)。
+- `github.io/<repo>/` のサブパス配信では、アプリが絶対パス (`/play`, `/scenarios/…`) を使うため
+  `svelte.config.js` に `kit.paths.base` の設定が必要。**独自ドメイン (root 配信) ならそのまま動く**。
+- COOP/COEP は Pages がヘッダを付けられないため、fork 同梱の `serviceWorker.js` が注入する (`app.html` で登録済み)。
+- ディスクイメージ (Debian ext2) は `config_public_terminal.js` の公開 URL (`disks.webvm.io`) を参照する。
+  自前配信に切り替える場合は fork README の "Local Serving" を参照。
+
+## PWA
+
+`static/trainer.webmanifest` によりインストール可能 (ホーム追加 / スタンドアロン起動)。
+ただし VM ディスクは配信サーバー依存のため **完全オフラインでは動かない** (アプリ shell のみ)。
 
 ## シナリオの追加
 

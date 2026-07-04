@@ -229,4 +229,10 @@
 	.launch:hover {
 		filter: brightness(1.1);
 	}
+
+	@media (max-width: 720px) {
+		.container {
+			padding: 28px 16px 64px 16px;
+		}
+	}
 </style>

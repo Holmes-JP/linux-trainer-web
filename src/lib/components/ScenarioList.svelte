@@ -359,4 +359,26 @@
 		border-radius: 6px;
 		background: var(--track);
 	}
+
+	@media (max-width: 720px) {
+		.topbar {
+			padding: 0 16px;
+		}
+		.container {
+			padding: 28px 16px 0 16px;
+		}
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+		.search {
+			width: 100%;
+		}
+		.hero {
+			gap: 20px;
+		}
+		.progress-card {
+			min-width: 0;
+			width: 100%;
+		}
+	}
 </style>
