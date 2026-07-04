@@ -91,12 +91,12 @@
 <main class="list-root scrollbar">
 	<!-- Top bar -->
 	<header class="topbar">
-		<div style="display:flex; align-items:center; gap:12px;">
-			<span style="font-family:{FONT_MONO}; font-size:14px; color:{t.accent};">user@webvm:~$</span>
-			<span style="font-weight:600; font-size:15px; letter-spacing:0.02em;">Linux トラブルシューティング演習</span>
+		<div style="display:flex; align-items:center; gap:12px; min-width:0;">
+			<span class="prompt-prefix" style="font-family:{FONT_MONO}; font-size:14px; color:{t.accent}; flex-shrink:0;">user@webvm:~$</span>
+			<span class="app-title" style="font-weight:600; font-size:15px; letter-spacing:0.02em;">Linux トラブルシューティング演習</span>
 		</div>
-		<div style="display:flex; align-items:center; gap:16px;">
-			<span style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">POWERED BY WEBVM / CHEERPX</span>
+		<div style="display:flex; align-items:center; gap:16px; flex-shrink:0;">
+			<span class="powered" style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">POWERED BY WEBVM / CHEERPX</span>
 			<button
 				class="theme-toggle"
 				title="テーマ切り替え (ライト/ダーク)"
@@ -363,7 +363,20 @@
 
 	@media (max-width: 720px) {
 		.topbar {
-			padding: 0 16px;
+			height: auto;
+			min-height: 52px;
+			padding: 10px 16px;
+		}
+		/* 装飾テキストとプロンプト接頭辞は隠してタイトルの折り返し衝突を防ぐ */
+		.powered {
+			display: none;
+		}
+		.prompt-prefix {
+			display: none;
+		}
+		.app-title {
+			font-size: 14px;
+			line-height: 1.3;
 		}
 		.container {
 			padding: 28px 16px 0 16px;
