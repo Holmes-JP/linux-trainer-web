@@ -2,14 +2,17 @@
 	// シナリオ一覧 (Refined - Scenario List デザイン準拠)。
 	// トップバー / ヒーロー+進捗 / 難易度・カテゴリフィルタ / LEVEL 1-3 の学習パス。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
-	import { progress } from '$lib/stores/progress';
+	import { progress, resetProgress } from '$lib/stores/progress';
 	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
+	import { fmtDuration } from '$lib/util/format';
 
 	/** Scenario[] (loader が読み込んだ manifest メタ) */
 	export let scenarios = [];
 
 	let diff = 'all';
 	let cat = 'all';
+	let query = '';
+	let confirmingReset = false;
 
 	const catIcons = {
 		permissions: 'fas fa-lock',
@@ -36,12 +39,30 @@
 			...s,
 			num: String(i + 1).padStart(2, '0'),
 			icon: catIcons[s.category] ?? 'fas fa-terminal',
-			completed: !!$progress.completed[s.id]
+			completed: !!$progress.completed[s.id],
+			bestMs: $progress.completed[s.id]?.bestMs
 		}));
 	$: nextId = (sorted.find((s) => !s.completed) ?? {}).id;
+	$: q = query.trim().toLowerCase();
 	$: visible = sorted.filter(
-		(s) => (diff === 'all' || s.difficulty === diff) && (cat === 'all' || s.category === cat)
+		(s) =>
+			(diff === 'all' || s.difficulty === diff) &&
+			(cat === 'all' || s.category === cat) &&
+			(q === '' || `${s.title} ${s.id} ${s.category}`.toLowerCase().includes(q))
 	);
+
+	function pickRandom() {
+		// 未完了を優先。無ければ全体からランダム
+		const pool = sorted.filter((s) => !s.completed);
+		const from = pool.length ? pool : sorted;
+		if (!from.length) return;
+		const pick = from[Math.floor(Math.random() * from.length)];
+		location.href = `/play?id=${pick.id}`;
+	}
+	function doReset() {
+		confirmingReset = false;
+		resetProgress();
+	}
 	$: levels = levelDefs
 		.map((lv) => ({
 			...lv,
@@ -85,9 +106,12 @@
 		<section class="hero">
 			<div style="max-width:520px;">
 				<h1 style="margin:0 0 8px 0; font-size:26px; line-height:1.3; font-weight:700;">壊れたサーバーを、直せ。</h1>
-				<p style="margin:0; font-size:14px; line-height:1.7; color:{t.dim};">
+				<p style="margin:0 0 14px 0; font-size:14px; line-height:1.7; color:{t.dim};">
 					ブラウザの中で本物の Debian が起動する。シナリオを選ぶと環境が「壊れた状態」で用意されるので、ターミナルで調査・修復し、Check で採点しよう。
 				</p>
+				<button class="random-btn" on:click={pickRandom} style="border-color:{t.accentBorder}; color:{t.accent};">
+					<i class="fas fa-shuffle" style="margin-right:7px;"></i>ランダムに挑戦
+				</button>
 			</div>
 			<div class="progress-card">
 				<div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
@@ -98,6 +122,19 @@
 				</div>
 				<div style="height:6px; border-radius:3px; background:{t.track}; overflow:hidden;">
 					<div style="height:100%; width:{progressPct}%; background:{t.accent}; border-radius:3px; transition:width 0.4s ease;"></div>
+				</div>
+				<div style="margin-top:12px; display:flex; justify-content:flex-end;">
+					{#if !confirmingReset}
+						<button class="reset-link" on:click={() => (confirmingReset = true)} style="color:{t.dim};" disabled={completedCount === 0}>
+							<i class="fas fa-rotate-left" style="margin-right:5px;"></i>進捗をリセット
+						</button>
+					{:else}
+						<span style="display:flex; align-items:center; gap:8px; font-size:11px; color:{t.text};">
+							全消去?
+							<button class="reset-link" on:click={doReset} style="color:{t.red};">はい</button>
+							<button class="reset-link" on:click={() => (confirmingReset = false)} style="color:{t.dim};">やめる</button>
+						</span>
+					{/if}
 				</div>
 			</div>
 		</section>
@@ -116,7 +153,21 @@
 					<button class="chip" style={chipStyle(cat === c, null)} on:click={() => (cat = c)}>{c}</button>
 				{/each}
 			</div>
+			<div style="position:relative; margin-left:auto;">
+				<i class="fas fa-magnifying-glass" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:11px; color:{t.dim};"></i>
+				<input
+					class="search"
+					type="text"
+					placeholder="検索 (タイトル / カテゴリ)"
+					bind:value={query}
+					style="background:{t.track}; border-color:{t.border}; color:{t.text};"
+				/>
+			</div>
 		</section>
+
+		{#if visible.length === 0}
+			<p style="color:{t.dim}; font-size:13px; margin:0 0 36px 0;">条件に一致するシナリオがありません。</p>
+		{/if}
 
 		<!-- Learning path -->
 		{#each levels as lv}
@@ -147,8 +198,13 @@
 								</span>
 							</span>
 							{#if s.completed}
-								<span class="completed-badge" style="font-family:{FONT_MONO}; font-size:11px; color:{t.accent}; display:flex; align-items:center; gap:5px; flex-shrink:0;">
-									<i class="fas fa-check"></i>FIXED
+								<span style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0;">
+									<span class="completed-badge" style="font-family:{FONT_MONO}; font-size:11px; color:{t.accent}; display:flex; align-items:center; gap:5px;">
+										<i class="fas fa-check"></i>FIXED
+									</span>
+									{#if s.bestMs}
+										<span style="font-family:{FONT_MONO}; font-size:10px; color:{t.dim};"><i class="far fa-clock" style="margin-right:3px;"></i>最短 {fmtDuration(s.bestMs)}</span>
+									{/if}
 								</span>
 							{:else if s.id === nextId}
 								<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.bg}; background:{t.accent}; border-radius:4px; padding:3px 8px; flex-shrink:0;">▶ 次はこれ</span>
@@ -217,6 +273,42 @@
 		border-radius: 999px;
 		cursor: pointer;
 		border: 1px solid;
+	}
+	.random-btn {
+		background: transparent;
+		border: 1px solid;
+		border-radius: 6px;
+		padding: 8px 16px;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		cursor: pointer;
+		transition: filter 0.15s ease;
+	}
+	.random-btn:hover {
+		filter: brightness(1.15);
+	}
+	.reset-link {
+		background: transparent;
+		border: none;
+		font-size: 11px;
+		cursor: pointer;
+		padding: 0;
+	}
+	.reset-link:disabled {
+		opacity: 0.4;
+		cursor: default;
+	}
+	.search {
+		font-family: var(--font-sans);
+		font-size: 12.5px;
+		padding: 6px 10px 6px 28px;
+		border-radius: 6px;
+		border: 1px solid;
+		outline: none;
+		width: 220px;
+	}
+	.search:focus {
+		border-color: var(--accent);
 	}
 	.card-grid {
 		display: grid;

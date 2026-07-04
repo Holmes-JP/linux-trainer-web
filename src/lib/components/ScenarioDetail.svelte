@@ -3,10 +3,14 @@
 	// 課題内容 / 想定コマンド / 攻略のコツ を表示し、そこからマシンを起動する。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
+	import { progress } from '$lib/stores/progress';
+	import { fmtDuration } from '$lib/util/format';
 
 	export let scenario = null;
 	export let scenarioId = '';
 	export let errorMsg = '';
+
+	$: record = $progress.completed[scenarioId];
 
 	const catIcons = {
 		permissions: 'fas fa-lock',
@@ -90,11 +94,16 @@
 				<span class="detail-icon" style="background:{t.track}; color:{diffColor[scenario.difficulty]};"><i class={catIcons[scenario.category] ?? 'fas fa-terminal'} style="font-size:18px;"></i></span>
 				<h1 style="margin:0; font-size:24px; font-weight:700; line-height:1.3;">{scenario.title}</h1>
 			</div>
-			<div style="display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap;">
+			<div style="display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap; align-items:center;">
 				<span style="font-family:{FONT_MONO}; font-size:11px; color:{diffColor[scenario.difficulty]}; border:1px solid {diffBorder[scenario.difficulty]}; border-radius:4px; padding:2px 10px;">{scenario.difficulty.toUpperCase()}</span>
 				<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim};"><i class="{catIcons[scenario.category] ?? 'fas fa-terminal'}" style="margin-right:5px;"></i>{scenario.category}</span>
 				{#if scenario.time_estimate_min}
 					<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim};"><i class="far fa-clock" style="margin-right:5px;"></i>~{scenario.time_estimate_min}min</span>
+				{/if}
+				{#if record}
+					<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.accent}; border:1px solid {t.accentBorder}; border-radius:4px; padding:2px 10px;">
+						<i class="fas fa-check" style="margin-right:5px;"></i>CLEARED{#if record.bestMs} · 最短 {fmtDuration(record.bestMs)}{/if}
+					</span>
 				{/if}
 			</div>
 

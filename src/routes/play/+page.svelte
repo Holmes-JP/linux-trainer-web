@@ -3,8 +3,9 @@
 	//   /play           → シナリオ一覧 (VM は起動しない)
 	//   /play?id=<id>   → その id のシナリオに挑戦 (boot → setup → 修復 → Check)
 	// 完了は localStorage (progress store) に記録される。
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import WebVM from '$lib/WebVM.svelte';
+	import { fmtDuration } from '$lib/util/format';
 	import * as configObj from '/config_terminal';
 	import ScenarioPanel from '$lib/components/ScenarioPanel.svelte';
 	import ScenarioList from '$lib/components/ScenarioList.svelte';
@@ -122,6 +123,28 @@
 	});
 
 	let solveStartMs = 0; // 修復開始 (ready になった) 時刻。クリア時間の計測用
+	let lastSolveMs = 0; // クリア時に確定した経過時間 (表示を止めるため)
+	let nowMs = 0; // 1秒ごとに更新される現在時刻 (タイマー表示用)
+	let timerInterval = null;
+	// 経過時間 (ms)。クリア後は確定値で止める
+	$: elapsedMs = passed ? lastSolveMs : solveStartMs ? Math.max(0, nowMs - solveStartMs) : 0;
+
+	function startTimer() {
+		nowMs = Date.now();
+		if (timerInterval) clearInterval(timerInterval);
+		timerInterval = setInterval(() => {
+			nowMs = Date.now();
+		}, 1000);
+	}
+	onDestroy(() => timerInterval && clearInterval(timerInterval));
+
+	// Ctrl+Enter で Check (ターミナルにフォーカスがあっても効く)
+	function handleKey(e) {
+		if (mode === 'challenge' && e.ctrlKey && e.key === 'Enter') {
+			e.preventDefault();
+			handleCheck();
+		}
+	}
 
 	async function handleCxReady(cx, ctrlDevice) {
 		channel = new ControlChannel(cx, ctrlDevice);
@@ -146,6 +169,7 @@
 			await runSetup(channel, scenario);
 			phase = 'ready';
 			solveStartMs = Date.now(); // 計測開始
+			startTimer();
 		} catch (e) {
 			errorMsg = e.toString();
 			phase = 'setup-failed';
@@ -159,8 +183,9 @@
 			results = await runChecks(channel, scenario);
 			passed = results.every((r) => r.pass);
 			if (passed) {
-				const elapsed = solveStartMs ? Date.now() - solveStartMs : undefined;
-				markComplete(scenario.id, elapsed);
+				lastSolveMs = solveStartMs ? Date.now() - solveStartMs : 0;
+				if (timerInterval) clearInterval(timerInterval); // タイマー停止
+				markComplete(scenario.id, lastSolveMs || undefined);
 			}
 		} catch (e) {
 			errorMsg = e.toString();
@@ -190,6 +215,8 @@
 	}
 </script>
 
+<svelte:window on:keydown={handleKey} />
+
 {#if mode === 'challenge'}
 	<!-- 挑戦画面: 専用フルスクリーンレイアウト (Refined - Challenge)。
 	     トップバー / ターミナル列 / ミッションパネル。 -->
@@ -218,6 +245,11 @@
 					{/if}
 				{/if}
 			</div>
+			{#if solveStartMs}
+				<div style="flex-shrink:0; font-family:{FONT_MONO}; font-size:11px; color:{passed ? t.accent : t.dim};" title="経過時間 (Ctrl+Enter で採点)">
+					<i class="far fa-clock" style="margin-right:5px;"></i>{fmtDuration(elapsedMs)}
+				</div>
+			{/if}
 			<div style="display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:{FONT_MONO}; font-size:11px; color:{ph.color};">
 				<span style="width:7px; height:7px; border-radius:50%; background:{ph.color};"></span>{ph.label}
 			</div>
