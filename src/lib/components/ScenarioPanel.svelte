@@ -6,6 +6,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { base } from '$app/paths';
 	import { t, FONT_MONO } from '$lib/design/theme';
+	import CommandLookup from '$lib/components/learn/CommandLookup.svelte';
 
 	export let scenario = null;
 	/** booting → setting-up → ready → checking → ready / setup-failed */
@@ -69,6 +70,9 @@
 				<p style="margin:0; color:{t.dim};">シナリオを読み込み中…</p>
 			{/if}
 		</section>
+
+		<!-- コマンド辞典 (別タブで開くので VM は保持される) -->
+		<CommandLookup />
 
 		{#if phase === 'booting' || phase === 'setting-up'}
 			<!-- 準備中ステータス -->

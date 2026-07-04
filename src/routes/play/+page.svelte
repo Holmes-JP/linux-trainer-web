@@ -264,7 +264,15 @@
 				on:click={togglePanel}
 				style="color:{t.dim};"
 			><i class="fas {panelCollapsed ? 'fa-angles-left' : 'fa-angles-right'}"></i></button>
-		</header>
+				<a
+					href="{base}/learn"
+					target="_blank"
+					rel="noopener"
+					class="learn-link"
+					title="解説・コマンド辞典を別タブで開く (VM は保持されます)"
+					style="color:{t.accent}; border-color:{t.accentBorder}; background:{t.accentDim};"
+				><i class="fas fa-book-open" style="font-size:12px;"></i><span class="hide-mobile">解説</span></a>
+			</header>
 
 		<div class="challenge-body">
 			<!-- Terminal column -->
@@ -329,6 +337,23 @@
 	}
 	.backlink:hover {
 		color: var(--text, #e4ede7) !important;
+	}
+	.learn-link {
+		display: flex;
+		align-items: center;
+		gap: 7px;
+		flex-shrink: 0;
+		text-decoration: none;
+		font-size: 13px;
+		font-weight: 600;
+		border: 1px solid;
+		border-radius: 999px;
+		padding: 5px 13px;
+		transition: filter 0.15s ease, border-color 0.15s ease;
+	}
+	.learn-link:hover {
+		filter: brightness(1.12);
+		border-color: var(--accent) !important;
 	}
 	.panel-toggle {
 		background: transparent;

@@ -43,44 +43,45 @@
 		hard: 'rgba(229,115,104,0.4)'
 	};
 
-	// カテゴリごとの「よく使うコマンド」リファレンス (解答ではなく道具の紹介)
+	// カテゴリごとの「よく使うコマンド」リファレンス (解答ではなく道具の紹介)。
+	// 各トークンは [表示, 解説スラッグ] 形式。スラッグがあれば /learn?cmd=... へリンクする。
 	const commandsByCategory = {
 		permissions: [
-			['ls -l', 'ファイルの所有者と権限 (rwx) を確認する'],
-			['chmod', '権限を変更する (例: chmod 644 file)'],
-			['chown', '所有者を変更する (例: chown user:user file)'],
-			['id', '自分のユーザー / グループを確認する']
+			{ cmds: [['ls -l', 'ls']], desc: 'ファイルの所有者と権限 (rwx) を確認する' },
+			{ cmds: [['chmod', 'chmod']], desc: '権限を変更する (例: chmod 644 file)' },
+			{ cmds: [['chown', 'chown']], desc: '所有者を変更する (例: chown user:user file)' },
+			{ cmds: [['id', 'id']], desc: '自分のユーザー / グループを確認する' }
 		],
 		filesystem: [
-			['ls -la', '隠しファイルも含めて一覧する'],
-			['find', 'ファイルを名前・条件で探す (find /etc -name ...)'],
-			['cat / less', 'ファイルの中身を見る'],
-			['cp / mv', 'バックアップから復元・移動する'],
-			['ln -sfn', 'シンボリックリンクを張り直す']
+			{ cmds: [['ls -la', 'ls']], desc: '隠しファイルも含めて一覧する' },
+			{ cmds: [['find', 'find']], desc: 'ファイルを名前・条件で探す (find /etc -name ...)' },
+			{ cmds: [['cat', 'cat'], ['less', 'less']], desc: 'ファイルの中身を見る' },
+			{ cmds: [['cp', 'cp'], ['mv', 'mv']], desc: 'バックアップから復元・移動する' },
+			{ cmds: [['ln -sfn', 'ln']], desc: 'シンボリックリンクを張り直す' }
 		],
 		processes: [
-			['ps aux', '動いているプロセスを一覧する'],
-			['pgrep -a', '名前でプロセスを探す (PID を確認)'],
-			['kill / pkill', 'プロセスを停止する'],
-			['top', 'CPU 負荷の高いプロセスを見る']
+			{ cmds: [['ps aux', 'ps']], desc: '動いているプロセスを一覧する' },
+			{ cmds: [['pgrep -a', 'pgrep']], desc: '名前でプロセスを探す (PID を確認)' },
+			{ cmds: [['kill', 'kill'], ['pkill', 'pkill']], desc: 'プロセスを停止する' },
+			{ cmds: [['top', 'top']], desc: 'CPU 負荷の高いプロセスを見る' }
 		],
 		disk: [
-			['du -sb', '実サイズ (バイト) で使用量を集計する'],
-			['ls -lS', 'ファイルをサイズの大きい順に並べる'],
-			['find -size +1M', '大きいファイルを階層を跨いで探す'],
-			['rm / : > file', '不要ファイルを削除・空に切り詰める']
+			{ cmds: [['du -sb', 'du']], desc: '実サイズ (バイト) で使用量を集計する' },
+			{ cmds: [['ls -lS', 'ls']], desc: 'ファイルをサイズの大きい順に並べる' },
+			{ cmds: [['find -size +1M', 'find']], desc: '大きいファイルを階層を跨いで探す' },
+			{ cmds: [['rm', 'rm'], [': > file', null]], desc: '不要ファイルを削除・空に切り詰める' }
 		],
 		services: [
-			['service X status/start', 'init.d サービスの状態確認・起動'],
-			['/etc/init.d/X', 'init スクリプトを直接実行する'],
-			['pgrep -x', 'デーモンが常駐しているか確認する'],
-			['cat', 'ログや設定ファイルを読んで原因を探す']
+			{ cmds: [['service X status/start', 'service']], desc: 'init.d サービスの状態確認・起動' },
+			{ cmds: [['/etc/init.d/X', null]], desc: 'init スクリプトを直接実行する' },
+			{ cmds: [['pgrep -x', 'pgrep']], desc: 'デーモンが常駐しているか確認する' },
+			{ cmds: [['cat', 'cat']], desc: 'ログや設定ファイルを読んで原因を探す' }
 		],
 		logs: [
-			['cat / less', 'ログの中身を見る'],
-			['grep / grep -c', 'キーワードを検索・件数を数える'],
-			['awk', '列 (フィールド) を取り出す ($1, $(NF-1) など)'],
-			['sort / uniq -c', 'IP や値ごとに集計する']
+			{ cmds: [['cat', 'cat'], ['less', 'less']], desc: 'ログの中身を見る' },
+			{ cmds: [['grep', 'grep']], desc: 'キーワードを検索・件数を数える (grep -c)' },
+			{ cmds: [['awk', 'awk']], desc: '列 (フィールド) を取り出す ($1, $(NF-1) など)' },
+			{ cmds: [['sort', 'sort'], ['uniq -c', 'uniq']], desc: 'IP や値ごとに集計する' }
 		]
 	};
 
@@ -129,12 +130,27 @@
 			<!-- Expected commands -->
 			{#if cmds.length}
 				<section class="card">
-					<h2 class="label" style="color:{t.dim};">想定コマンド <span style="font-weight:400; letter-spacing:0; text-transform:none; font-size:11px;">— このカテゴリでよく使う道具</span></h2>
+					<h2 class="label" style="color:{t.dim};">想定コマンド <span style="font-weight:400; letter-spacing:0; text-transform:none; font-size:11px;">— タップで解説へ (別タブ)</span></h2>
 					<ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;">
-						{#each cmds as [cmd, desc]}
+						{#each cmds as row}
 							<li style="display:flex; gap:12px; align-items:baseline; font-size:13.5px; line-height:1.6;">
-								<code style="font-family:{FONT_MONO}; font-size:12.5px; background:{t.track}; color:{t.accent}; border-radius:4px; padding:2px 8px; white-space:nowrap; flex-shrink:0;">{cmd}</code>
-								<span style="color:{t.dim};">{desc}</span>
+								<span style="display:flex; gap:6px; flex-shrink:0; flex-wrap:wrap;">
+									{#each row.cmds as [label, slug]}
+										{#if slug}
+											<a
+												href="{base}/learn?cmd={encodeURIComponent(slug)}"
+												target="_blank"
+												rel="noopener"
+												class="cmd-chip cmd-link"
+												style="font-family:{FONT_MONO}; background:{t.track}; color:{t.accent};"
+												title="{slug} の解説を別タブで開く"
+											>{label}<i class="fas fa-arrow-up-right-from-square" style="font-size:8px; margin-left:5px; opacity:0.7;"></i></a>
+										{:else}
+											<code class="cmd-chip" style="font-family:{FONT_MONO}; background:{t.track}; color:{t.dim};">{label}</code>
+										{/if}
+									{/each}
+								</span>
+								<span style="color:{t.dim};">{row.desc}</span>
 							</li>
 						{/each}
 					</ul>
@@ -249,6 +265,23 @@
 	}
 	.launch:hover {
 		filter: brightness(1.1);
+	}
+	.cmd-chip {
+		display: inline-flex;
+		align-items: center;
+		font-size: 12.5px;
+		border-radius: 4px;
+		padding: 2px 8px;
+		white-space: nowrap;
+		border: 1px solid transparent;
+		text-decoration: none;
+	}
+	.cmd-link {
+		transition: border-color 0.15s ease, filter 0.15s ease;
+	}
+	.cmd-link:hover {
+		border-color: var(--accent);
+		filter: brightness(1.08);
 	}
 
 	@media (max-width: 720px) {

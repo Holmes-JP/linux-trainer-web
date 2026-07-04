@@ -96,7 +96,7 @@
 			<span class="app-title" style="font-weight:600; font-size:15px; letter-spacing:0.02em;">Linux トラブルシューティング演習</span>
 		</div>
 		<div style="display:flex; align-items:center; gap:16px; flex-shrink:0;">
-			<a href="{base}/learn" data-sveltekit-reload class="learn-link" style="color:{t.dim};" title="仕組みとコマンドの解説"><i class="fas fa-book-open" style="font-size:12px;"></i><span class="learn-label">解説</span></a>
+			<a href="{base}/learn" data-sveltekit-reload class="learn-link" style="color:{t.accent}; border-color:{t.accentBorder}; background:{t.accentDim};" title="仕組みとコマンドの解説・辞典"><i class="fas fa-book-open" style="font-size:12px;"></i><span class="learn-label">解説・コマンド辞典</span></a>
 			<span class="powered" style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">POWERED BY WEBVM / CHEERPX</span>
 			<button
 				class="theme-toggle"
@@ -307,10 +307,15 @@
 		gap: 7px;
 		text-decoration: none;
 		font-size: 13px;
-		transition: color 0.15s ease;
+		font-weight: 600;
+		border: 1px solid;
+		border-radius: 999px;
+		padding: 6px 14px;
+		transition: filter 0.15s ease, border-color 0.15s ease;
 	}
 	.learn-link:hover {
-		color: var(--accent) !important;
+		filter: brightness(1.12);
+		border-color: var(--accent) !important;
 	}
 	.theme-toggle {
 		background: transparent;
