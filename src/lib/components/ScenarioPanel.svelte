@@ -4,6 +4,7 @@
 	// ロジックとテストフック (#m1-check-btn, #next-scenario, #reset-btn 等) は従来どおり維持。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { createEventDispatcher } from 'svelte';
+	import { base } from '$app/paths';
 	import { t, FONT_MONO } from '$lib/design/theme';
 
 	export let scenario = null;
@@ -116,7 +117,7 @@
 						<p id="m1-passed" style="margin:0 0 10px 0; font-size:13px; font-weight:600; color:{t.accent};"><i class="fas fa-check-circle" style="margin-right:6px;"></i>修復完了。お見事!</p>
 						<a
 							id="next-scenario"
-							href="/play"
+							href="{base}/play"
 							data-sveltekit-reload
 							class="cta"
 							style="background:{t.accent}; color:{t.accentText};"

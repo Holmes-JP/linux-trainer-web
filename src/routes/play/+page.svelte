@@ -4,6 +4,7 @@
 	//   /play?id=<id>   → その id のシナリオに挑戦 (boot → setup → 修復 → Check)
 	// 完了は localStorage (progress store) に記録される。
 	import { onMount, onDestroy } from 'svelte';
+	import { base } from '$app/paths';
 	import WebVM from '$lib/WebVM.svelte';
 	import { fmtDuration } from '$lib/util/format';
 	import * as configObj from '/config_terminal';
@@ -229,7 +230,7 @@
 		<!-- Top bar -->
 		<header class="challenge-header" style="border-bottom:1px solid {t.border}; background:{t.surface};">
 			<a
-				href="/play"
+				href="{base}/play"
 				id="back-to-list"
 				data-sveltekit-reload
 				class="backlink"

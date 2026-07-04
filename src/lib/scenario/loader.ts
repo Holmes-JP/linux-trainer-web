@@ -1,6 +1,7 @@
 // YAML manifest → Scenario 型 (Spec.md §4)。
 // parseManifest は純粋関数 (テスト対象)。loadScenario が fetch を担う。
 import { load } from "js-yaml";
+import { base } from "$app/paths";
 import type { Scenario, SetupStep, Check, Difficulty, Category } from "./types";
 
 const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard"];
@@ -131,14 +132,14 @@ export function parseIndex(yamlText: string): string[] {
 
 /** 静的配信されたシナリオ一覧 (id の配列) を取得する */
 export async function loadScenarioIndex(): Promise<string[]> {
-	const res = await fetch("/scenarios/index.yaml");
+	const res = await fetch(`${base}/scenarios/index.yaml`);
 	if (!res.ok) throw new Error(`failed to fetch scenarios/index.yaml: HTTP ${res.status}`);
 	return parseIndex(await res.text());
 }
 
 /** 静的配信された manifest を取得して parse する (scenarios/<id>/manifest.yaml) */
 export async function loadScenario(id: string): Promise<Scenario> {
-	const url = `/scenarios/${id}/manifest.yaml`;
+	const url = `${base}/scenarios/${id}/manifest.yaml`;
 	const res = await fetch(url);
 	if (!res.ok) throw new Error(`failed to fetch ${url}: HTTP ${res.status}`);
 	const scenario = parseManifest(await res.text());

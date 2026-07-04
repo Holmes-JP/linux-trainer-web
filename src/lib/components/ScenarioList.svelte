@@ -2,6 +2,7 @@
 	// シナリオ一覧 (Refined - Scenario List デザイン準拠)。
 	// トップバー / ヒーロー+進捗 / 難易度・カテゴリフィルタ / LEVEL 1-3 の学習パス。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
+	import { base } from '$app/paths';
 	import { progress, resetProgress } from '$lib/stores/progress';
 	import { t, FONT_SANS, FONT_MONO, themeMode, toggleTheme } from '$lib/design/theme';
 	import { fmtDuration } from '$lib/util/format';
@@ -57,7 +58,7 @@
 		const from = pool.length ? pool : sorted;
 		if (!from.length) return;
 		const pick = from[Math.floor(Math.random() * from.length)];
-		location.href = `/play?id=${pick.id}`;
+		location.href = `${base}/play?id=${pick.id}`;
 	}
 	function doReset() {
 		confirmingReset = false;
@@ -186,7 +187,7 @@
 				<div class="card-grid">
 					{#each lv.items as s}
 						<a
-							href="/play?id={s.id}"
+							href="{base}/play?id={s.id}"
 							data-scenario={s.id}
 							data-sveltekit-reload
 							class="card"

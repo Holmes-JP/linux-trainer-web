@@ -2,6 +2,7 @@
 	// シナリオ詳細ページ (一覧 → 詳細 → 挑戦 の中間)。
 	// 課題内容 / 想定コマンド / 攻略のコツ を表示し、そこからマシンを起動する。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
+	import { base } from '$app/paths';
 	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
 	import { progress } from '$lib/stores/progress';
 	import { fmtDuration } from '$lib/util/format';
@@ -75,7 +76,7 @@
 <main class="detail-root scrollbar">
 	<!-- Top bar -->
 	<header style="display:flex; align-items:center; gap:20px; height:52px; flex-shrink:0; padding:0 20px; border-bottom:1px solid {t.border}; background:{t.surface};">
-		<a href="/play" id="back-to-list" data-sveltekit-reload class="backlink" style="color:{t.dim};"><i class="fas fa-arrow-left" style="font-size:12px;"></i>一覧</a>
+		<a href="{base}/play" id="back-to-list" data-sveltekit-reload class="backlink" style="color:{t.dim};"><i class="fas fa-arrow-left" style="font-size:12px;"></i>一覧</a>
 		<div style="width:1px; height:20px; background:{t.border};"></div>
 		<span style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">SCENARIO BRIEFING</span>
 	</header>
@@ -149,7 +150,7 @@
 			<!-- Launch -->
 			<a
 				id="launch-btn"
-				href="/play?id={scenarioId}&start=1"
+				href="{base}/play?id={scenarioId}&start=1"
 				data-sveltekit-reload
 				class="launch"
 				style="background:{t.accent}; color:{t.accentText};"

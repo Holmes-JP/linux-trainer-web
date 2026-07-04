@@ -3,38 +3,31 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>WebVM - Linux virtualization in WebAssembly</title>
+		<title>Linux トラブルシューティング演習 - ブラウザで学ぶ Linux</title>
 
-		<meta name="description" content="Linux virtual machine, running in the browser via HTML5/WebAssembly. Networking and graphics supported.">
-		<meta name="keywords" content="WebVM, Virtual Machine, CheerpX, x86 virtualization, WebAssembly, Tailscale, JIT">
-		<meta property="og:title" content="WebVM - Linux virtualization in WebAssembly" />
+		<meta name="description" content="壊れた Linux サーバーをブラウザ上で調査・修復し、自動採点で学べる無料の演習環境。インストール不要。">
+		<meta name="keywords" content="Linux, 学習, トラブルシューティング, 演習, WebVM, WebAssembly">
+		<meta property="og:title" content="Linux トラブルシューティング演習" />
 		<meta property="og:type" content="website" />
-		<meta property="og:site_name" content="WebVM"/>
-		<meta property="og:image" content="https://webvm.io/assets/social_2024.png" />
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:site" content="@leaningtech" />
-		<meta name="twitter:title" content="WebVM - Linux virtualization in WebAssembly" />
-		<meta name="twitter:description" content="Linux virtual machine, running in the browser via HTML5/WebAssembly. Networking and graphics supported.">
-		<meta name="twitter:image" content="https://webvm.io/assets/social_2024.png" />
+		<meta property="og:site_name" content="Linux トラブルシューティング演習"/>
 
 		<!-- Apple iOS web clip compatibility tags -->
-		<meta name="application-name" content="WebVM" />
-		<meta name="apple-mobile-web-app-title" content="WebVM" />
+		<meta name="application-name" content="Linux Trainer" />
+		<meta name="apple-mobile-web-app-title" content="Linux Trainer" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<link rel="shortcut icon" href="tower.ico">
+		<link rel="shortcut icon" href="%sveltekit.assets%/tower.ico">
 		<!-- PWA: インストール可能にする (VM ディスクは配信サーバー依存のため完全オフラインではない) -->
-		<link rel="manifest" href="/trainer.webmanifest">
+		<link rel="manifest" href="%sveltekit.assets%/trainer.webmanifest">
 		<meta name="theme-color" content="#0b0f0d">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<!-- Linux トレーナーのデザインシステム用フォント (Refined デザイン準拠) -->
 		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-		<link rel='stylesheet' href='scrollbar.css'>
+		<link rel='stylesheet' href='%sveltekit.assets%/scrollbar.css'>
 		<!-- Serviceworker script that adds the COI headers to the response headers in cases where the server does not support it. -->
-		<script src="serviceWorker.js"></script>
-		<script data-domain="webvm.io" src="https://plausible.leaningtech.com/js/script.js"></script>
+		<script src="%sveltekit.assets%/serviceWorker.js"></script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
