@@ -1,0 +1,40 @@
+id: suid-root-binary
+verify_fix: "chmod u-s /usr/local/bin/legacytool"  # 模範修復 (テスト専用・UI 非表示)
+title: "危険な SUID ビット"
+difficulty: hard
+category: permissions
+time_estimate_min: 15
+
+description: |
+  セキュリティ監査で、/usr/local/bin/legacytool に root の SUID ビットが
+  立っていると指摘された。SUID は権限昇格の温床になり危険だ。
+  legacytool の SUID ビットを外して安全にせよ (通常の実行権限は残してよい)。
+
+# 冪等: 毎回 SUID root (4755) の状態に戻す。
+setup:
+  - description: "legacytool を SUID root で設置する"
+    cmd: |
+      cat > /usr/local/bin/legacytool <<'EOF'
+      #!/bin/sh
+      echo legacytool
+      EOF
+      chown 0:0 /usr/local/bin/legacytool
+      chmod 4755 /usr/local/bin/legacytool
+
+check:
+  - description: "legacytool の SUID ビットが外れている"
+    test: "[ ! -u /usr/local/bin/legacytool ]"
+    expect_exit: 0
+  - description: "実行権限は残っている"
+    test: "[ -x /usr/local/bin/legacytool ]"
+    expect_exit: 0
+
+hints:
+  - "SUID を含む権限を確認: ls -l /usr/local/bin/legacytool (所有者の x が s になっている)"
+  - "SUID ビットが立ったファイルを探す方法: find /usr/local/bin -perm -4000"
+  - "root (su root、パスワード: password) で SUID を外す: chmod u-s /usr/local/bin/legacytool (実行権限は残る)"
+
+solution: |
+  `ls -l /usr/local/bin/legacytool` を見ると所有者の実行位置が `s` (SUID) になっている。
+  `su root` (パスワード: password) で root になり `chmod u-s /usr/local/bin/legacytool`
+  で SUID ビットを外せば安全になる (rwxr-xr-x のまま実行はできる)。

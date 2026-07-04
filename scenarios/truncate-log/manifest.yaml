@@ -1,0 +1,39 @@
+id: truncate-log
+verify_fix: ": > /var/log/app/huge.log"  # 模範修復 (テスト専用・UI 非表示)
+title: "使用中のログを安全に整理"
+difficulty: medium
+category: disk
+time_estimate_min: 10
+
+description: |
+  /var/log/app/huge.log が肥大化してディスクを圧迫している。
+  ただしアプリがこのファイルを開いたまま書き込み続けているため、ファイルを
+  「削除」してしまうとログ出力が壊れてしまう。ファイルは消さずに中身だけ空にして、
+  /var/log/app の合計を 1MB 以下に減らせ (huge.log は残すこと)。
+
+# 冪等: 毎回 9MB のログを作り直す (head -c で上書き)。
+# 注意: /dev/zero は無いので /dev/urandom。du はブロック集計 0 なので du -sb で判定。
+setup:
+  - description: "肥大化したログを設置する"
+    cmd: |
+      mkdir -p /var/log/app
+      head -c 9437184 /dev/urandom > /var/log/app/huge.log
+
+check:
+  - description: "/var/log/app が合計 1MB 以下に減っている"
+    test: '[ "$(du -sb /var/log/app | cut -f1)" -le 1048576 ]'
+    expect_exit: 0
+  - description: "huge.log は削除せず残っている"
+    test: "[ -f /var/log/app/huge.log ]"
+    expect_exit: 0
+
+hints:
+  - "サイズを確認: ls -lh /var/log/app/huge.log"
+  - "rm すると開いているアプリが困る。中身だけ空にする方法がある"
+  - "root (su root、パスワード: password) で切り詰める: : > /var/log/app/huge.log (または truncate -s 0 ...)"
+
+solution: |
+  ファイルを削除せずに中身を空にする (truncate) のが正解。
+  `su root` (パスワード: password) で root になり `: > /var/log/app/huge.log`
+  (または `truncate -s 0 /var/log/app/huge.log`) で中身を空にすれば、
+  ファイルは残したまま容量が解放される。

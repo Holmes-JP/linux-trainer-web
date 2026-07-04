@@ -1,0 +1,44 @@
+id: most-requested-path
+verify_fix: "echo /api/items > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "最もリクエストされたパス"
+difficulty: medium
+category: logs
+time_estimate_min: 10
+
+description: |
+  アクセスログ /var/log/webserver/access.log を調べ、最も多くリクエストされた
+  URL パスを特定し、そのパスだけを /home/user/answer.txt に書き込め。
+  (パスはリクエスト行 "GET /path HTTP/1.1" の中の /path の部分)
+
+# 冪等: 毎回同じログを作り直す。最多は /api/items (4回)。
+setup:
+  - description: "集計対象のアクセスログを設置する"
+    cmd: |
+      mkdir -p /var/log/webserver
+      cat > /var/log/webserver/access.log <<'EOF'
+      10.0.0.1 - - [04/Jul/2026:05:00:01 +0000] "GET /api/items HTTP/1.1" 200 500
+      10.0.0.2 - - [04/Jul/2026:05:00:02 +0000] "GET /index.html HTTP/1.1" 200 800
+      10.0.0.3 - - [04/Jul/2026:05:00:03 +0000] "GET /api/items HTTP/1.1" 200 500
+      10.0.0.1 - - [04/Jul/2026:05:00:04 +0000] "GET /about HTTP/1.1" 200 300
+      10.0.0.4 - - [04/Jul/2026:05:00:05 +0000] "GET /api/items HTTP/1.1" 200 500
+      10.0.0.2 - - [04/Jul/2026:05:00:06 +0000] "GET /index.html HTTP/1.1" 200 800
+      10.0.0.5 - - [04/Jul/2026:05:00:07 +0000] "GET /api/items HTTP/1.1" 200 500
+      10.0.0.3 - - [04/Jul/2026:05:00:08 +0000] "GET /health HTTP/1.1" 200 2
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に最多パス (/api/items) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "/api/items"
+    run_as: user
+
+hints:
+  - "パスはリクエスト行の中。awk では7番目のフィールド ($7) がパスになる: awk '{print $7}' access.log"
+  - "パスごとに件数を数える: sort | uniq -c"
+  - "定番: awk '{print $7}' /var/log/webserver/access.log | sort | uniq -c | sort -rn | head -1"
+
+solution: |
+  リクエスト行の 7 番目のフィールドがパス。集計する定番パイプライン:
+    awk '{print $7}' /var/log/webserver/access.log | sort | uniq -c | sort -rn | head
+  → /api/items が 4 回で最多。
+  `echo /api/items > /home/user/answer.txt` で答えを書けば完了。

@@ -32,3 +32,9 @@ scenarios:
   - total-bytes
   - restore-binary
   - missing-data-file
+  - two-miners
+  - suid-root-binary
+  - most-requested-path
+  - truncate-log
+  - hosts-entry
+  - writable-log

@@ -1,0 +1,34 @@
+id: hosts-entry
+verify_fix: "echo '10.0.0.50 appserver' >> /etc/hosts"  # 模範修復 (テスト専用・UI 非表示)
+title: "名前解決できないホスト"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  アプリが appserver というホスト名に接続しようとして「名前解決できない」で失敗する。
+  この環境では DNS を使わず /etc/hosts で名前を解決するが、appserver のエントリが無い。
+  appserver が 10.0.0.50 に解決されるように /etc/hosts を修正せよ。
+
+# 冪等: 毎回 appserver の行を消して「未登録」状態に戻す。
+setup:
+  - description: "appserver のエントリを /etc/hosts から除く"
+    cmd: |
+      sed -i '/[[:space:]]appserver$/d' /etc/hosts
+      sed -i '/[[:space:]]appserver[[:space:]]/d' /etc/hosts
+
+check:
+  - description: "appserver が 10.0.0.50 に名前解決できる"
+    test: "getent hosts appserver | grep -q 10.0.0.50"
+    expect_exit: 0
+
+hints:
+  - "解決を試す: getent hosts appserver (何も返らない = 未登録)"
+  - "この環境の名前解決は /etc/hosts。中身を確認: cat /etc/hosts"
+  - "root (su root、パスワード: password) でエントリを追記: echo '10.0.0.50 appserver' >> /etc/hosts"
+
+solution: |
+  /etc/hosts に appserver の行が無いため名前解決できない。
+  `su root` (パスワード: password) で root になり、
+  `echo '10.0.0.50 appserver' >> /etc/hosts` で「IP ホスト名」の行を追記すれば
+  `getent hosts appserver` で解決できるようになる。

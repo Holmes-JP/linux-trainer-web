@@ -1,0 +1,52 @@
+id: two-miners
+verify_fix: "pkill -x kdevmine; pkill -x sysupdated; rm -f /usr/local/sbin/kdevmine /usr/local/sbin/sysupdated"  # 模範修復 (テスト専用・UI 非表示)
+title: "二重に潜む不正プロセス"
+difficulty: hard
+category: processes
+time_estimate_min: 20
+
+description: |
+  侵入調査で、2種類の不正なマイニングプロセスが動いていることが分かった。
+  一方は分かりやすい名前 (kdevmine) だが、もう一方は正規のシステムプロセスに
+  偽装した名前 (sysupdated) になっている。両方を停止し、実行ファイル本体も
+  どちらも削除して完全に駆除せよ。(2つとも残さず処理すること)
+
+# 冪等: 本体を毎回設置し、動いていなければ起動する (ユーザーが消しても復活)。
+# 注意: プロセス検出は pgrep -x <comm>。setsid で detach (nohup & は即死)。
+#       ループは hang するので2つを明示的に書く。
+setup:
+  - description: "2種類の不正プロセスを仕込んで起動する"
+    cmd: |
+      printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/sbin/kdevmine
+      chmod 755 /usr/local/sbin/kdevmine
+      if ! pgrep -x kdevmine >/dev/null; then
+        setsid /usr/local/sbin/kdevmine </dev/null >/dev/null 2>&1 &
+      fi
+      printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/sbin/sysupdated
+      chmod 755 /usr/local/sbin/sysupdated
+      if ! pgrep -x sysupdated >/dev/null; then
+        setsid /usr/local/sbin/sysupdated </dev/null >/dev/null 2>&1 &
+      fi
+      sleep 1
+
+check:
+  - description: "kdevmine が停止している"
+    test: "pgrep -x kdevmine"
+    expect_exit: 1
+  - description: "sysupdated が停止している"
+    test: "pgrep -x sysupdated"
+    expect_exit: 1
+  - description: "両方の実行ファイルが削除されている"
+    test: "[ ! -f /usr/local/sbin/kdevmine ] && [ ! -f /usr/local/sbin/sysupdated ]"
+    expect_exit: 0
+
+hints:
+  - "動いているプロセスを一覧する: ps aux。怪しい名前を探す (pgrep -a kdevmine / pgrep -a sysupdated)"
+  - "2つとも別のプロセス。root (su root、パスワード: password) で両方停止: pkill kdevmine; pkill sysupdated"
+  - "実行ファイルの場所を確認して両方削除: rm /usr/local/sbin/kdevmine /usr/local/sbin/sysupdated"
+
+solution: |
+  2つの不正プロセスがある。`su root` (パスワード: password) で root になり両方を処理する:
+    pkill kdevmine; pkill sysupdated                              # 停止
+    rm /usr/local/sbin/kdevmine /usr/local/sbin/sysupdated        # 本体削除
+  どちらか片方でも残っていると駆除完了にならない。
