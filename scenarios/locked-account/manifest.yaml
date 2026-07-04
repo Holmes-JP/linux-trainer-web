@@ -1,0 +1,33 @@
+id: locked-account
+verify_fix: "usermod -s /bin/bash svc"  # 模範修復 (テスト専用・UI 非表示)
+title: "ログインできないサービスアカウント"
+difficulty: medium
+category: permissions
+time_estimate_min: 10
+
+description: |
+  運用担当が使うアカウント svc でシェル作業ができない。
+  svc のログインシェルが /usr/sbin/nologin に設定されているのが原因らしい。
+  svc が通常のシェル (/bin/bash) を使えるように修復せよ。
+
+# 冪等: svc が無ければ作成し、毎回ログインシェルを nologin に戻す。
+setup:
+  - description: "svc アカウントを nologin シェルで用意する"
+    cmd: |
+      id svc >/dev/null 2>&1 || useradd -M -s /usr/sbin/nologin svc
+      usermod -s /usr/sbin/nologin svc
+
+check:
+  - description: "svc のログインシェルが /bin/bash になっている"
+    test: "getent passwd svc | grep -q ':/bin/bash$'"
+    expect_exit: 0
+
+hints:
+  - "アカウント情報を確認: getent passwd svc (行末のフィールドがログインシェル)"
+  - "シェルが /usr/sbin/nologin になっている。変更には root 権限が要る"
+  - "root (su root、パスワード: password) で: usermod -s /bin/bash svc (または /etc/passwd の svc 行を編集)"
+
+solution: |
+  `getent passwd svc` を見ると末尾のログインシェルが /usr/sbin/nologin になっている。
+  `su root` (パスワード: password) で root になり `usermod -s /bin/bash svc` を実行して
+  シェルを /bin/bash に変更すれば修復完了 (/etc/passwd の svc 行を直接編集してもよい)。

@@ -21,3 +21,8 @@ scenarios:
   - missing-dir
   - stopped-service
   - wrong-config
+  - wrong-shebang
+  - locked-account
+  - unique-visitors
+  - broken-json
+  - stale-lock

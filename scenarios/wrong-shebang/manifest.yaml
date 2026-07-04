@@ -1,0 +1,37 @@
+id: wrong-shebang
+verify_fix: "sed -i '1s|.*|#!/bin/sh|' /usr/local/bin/greet"  # 模範修復 (テスト専用・UI 非表示)
+title: "動かない自作コマンド"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  自作コマンド /usr/local/bin/greet を実行するとエラーになって動かない。
+  スクリプトの中身自体は単純で正しそうなのに、「bad interpreter」のような
+  エラーが出る。原因を突き止め、greet が正しく実行できるように修復せよ。
+
+# 冪等: 毎回 壊れた shebang で作り直す (cat > で上書き)。
+setup:
+  - description: "greet を存在しない shebang で設置する"
+    cmd: |
+      cat > /usr/local/bin/greet <<'EOF'
+      #!/bin/nonexistent-shell
+      echo GREET_OK
+      EOF
+      chmod 755 /usr/local/bin/greet
+
+check:
+  - description: "greet が正しく実行でき GREET_OK を出力する"
+    test: "/usr/local/bin/greet"
+    expect_stdout_contains: "GREET_OK"
+    run_as: user
+
+hints:
+  - "まず実行してエラーを見る: /usr/local/bin/greet"
+  - "スクリプトの1行目 (shebang) を確認: head -1 /usr/local/bin/greet。その先は存在する?"
+  - "root (su root、パスワード: password) で1行目を #!/bin/sh に直す (sed や vim で)"
+
+solution: |
+  1行目の shebang が存在しないインタプリタ (/bin/nonexistent-shell) を指しているため
+  「bad interpreter」で実行できない。`su root` (パスワード: password) で root になり、
+  `sed -i '1s|.*|#!/bin/sh|' /usr/local/bin/greet` として1行目を #!/bin/sh に直せば動く。

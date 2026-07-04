@@ -1,0 +1,45 @@
+id: unique-visitors
+verify_fix: "echo 5 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "ユニーク訪問者数を数える"
+difficulty: medium
+category: logs
+time_estimate_min: 10
+
+description: |
+  アクセスログ /var/log/webserver/access.log を調べたい。
+  このログにアクセスしてきた「異なる送信元 IP アドレスの数 (ユニーク数)」を求め、
+  その数字だけを /home/user/answer.txt に書き込め。
+
+# 冪等: 毎回同じログを作り直す。ユニーク IP は 5 個 (10.0.0.1〜5)、うち一部は重複あり。
+# 注意: for/seq ループや yes|head は CheerpX で hang するため固定内容を heredoc で書く。
+setup:
+  - description: "集計対象のアクセスログを設置する"
+    cmd: |
+      mkdir -p /var/log/webserver
+      cat > /var/log/webserver/access.log <<'EOF'
+      10.0.0.1 - - [04/Jul/2026:03:00:01 +0000] "GET /index.html HTTP/1.1" 200 512
+      10.0.0.2 - - [04/Jul/2026:03:00:02 +0000] "GET /about HTTP/1.1" 200 331
+      10.0.0.1 - - [04/Jul/2026:03:00:03 +0000] "GET /api/items HTTP/1.1" 200 890
+      10.0.0.3 - - [04/Jul/2026:03:00:04 +0000] "GET /contact HTTP/1.1" 200 122
+      10.0.0.2 - - [04/Jul/2026:03:00:05 +0000] "POST /api/login HTTP/1.1" 200 44
+      10.0.0.4 - - [04/Jul/2026:03:00:06 +0000] "GET /pricing HTTP/1.1" 200 700
+      10.0.0.1 - - [04/Jul/2026:03:00:07 +0000] "GET /favicon.ico HTTP/1.1" 404 0
+      10.0.0.5 - - [04/Jul/2026:03:00:08 +0000] "GET /health HTTP/1.1" 200 2
+      EOF
+
+check:
+  - description: "/home/user/answer.txt にユニーク IP 数 (5) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "5"
+    run_as: user
+
+hints:
+  - "送信元 IP は各行の先頭フィールド ($1)。取り出す: awk '{print $1}' access.log"
+  - "重複を除いて数える: sort -u で一意化してから wc -l"
+  - "定番: awk '{print $1}' /var/log/webserver/access.log | sort -u | wc -l → その数を answer.txt へ"
+
+solution: |
+  送信元 IP を一意化して数える:
+    awk '{print $1}' /var/log/webserver/access.log | sort -u | wc -l
+  → 10.0.0.1〜10.0.0.5 の 5 個。
+  `echo 5 > /home/user/answer.txt` で答えを書けば完了。
