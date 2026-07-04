@@ -1,0 +1,21 @@
+name: userdel
+summary: ユーザーアカウントを削除する
+group: permissions
+synopsis: "userdel [オプション] ユーザー名"
+options:
+  - flag: "-r"
+    desc: ホームディレクトリとメールスプールも一緒に削除する
+  - flag: "-f"
+    desc: ログイン中でも強制的に削除する (通常は使わない)
+examples:
+  - cmd: userdel -r backdoor
+    desc: 不正に作られたアカウントをホームディレクトリごと削除する
+  - cmd: getent passwd backdoor
+    desc: 削除できたか確認する (何も表示されなければ成功)
+related_commands: [useradd, usermod, getent, find]
+related_articles: [permissions]
+related_scenarios: [rogue-root-user, backdoor-cleanup]
+note: >-
+  root でしか実行できない。-r を付けてもホーム以外の場所にあるそのユーザー所有の
+  ファイルは残る (ls -l では数字の UID で表示される)。侵入の後始末では
+  find / -user で残骸を探して片付けるところまでがワンセット。

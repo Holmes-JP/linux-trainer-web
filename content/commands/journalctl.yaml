@@ -1,0 +1,27 @@
+name: journalctl
+summary: systemd のジャーナル (統合ログ) を検索・閲覧する
+group: services
+synopsis: "journalctl [オプション]"
+options:
+  - flag: "-u <ユニット>"
+    desc: 特定サービスのログだけに絞り込む
+  - flag: "-f"
+    desc: ログを追いかけ続ける (tail -f 相当)
+  - flag: "-e"
+    desc: 最新のログ (末尾) までジャンプして開く
+  - flag: "--since \"1 hour ago\""
+    desc: 期間を指定して直近のログだけを見る
+  - flag: "-b"
+    desc: 今回のブート以降のログに絞る
+examples:
+  - cmd: journalctl -u nginx -e
+    desc: 現代の Linux サーバーでサービスが落ちた原因を最新ログから調べる
+  - cmd: journalctl -f
+    desc: 再起動を試しながら、エラーが出ないかリアルタイムで見張る
+related_commands: [systemctl, service, tail, grep]
+related_articles: []
+related_scenarios: []
+note: >-
+  systemd 環境ではあらゆるサービスのログがジャーナルに集約され、journalctl が
+  ログ調査の入口になる。ただしこの演習環境は systemd が動いていないため使えない。
+  代わりに /var/log 以下のログファイルを tail / less / grep で直接読むこと。

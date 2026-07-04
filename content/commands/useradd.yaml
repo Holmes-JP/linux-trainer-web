@@ -1,0 +1,25 @@
+name: useradd
+summary: 新しいユーザーアカウントを作成する
+group: permissions
+synopsis: "useradd [オプション] ユーザー名"
+options:
+  - flag: "-m"
+    desc: ホームディレクトリを一緒に作成する (付けないと作られない)
+  - flag: "-s /bin/bash"
+    desc: ログインシェルを指定する
+  - flag: "-G グループ"
+    desc: 補助グループに入れた状態で作成する
+  - flag: "-u UID"
+    desc: UID を明示的に指定する
+examples:
+  - cmd: useradd -m -s /bin/bash deploy
+    desc: ホームディレクトリと bash 付きで、普通にログインできるユーザーを作る
+  - cmd: getent passwd deploy
+    desc: 作成できたか、UID・ホーム・シェルの設定を確認する
+related_commands: [usermod, userdel, passwd, groupadd]
+related_articles: [permissions]
+related_scenarios: [rogue-root-user]
+note: >-
+  root でしか実行できない。作成直後はパスワード未設定でログインできないので、
+  passwd ユーザー名 で設定する。逆に言えば、useradd -o -u 0 のように UID 0 の
+  アカウントを作れば root 相当の裏口になる — 侵入調査で覚えておくべき手口。

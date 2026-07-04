@@ -1,0 +1,23 @@
+name: jobs
+summary: 現在のシェルから起動したバックグラウンドジョブの一覧を表示する
+group: processes
+synopsis: "jobs [オプション]"
+options:
+  - flag: "-l"
+    desc: ジョブ番号に加えて PID も表示する (kill に渡すときに)
+  - flag: "-r"
+    desc: 実行中のジョブだけを表示する
+  - flag: "-s"
+    desc: 停止中 (Ctrl+Z で止めた) のジョブだけを表示する
+examples:
+  - cmd: jobs
+    desc: "& で起動したり Ctrl+Z で止めたりしたジョブが今どうなっているか確認する"
+  - cmd: jobs -l
+    desc: ジョブの PID を調べて、kill やその後の調査につなげる
+related_commands: [bg, fg, ps, kill]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  jobs に見えるのは「今のシェルから起動したもの」だけ。他人や別セッションの
+  プロセスは ps / pgrep で探す。ジョブは %1 のように番号で参照でき、
+  fg %1 で前面に戻す・kill %1 で終了する、といった操作につながる。

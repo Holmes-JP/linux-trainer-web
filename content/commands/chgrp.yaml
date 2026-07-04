@@ -1,0 +1,23 @@
+name: chgrp
+summary: ファイルやディレクトリのグループ所有者を変更する
+group: permissions
+synopsis: "chgrp [オプション] グループ ファイル..."
+options:
+  - flag: "-R"
+    desc: ディレクトリの中身ごと再帰的に変更する
+  - flag: "-c"
+    desc: 実際に変更したファイルだけを報告する (-R と併用すると確認しやすい)
+examples:
+  - cmd: chgrp developers /srv/share/config.yml
+    desc: 間違ったグループにされた設定ファイルを正しいグループに戻す
+  - cmd: chgrp -R www-data /var/www/uploads
+    desc: アップロード先ディレクトリ一式をウェブサーバーのグループに揃える
+  - cmd: ls -l /srv/share/config.yml
+    desc: 変更後、グループ欄が意図どおりになったか確認する
+related_commands: [chown, chmod, groups, ls]
+related_articles: [permissions]
+related_scenarios: [wrong-group, web-permissions]
+note: >-
+  chown user:group や chown :group でも同じことができる。グループを直しても、
+  権限ビットのグループ欄 (g) に rw が無ければ結局読み書きできない —
+  ls -l で「グループ名」と「権限ビット」の両方を確認するのがコツ。

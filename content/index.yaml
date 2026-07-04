@@ -51,11 +51,63 @@ commands:
   # permissions
   - chmod
   - chown
+  - chgrp
+  - umask
+  - id
+  - whoami
+  - groups
+  - su
+  - sudo
+  - passwd
+  - useradd
+  - usermod
+  - userdel
+  - groupadd
+  - getent
   # processes
   - ps
+  - top
   - kill
+  - pkill
+  - pgrep
+  - jobs
+  - bg
+  - fg
+  - nohup
+  - nice
+  - renice
+  - free
+  - uptime
+  - sleep
+  - timeout
   # disk
   - df
+  - du
+  - mount
+  - umount
+  - lsblk
+  # logs
+  - dmesg
+  - last
+  - logger
+  - zgrep
+  # services
+  - systemctl
+  - service
+  - journalctl
+  - crontab
+  # system
+  - uname
+  - hostname
+  - date
+  - env
+  - export
+  - alias
+  - type
+  - history
+  - source
+  - man
+  - clear
 articles:
   - permissions
   - processes-and-signals

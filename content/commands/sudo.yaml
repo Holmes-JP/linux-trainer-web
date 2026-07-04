@@ -1,0 +1,23 @@
+name: sudo
+summary: 一時的に root (または他のユーザー) の権限でコマンドを実行する
+group: permissions
+synopsis: "sudo [オプション] コマンド"
+options:
+  - flag: "-u ユーザー"
+    desc: root ではなく指定したユーザーとして実行する
+  - flag: "-i"
+    desc: root のログインシェルに入る (su - root に相当)
+  - flag: "-l"
+    desc: 自分が sudo で何を実行できるか (許可設定) を確認する
+examples:
+  - cmd: sudo cat /etc/shadow
+    desc: 一般ユーザーでは読めないファイルを root 権限で読む
+  - cmd: sudo -i
+    desc: 連続して root 作業をするとき、root のシェルに入りっぱなしにする
+related_commands: [su, whoami, id]
+related_articles: [permissions]
+related_scenarios: []
+note: >-
+  一般的なサーバーでは「普段は一般ユーザー、必要な1コマンドだけ sudo」が標準の作法。
+  ただしこの演習環境には sudo の設定がないため、root 作業は su root
+  (パスワード: password) を使う。

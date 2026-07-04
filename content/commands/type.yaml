@@ -1,0 +1,23 @@
+name: type
+summary: コマンドの実体 (ビルトイン / エイリアス / 実行ファイル) を調べる
+group: system
+synopsis: "type [オプション] <コマンド名>"
+options:
+  - flag: "-a"
+    desc: 同名の候補 (エイリアスと実行ファイルなど) をすべて表示する
+  - flag: "-t"
+    desc: 種類 (alias / builtin / file / function) だけを一言で表示する
+examples:
+  - cmd: type ls
+    desc: 挙動がおかしいコマンドがエイリアスで上書きされていないか確認する
+  - cmd: type -a python
+    desc: 同名コマンドが複数あるとき、実際にどれが呼ばれるかを突き止める
+  - cmd: type cd
+    desc: man に載っていないコマンドがシェルのビルトインかどうか判別する
+related_commands: [which, alias, file, readlink]
+related_articles: []
+related_scenarios: []
+note: >-
+  which は PATH 上の実行ファイルしか見ないが、type はエイリアス・
+  シェル関数・ビルトインまで判別できるので、「打ったコマンドが実際には
+  何を実行しているか」の調査には type のほうが確実。

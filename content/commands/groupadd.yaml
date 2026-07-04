@@ -1,0 +1,21 @@
+name: groupadd
+summary: 新しいグループを作成する
+group: permissions
+synopsis: "groupadd [オプション] グループ名"
+options:
+  - flag: "-g GID"
+    desc: GID を明示的に指定する
+  - flag: "-f"
+    desc: 既に存在していてもエラーにしない (スクリプトを二重実行しても安全にする)
+examples:
+  - cmd: groupadd developers
+    desc: 複数ユーザーでファイルを共有するためのグループを作る
+  - cmd: getent group developers
+    desc: 作成できたか、GID とメンバーを確認する
+related_commands: [groups, usermod, getent, chgrp]
+related_articles: [permissions]
+related_scenarios: [group-access]
+note: >-
+  root でしか実行できない。グループを作っただけではメンバーは誰もいない。
+  usermod -aG でユーザーを入れ、chgrp でファイル側のグループを合わせて初めて
+  「グループで共有」が機能する。

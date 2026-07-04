@@ -1,0 +1,27 @@
+name: pgrep
+summary: 名前や条件でプロセスを検索して PID を表示する
+group: processes
+synopsis: "pgrep [オプション] パターン"
+options:
+  - flag: "-x"
+    desc: プロセス名の完全一致で検索する。部分一致による誤検出を防ぐ
+  - flag: "-a"
+    desc: PID と一緒にコマンドライン全体を表示する。プロセスの素性調べに
+  - flag: "-l"
+    desc: PID と一緒にプロセス名を表示する
+  - flag: "-u ユーザー"
+    desc: 指定ユーザーのプロセスだけに絞る
+examples:
+  - cmd: pgrep -x miner
+    desc: miner という名前のプロセスがいるか、完全一致で PID を調べる
+  - cmd: pgrep -a python
+    desc: python で動いているプロセスのコマンドラインまで見て、何者かを確認する
+  - cmd: kill $(pgrep -x miner)
+    desc: 見つけた PID をそのまま kill に渡して終了させる
+related_commands: [ps, kill, pkill, grep]
+related_articles: [processes-and-signals]
+related_scenarios: [rogue-process, two-miners, kill-specific]
+note: >-
+  ps aux | grep 名前 と違って grep 自身が結果に混ざらないのが利点。
+  既定は部分一致なので、正規プロセスと紛らわしい名前の不正プロセスを見分ける場面では
+  -x の完全一致と -a のコマンドライン表示を組み合わせるのが定石。

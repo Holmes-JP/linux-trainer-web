@@ -1,0 +1,20 @@
+name: whoami
+summary: 現在作業しているユーザーの名前を表示する
+group: permissions
+synopsis: "whoami"
+options:
+  - flag: "(引数なし)"
+    desc: 実効ユーザー名を1行だけ表示する。実質これだけの単機能コマンド
+  - flag: "--help"
+    desc: 使い方を表示する (オプションは事実上これくらいしかない)
+examples:
+  - cmd: whoami
+    desc: su root の後、本当に root になれたかを確認する
+  - cmd: whoami
+    desc: Permission denied が出たとき、今どのユーザーで作業しているか確かめる
+related_commands: [id, su, groups]
+related_articles: [permissions]
+related_scenarios: []
+note: >-
+  「root になったつもりが一般ユーザーのままだった」というミスは whoami で即座に気付ける。
+  UID や所属グループまで知りたいときは id を使う。

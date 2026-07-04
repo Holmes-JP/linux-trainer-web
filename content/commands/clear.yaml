@@ -1,0 +1,21 @@
+name: clear
+summary: ターミナルの画面表示を消去する
+group: system
+synopsis: "clear [オプション]"
+options:
+  - flag: "-x"
+    desc: 画面だけを消し、スクロールバック (遡って見られる過去の出力) は残す
+  - flag: "-V"
+    desc: バージョン情報を表示する
+examples:
+  - cmd: clear
+    desc: 調査の区切りで画面を掃除し、次のコマンドの出力を読みやすくする
+  - cmd: clear -x
+    desc: 過去の出力を後で見返せるよう残したまま、表示だけ整理する
+related_commands: [history, echo]
+related_articles: []
+related_scenarios: []
+note: >-
+  Ctrl+L でも同じことができる (入力途中のコマンドを消さずに画面だけ整理
+  できるので便利)。消えるのは画面表示だけで、コマンド履歴 (history) には
+  影響しない。

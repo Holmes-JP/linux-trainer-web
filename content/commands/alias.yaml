@@ -1,0 +1,22 @@
+name: alias
+summary: コマンドに別名を付けて短く打てるようにする
+group: system
+synopsis: "alias [名前='コマンド']"
+options:
+  - flag: "-p"
+    desc: 定義済みのエイリアスを一覧表示する (引数なしの alias と同じ)
+  - flag: "名前='コマンド'"
+    desc: 新しいエイリアスを定義する
+examples:
+  - cmd: alias
+    desc: コマンドの挙動がいつもと違うとき、エイリアスで上書きされていないか確認する
+  - cmd: alias ll='ls -la'
+    desc: 調査中によく打つ長いコマンドに短い別名を付ける
+related_commands: [type, which, source, history]
+related_articles: []
+related_scenarios: []
+note: >-
+  定義は現在のシェル限りで、永続化は ~/.bashrc に書いて source で反映する。
+  「ls の色がおかしい」「rm が確認してくる」などの正体はたいてい alias。
+  実体を調べるには type <名前>、一時的に素のコマンドを使うには \ls のように
+  バックスラッシュを付ける。

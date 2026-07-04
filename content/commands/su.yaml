@@ -1,0 +1,25 @@
+name: su
+summary: 別のユーザーに切り替える (主に root になるために使う)
+group: permissions
+synopsis: "su [オプション] [ユーザー名]"
+options:
+  - flag: "- (または -l)"
+    desc: ログインシェルとして切り替え、環境変数や作業ディレクトリも切り替え先のものにする
+  - flag: "-c 'コマンド'"
+    desc: 切り替え先のユーザーで1コマンドだけ実行して戻る
+  - flag: "-s /bin/bash"
+    desc: 使うシェルを明示する。シェルを nologin にされたアカウントの調査に
+examples:
+  - cmd: su root
+    desc: root になって修復作業をする。この演習環境の標準手順 (パスワード は password)
+  - cmd: su - appuser
+    desc: サービスアカウントとして実際にログインできるか試す
+  - cmd: exit
+    desc: root での作業を終えて元のユーザーに戻る (root のまま作業を続けない)
+related_commands: [sudo, whoami, id, passwd]
+related_articles: [permissions]
+related_scenarios: [locked-account]
+note: >-
+  この演習環境では、root が必要な修復は su root (パスワード: password) が標準手順。
+  切り替え先アカウントのシェルが /usr/sbin/nologin だと "This account is currently not
+  available" と拒否される — それ自体がシェルを壊されたアカウントの典型的な症状。

@@ -1,0 +1,24 @@
+name: export
+summary: シェル変数を環境変数に昇格させ、子プロセスに引き継がせる
+group: system
+synopsis: "export 名前=値 / export -p"
+options:
+  - flag: "-p"
+    desc: export 済みの環境変数を一覧表示する
+  - flag: "-n 名前"
+    desc: export を解除する (変数自体は残る)
+examples:
+  - cmd: export APP_ENV=production
+    desc: これから実行するコマンドに設定値を渡す
+  - cmd: export PATH="$PATH:/opt/app/bin"
+    desc: "\"command not found\" のとき、実行ファイルの置き場を PATH に追加して試す"
+  - cmd: export -p | grep APP
+    desc: 目的の変数がちゃんと環境変数として export されているかを確認する
+related_commands: [env, echo, source, type]
+related_articles: []
+related_scenarios: [env-toggle]
+note: >-
+  export しただけのシェル変数 (VAR=1) は子プロセスに渡らない — この違いが
+  「シェルでは見えるのにプログラムからは見えない」トラブルの原因になりがち。
+  また export の効果は現在のシェル限り。永続化したければ ~/.bashrc や
+  環境ファイルに書き、source で読み込む。

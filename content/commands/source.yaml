@@ -1,0 +1,21 @@
+name: source
+summary: ファイルに書かれたコマンドを「現在のシェル」で読み込んで実行する
+group: system
+synopsis: "source <ファイル> (「. <ファイル>」と同じ)"
+options:
+  - flag: ". ファイル"
+    desc: source と同じ働きをする POSIX 標準の書き方
+  - flag: "ファイル 引数..."
+    desc: 引数を渡して読み込む (ファイル内では $1 などで参照できる)
+examples:
+  - cmd: source ~/.bashrc
+    desc: 設定 (alias や PATH) を書き換えたあと、シェルを開き直さずに反映する
+  - cmd: source /etc/app/app.env
+    desc: サービスが読む環境ファイルを自分のシェルにも読み込み、echo $ENABLED などで値を確かめる
+related_commands: [export, env, alias, echo]
+related_articles: []
+related_scenarios: [env-toggle]
+note: >-
+  sh app.env のように実行すると「子プロセス」で走るため、設定された変数は
+  手元のシェルに残らない。source は現在のシェルにそのまま反映されるのが
+  決定的な違い。設定ファイルの再読み込みや環境ファイルの検証で多用する。

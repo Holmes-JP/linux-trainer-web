@@ -1,0 +1,26 @@
+name: id
+summary: ユーザーの UID / GID と所属グループを表示する
+group: permissions
+synopsis: "id [オプション] [ユーザー名]"
+options:
+  - flag: "(引数なし)"
+    desc: 現在のユーザーの UID / GID / 所属グループをまとめて表示する
+  - flag: "-u"
+    desc: UID だけを表示する (0 なら root 権限)
+  - flag: "-un"
+    desc: ユーザー名だけを表示する (whoami と同じ)
+  - flag: "-Gn"
+    desc: 所属する全グループを名前で表示する
+examples:
+  - cmd: id
+    desc: 権限エラーが出たとき、自分が誰でどのグループに入っているかを一度に確認する
+  - cmd: id alice
+    desc: usermod -aG の後、alice が目的のグループに入ったか確認する
+  - cmd: id -u backdoor
+    desc: 怪しいアカウントの UID が 0 (root 相当) になっていないか調べる
+related_commands: [whoami, groups, getent, usermod]
+related_articles: [permissions]
+related_scenarios: [group-access, rogue-root-user]
+note: >-
+  usermod -aG でグループに追加しても、実行中のシェルには反映されない (ログインし直しが必要)。
+  ただし id ユーザー名 のように名前を指定すれば、データベース上の最新状態が確認できる。

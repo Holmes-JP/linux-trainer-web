@@ -1,0 +1,27 @@
+name: passwd
+summary: ユーザーのパスワードを設定・変更し、ロック状態を操作する
+group: permissions
+synopsis: "passwd [オプション] [ユーザー名]"
+options:
+  - flag: "-S"
+    desc: パスワードの状態を表示する。L はロック中、P は設定済み、NP は未設定
+  - flag: "-l"
+    desc: アカウントをロックする (usermod -L と同等)
+  - flag: "-u"
+    desc: ロックを解除する (usermod -U と同等)
+  - flag: "-d"
+    desc: パスワードを削除して未設定にする
+examples:
+  - cmd: passwd -S appuser
+    desc: ログインできない原因がアカウントロックかどうかを確認する
+  - cmd: passwd -u appuser
+    desc: ロックされていたアカウントを解除してログインできるようにする
+  - cmd: passwd deploy
+    desc: useradd で作ったばかりのユーザーにパスワードを設定する
+related_commands: [usermod, useradd, su]
+related_articles: [permissions]
+related_scenarios: [locked-account]
+note: >-
+  一般ユーザーが変更できるのは自分のパスワードだけ。他人の設定や -S / -l / -u は
+  root で行う。ロックの実体は /etc/shadow のパスワード欄の先頭に ! を付けるだけの
+  仕組みで、解除すれば元のパスワードがそのまま使える。

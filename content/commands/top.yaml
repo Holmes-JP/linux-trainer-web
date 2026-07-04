@@ -1,0 +1,23 @@
+name: top
+summary: プロセスの CPU / メモリ使用状況をリアルタイムに監視する
+group: processes
+synopsis: "top [オプション]"
+options:
+  - flag: "-b"
+    desc: バッチモード。対話画面を開かずそのまま出力する (パイプやログ取りに)
+  - flag: "-n 回数"
+    desc: 指定回数だけ画面を更新して終了する (-b と併用が定番)
+  - flag: "-p PID"
+    desc: 特定のプロセスだけに絞って監視する
+examples:
+  - cmd: top
+    desc: サーバーが重いとき、CPU を食っているプロセスを探す。P で CPU 順に並ぶ
+  - cmd: top -b -n 1 | head -20
+    desc: 対話画面を開かずに、今の上位プロセスだけをさっと確認する
+related_commands: [ps, kill, free, uptime]
+related_articles: [processes-and-signals]
+related_scenarios: [runaway-loop, rogue-process]
+note: >-
+  終了は q。この演習環境はターミナルが1枚しかないので、top を開きっぱなしにせず
+  q で抜けてから次の作業に移ること。画面内では P で CPU 順、M でメモリ順に
+  並べ替えられ、k で PID を指定してシグナルを送ることもできる。

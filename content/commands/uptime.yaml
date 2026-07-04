@@ -1,0 +1,21 @@
+name: uptime
+summary: 稼働時間とロードアベレージ (システムの混み具合) を表示する
+group: processes
+synopsis: "uptime [オプション]"
+options:
+  - flag: "-p"
+    desc: 稼働時間だけを読みやすい形式で表示する
+  - flag: "-s"
+    desc: システムが起動した日時を表示する
+examples:
+  - cmd: uptime
+    desc: サーバーが重いと感じたら、まずロードアベレージで混み具合を確認する
+  - cmd: uptime -s
+    desc: いつ起動 (再起動) したのかを確認する
+related_commands: [top, free, ps]
+related_articles: [processes-and-signals]
+related_scenarios: [runaway-loop]
+note: >-
+  ロードアベレージは左から 1分 / 5分 / 15分 の平均。CPU コア数を超える値が
+  続いているなら処理が詰まっているサインなので、top で原因のプロセスを探す。
+  1分平均だけ高ければ「今まさに始まった」、15分平均も高ければ「ずっと続いている」。

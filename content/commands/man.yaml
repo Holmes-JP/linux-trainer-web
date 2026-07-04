@@ -1,0 +1,22 @@
+name: man
+summary: コマンドのマニュアル (取扱説明書) を表示する
+group: system
+synopsis: "man [セクション] <コマンド名>"
+options:
+  - flag: "-k キーワード"
+    desc: 名前が分からないとき、キーワードで関連マニュアルを検索する
+  - flag: "-f コマンド"
+    desc: そのコマンドのマニュアルの一行説明を表示する
+examples:
+  - cmd: man tar
+    desc: オプションの意味をうろ覚えのまま実行せず、正確な仕様を確認する
+  - cmd: man -k partition
+    desc: 「パーティション関係のコマンド、何だっけ」というときに探す
+related_commands: [type, which, less]
+related_articles: []
+related_scenarios: []
+note: >-
+  表示は less で開かれるので、q で終了、/文字列 で検索、n で次の一致へ。
+  マニュアルが入っていないコマンドは <コマンド> --help でも簡易ヘルプが
+  見られる。シェルのビルトイン (cd や export など) は man ではなく
+  help <名前> で調べる。

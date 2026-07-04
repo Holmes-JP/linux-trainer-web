@@ -1,0 +1,25 @@
+name: getent
+summary: passwd や group などのシステムデータベースを検索して表示する
+group: permissions
+synopsis: "getent データベース [キー]"
+options:
+  - flag: "passwd [ユーザー名]"
+    desc: ユーザー情報 (UID / GID / ホーム / シェル) をコロン区切りで表示する
+  - flag: "group [グループ名]"
+    desc: グループの GID とメンバー一覧を表示する
+  - flag: "shadow [ユーザー名]"
+    desc: パスワード情報を表示する (root のみ。ロックなら先頭に ! が付く)
+examples:
+  - cmd: getent group developers
+    desc: developers グループに誰が入っているか確認する
+  - cmd: getent passwd appuser
+    desc: アカウントのシェルが /usr/sbin/nologin にされていないか確認する
+  - cmd: "getent passwd | awk -F: '$3 == 0'"
+    desc: UID 0 (root 相当) のアカウントが root 以外に紛れ込んでいないか探す
+related_commands: [id, groups, usermod, awk]
+related_articles: [permissions]
+related_scenarios: [locked-account, group-access, rogue-root-user]
+note: >-
+  cat /etc/passwd とほぼ同じ出力だが、getent は名前解決の仕組み (NSS) を通すため
+  「システムが実際に認識している状態」を引ける。キーが見つからないと終了コード 2 を
+  返すので、存在確認にも使える。

@@ -1,0 +1,21 @@
+name: nohup
+summary: 端末を閉じても止まらないようにコマンドを実行する
+group: processes
+synopsis: "nohup コマンド [引数...] &"
+options:
+  - flag: "コマンド &"
+    desc: 末尾の & と組み合わせてバックグラウンドで動かし続けるのが定番の形
+  - flag: "> ファイル 2>&1"
+    desc: 出力先を指定する。指定しないとカレントディレクトリの nohup.out に書かれる
+examples:
+  - cmd: nohup ./long_task.sh &
+    desc: 時間のかかる処理を、端末が切れても続くように起動する
+  - cmd: nohup python worker.py > /var/log/worker.log 2>&1 &
+    desc: 出力をログファイルに残しながらワーカーを常駐させる
+related_commands: [jobs, bg, fg, tail]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  端末が切断されたときに送られる SIGHUP を無視させる、という仕組み。
+  nohup で起動したプロセスは jobs から外れた後も動き続けるので、
+  止めたくなったら pgrep -a で PID を探して kill する。

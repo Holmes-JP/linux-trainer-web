@@ -1,0 +1,24 @@
+name: last
+summary: ユーザーのログイン履歴 (誰が・いつ・どこから) を新しい順に表示する
+group: logs
+synopsis: "last [オプション] [ユーザー名]"
+options:
+  - flag: "-n 数"
+    desc: 表示する件数を制限する
+  - flag: "-f ファイル"
+    desc: 読み込む記録ファイルを指定する (既定は /var/log/wtmp)
+  - flag: "-x"
+    desc: シャットダウンやランレベル変更の記録も表示する
+examples:
+  - cmd: last -n 10
+    desc: 直近 10 件のログインを確認し、不審な時間帯のアクセスがないか見る
+  - cmd: last root
+    desc: root でのログイン履歴だけに絞って追跡する
+related_commands: [whoami, id, grep, tail]
+related_articles: []
+related_scenarios: []
+note: >-
+  データ源は /var/log/wtmp というバイナリファイルで、cat では読めないため
+  last コマンドを使う。wtmp が空の環境では "wtmp begins ..." 程度しか出ない。
+  「誰かが設定を変えたらしい」という調査では、変更時刻 (stat) と
+  ログイン履歴を突き合わせるのが定石。

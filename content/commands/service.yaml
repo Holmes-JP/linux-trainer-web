@@ -1,0 +1,29 @@
+name: service
+summary: /etc/init.d に登録されたサービスを起動・停止・状態確認する
+group: services
+synopsis: "service <サービス名> {status|start|stop|restart}"
+options:
+  - flag: "status"
+    desc: サービスが動いているか (running / not running) を確認する
+  - flag: "start"
+    desc: サービスを起動する
+  - flag: "stop"
+    desc: サービスを停止する
+  - flag: "restart"
+    desc: サービスを再起動する (設定変更を反映させるときの定番)
+  - flag: "--status-all"
+    desc: 登録されている全サービスの状態を一覧する
+examples:
+  - cmd: service app status
+    desc: 障害調査の最初の一手。まず「動いているのか」を確認する
+  - cmd: service app restart
+    desc: 設定ファイルを直した後、変更を反映させるために再起動する
+  - cmd: service --status-all
+    desc: どんなサービスが登録されていて、どれが止まっているかを一覧する
+related_commands: [systemctl, journalctl, ps, tail]
+related_articles: []
+related_scenarios: [dead-service, stopped-service, flaky-service]
+note: >-
+  この演習環境でのサービス管理の標準手段。実体は /etc/init.d/<サービス名> の
+  スクリプトで、/etc/init.d/app start のように直接実行しても等価。
+  起動に失敗するときは status の出力と /var/log 以下のログを合わせて読む。

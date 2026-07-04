@@ -1,0 +1,27 @@
+name: crontab
+summary: 定期実行ジョブ (cron) の設定を一覧・編集する
+group: services
+synopsis: "crontab [オプション]"
+options:
+  - flag: "-l"
+    desc: 現在のユーザーに登録されている定期ジョブを一覧する
+  - flag: "-e"
+    desc: 定期ジョブをエディタで編集する
+  - flag: "-r"
+    desc: 登録されている定期ジョブをすべて削除する (取り消せないので注意)
+  - flag: "-u ユーザー"
+    desc: 別ユーザーの crontab を対象にする (root で実行)
+examples:
+  - cmd: crontab -l
+    desc: 「定期的に何かが起きる」症状のとき、仕込まれたジョブがないか確認する
+  - cmd: crontab -e
+    desc: 分 時 日 月 曜日 コマンド の書式でジョブを追加・修正する
+  - cmd: crontab -l -u root
+    desc: root に登録されたジョブを確認する (システム的な定期処理の定番置き場)
+related_commands: [service, date, ps, cat]
+related_articles: []
+related_scenarios: []
+note: >-
+  crontab は「予約表」の編集コマンドで、実際に時刻どおりコマンドを実行するのは
+  cron デーモンの仕事 (service cron status で稼働確認)。ユーザーの予約表のほか、
+  /etc/crontab や /etc/cron.d/ にシステム全体のジョブが置かれることもある。

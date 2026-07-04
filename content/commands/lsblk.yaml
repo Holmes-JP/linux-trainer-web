@@ -1,0 +1,21 @@
+name: lsblk
+summary: ブロックデバイス (ディスクやパーティション) をツリー表示で一覧する
+group: disk
+synopsis: "lsblk [オプション] [デバイス]"
+options:
+  - flag: "-f"
+    desc: ファイルシステムの種類・ラベル・マウント先も表示する
+  - flag: "-a"
+    desc: 空のデバイスも含めてすべて表示する
+examples:
+  - cmd: lsblk
+    desc: どんなディスクがあり、どこにマウントされているかを一望する
+  - cmd: lsblk -f
+    desc: 各デバイスのファイルシステム種別 (ext2 など) とマウント先を確認する
+related_commands: [mount, umount, df]
+related_articles: []
+related_scenarios: []
+note: >-
+  df が「使用量」を見るのに対し、lsblk は「デバイスの構成」を見る。
+  この演習環境 (WebVM) は単一の ext2 ディスク構成なので出力はシンプルだが、
+  実サーバーでは複数ディスク・パーティションの把握に必須のコマンド。

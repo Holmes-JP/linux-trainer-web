@@ -1,0 +1,23 @@
+name: date
+summary: 現在の日時を表示し、指定した書式に整形する
+group: system
+synopsis: "date [オプション] [+書式]"
+options:
+  - flag: "-u"
+    desc: UTC (協定世界時) で表示する
+  - flag: "-d 日時"
+    desc: 現在時刻ではなく指定した日時を表示する ("yesterday" や "@エポック秒" も可)
+examples:
+  - cmd: date
+    desc: ログのタイムスタンプと突き合わせる前に、サーバーの現在時刻とタイムゾーンを確認する
+  - cmd: date "+%Y-%m-%d %H:%M:%S"
+    desc: ログと同じ書式で現在時刻を出し、時系列を照合しやすくする
+  - cmd: date -d @1700000000
+    desc: エポック秒 (UNIX 時間) で記録された値を人間が読める日時に変換する
+related_commands: [uptime, last, logger]
+related_articles: []
+related_scenarios: []
+note: >-
+  障害調査は「いつ起きたか」の特定から始まる。ログが UTC で記録されている
+  ことも多いので、date と date -u を見比べて時差を把握しておくと
+  タイムスタンプの読み違いを防げる。

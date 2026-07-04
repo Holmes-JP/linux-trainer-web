@@ -1,0 +1,21 @@
+name: nice
+summary: 優先度 (nice 値) を指定してコマンドを起動する
+group: processes
+synopsis: "nice [-n 値] コマンド"
+options:
+  - flag: "(引数なし)"
+    desc: 現在のシェルの nice 値を表示する
+  - flag: "-n 値"
+    desc: nice 値を指定して起動する。-20 (最優先) 〜 19 (最も譲る)。省略時は 10
+examples:
+  - cmd: nice -n 19 tar czf /tmp/backup.tar.gz /var/log
+    desc: 重いバックアップ処理を、他の作業を邪魔しない低優先度で実行する
+  - cmd: nice
+    desc: 今のシェルから起動するコマンドの基準 nice 値を確認する
+related_commands: [renice, top, ps, nohup]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  nice 値は「CPU をどれだけ他に譲るか」の指標で、大きいほど控えめになる。
+  優先度を上げる (nice 値を下げる) のは root だけ。すでに動いているプロセスの
+  優先度を変えるには renice を使う。

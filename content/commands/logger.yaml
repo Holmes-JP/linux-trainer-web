@@ -1,0 +1,22 @@
+name: logger
+summary: シェルから syslog にメッセージを書き込む
+group: logs
+synopsis: "logger [オプション] <メッセージ>"
+options:
+  - flag: "-t タグ"
+    desc: メッセージに付けるタグ (プログラム名) を指定する
+  - flag: "-p 優先度"
+    desc: ファシリティと優先度 (user.err など) を指定する
+examples:
+  - cmd: logger -t maintenance "app restart start"
+    desc: 手作業の開始をログに刻み、あとで障害の時系列と突き合わせられるようにする
+  - cmd: grep maintenance /var/log/syslog
+    desc: logger で書いたメッセージが記録されたかを確認する
+related_commands: [grep, tail, echo, date]
+related_articles: []
+related_scenarios: []
+note: >-
+  書き込み先は syslog デーモン (rsyslog など) 経由で、通常 /var/log/syslog に
+  届く。デーモンが動いていない環境ではどこにも記録されないので、
+  まず service rsyslog status で稼働を確認するとよい。シェルスクリプトから
+  実行記録を残す用途でもよく使う。

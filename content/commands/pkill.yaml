@@ -1,0 +1,25 @@
+name: pkill
+summary: 名前や条件に一致するプロセスにまとめてシグナルを送る
+group: processes
+synopsis: "pkill [オプション] パターン"
+options:
+  - flag: "-x"
+    desc: プロセス名の完全一致だけを対象にする (巻き添え防止)
+  - flag: "-9"
+    desc: SIGKILL で強制終了する。まず通常の pkill (SIGTERM) を試してから
+  - flag: "-u ユーザー"
+    desc: 指定ユーザーのプロセスだけに絞る
+  - flag: "-f"
+    desc: プロセス名ではなくコマンドライン全体をパターンと照合する
+examples:
+  - cmd: pkill -x miner
+    desc: miner という名前のプロセスを、複数いてもまとめて終了させる
+  - cmd: pkill -9 -x stress
+    desc: 通常の終了要求に応じない暴走プロセスを強制終了する
+related_commands: [pgrep, kill, ps]
+related_articles: [processes-and-signals]
+related_scenarios: [two-miners, runaway-loop, kill-specific]
+note: >-
+  部分一致のまま実行すると無関係なプロセスまで巻き込む恐れがある。
+  先に同じパターンで pgrep -a を実行して対象を確認し、意図どおりなら pkill に
+  置き換える、という二段構えが安全。

@@ -1,0 +1,23 @@
+name: mount
+summary: ファイルシステムのマウント状況を表示・操作する
+group: disk
+synopsis: "mount [オプション] [デバイス] [マウント先]"
+options:
+  - flag: "-t タイプ"
+    desc: 表示・マウントするファイルシステムの種類 (ext2 など) を指定する
+  - flag: "-o オプション"
+    desc: マウントオプション (ro / rw / remount など) を指定する
+examples:
+  - cmd: mount
+    desc: 現在マウントされているファイルシステムを一覧し、構成を把握する
+  - cmd: mount | grep " / "
+    desc: ルートファイルシステムが rw (書き込み可) でマウントされているかを確認する
+  - cmd: mount -t ext2
+    desc: ext2 のマウントだけに絞って表示する
+related_commands: [umount, lsblk, df]
+related_articles: []
+related_scenarios: []
+note: >-
+  この演習環境 (WebVM) は単一の ext2 ディスク構成なので、新しくマウントする場面は
+  ほぼない。まずは引数なしの mount で「何がどこに、どのオプションで載っているか」を
+  読めるようになるのが目的。

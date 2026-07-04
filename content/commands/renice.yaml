@@ -1,0 +1,23 @@
+name: renice
+summary: 実行中のプロセスの優先度 (nice 値) を変更する
+group: processes
+synopsis: "renice -n 値 -p PID"
+options:
+  - flag: "-n 値"
+    desc: 新しい nice 値。-20 (最優先) 〜 19 (最も譲る)
+  - flag: "-p PID"
+    desc: 対象のプロセスを PID で指定する
+  - flag: "-u ユーザー"
+    desc: 指定ユーザーの全プロセスをまとめて対象にする
+examples:
+  - cmd: renice -n 19 -p 1234
+    desc: CPU を占有しているプロセスの優先度を下げて、他の処理が動けるようにする
+  - cmd: renice -n 10 -u appuser
+    desc: appuser のプロセス全体を少し控えめに動かす
+related_commands: [nice, top, ps, kill]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  一般ユーザーは自分のプロセスの nice 値を「上げる (譲る)」方向にしか変えられない。
+  下げるのは root だけ。すぐには kill できない重要プロセスが暴れているとき、
+  ひとまず優先度を下げて延命する、という応急処置に使える。反映は top の NI 列で確認。

@@ -1,0 +1,23 @@
+name: free
+summary: メモリとスワップの使用状況を表示する
+group: processes
+synopsis: "free [オプション]"
+options:
+  - flag: "-h"
+    desc: 人間が読みやすい単位 (Mi / Gi) で表示する
+  - flag: "-m"
+    desc: MiB 単位の数値で表示する (スクリプトでの比較向き)
+  - flag: "-s 秒"
+    desc: 指定した間隔で繰り返し表示する (Ctrl+C で止める)
+examples:
+  - cmd: free -h
+    desc: メモリ不足が疑われるとき、まず全体の使用量と空きを確認する
+  - cmd: free -m
+    desc: 具体的な数値 (MiB) でメモリの残量を確認する
+related_commands: [top, ps, df]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  見るべきは available 列。buff/cache はファイルキャッシュで、必要になれば
+  解放されるため、free 列が小さくても直ちに問題ではない。
+  どのプロセスが食っているかの内訳は top (M でメモリ順) で調べる。

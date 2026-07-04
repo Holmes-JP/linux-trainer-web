@@ -1,0 +1,23 @@
+name: timeout
+summary: 制限時間付きでコマンドを実行し、時間を超えたら自動で終了させる
+group: processes
+synopsis: "timeout [オプション] 時間 コマンド"
+options:
+  - flag: "時間"
+    desc: 制限時間。10 (秒) のほか 5m や 1h のような単位付きも指定できる
+  - flag: "-s シグナル"
+    desc: 時間切れのときに送るシグナルを指定する (既定は TERM)
+  - flag: "-k 時間"
+    desc: 指定シグナルで終了しない場合、さらにこの時間の後に KILL を送る
+examples:
+  - cmd: timeout 10 ./flaky_check.sh
+    desc: 固まるかもしれないスクリプトを、最長10秒で打ち切る保険を掛けて実行する
+  - cmd: timeout -s KILL 5 ./stubborn_task
+    desc: TERM を無視するプロセスでも確実に5秒で終わらせる
+related_commands: [sleep, kill, nohup]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  時間切れで打ち切ったときの終了コードは 124。コマンドが時間内に終われば
+  そのコマンド自身の終了コードが返る。ターミナルが1枚のこの環境では、
+  挙動の分からないコマンドに付けておくと画面が固まる事故を防げる。

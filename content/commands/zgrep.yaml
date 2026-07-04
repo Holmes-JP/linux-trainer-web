@@ -1,0 +1,24 @@
+name: zgrep
+summary: gzip 圧縮されたファイルを展開せずに grep で検索する
+group: logs
+synopsis: "zgrep [grepのオプション] パターン <ファイル.gz ...>"
+options:
+  - flag: "-i"
+    desc: 大文字小文字を区別しない
+  - flag: "-c"
+    desc: 一致した行数だけを数えて表示する
+  - flag: "-n"
+    desc: 一致した行の行番号も表示する
+examples:
+  - cmd: zgrep ERROR /var/log/app.log.2.gz
+    desc: ローテートで圧縮された古いログを、展開せずにそのまま検索する
+  - cmd: zgrep -c "Failed password" /var/log/auth.log.*.gz
+    desc: 圧縮済みの過去ログを横断して、件数の推移を比べる
+related_commands: [grep, gzip, gunzip, less]
+related_articles: []
+related_scenarios: [log-detective, find-error]
+note: >-
+  logrotate で app.log.2.gz のように圧縮された古いログは cat や grep では
+  読めない。gunzip で展開する必要はなく、zgrep なら圧縮のまま検索できる
+  (ディスクが逼迫している状況で展開しない、という点でも安全)。
+  オプションはそのまま grep に渡されるので grep と同じ感覚で使える。

@@ -1,0 +1,21 @@
+name: history
+summary: このシェルで実行したコマンドの履歴を表示する
+group: system
+synopsis: "history [件数]"
+options:
+  - flag: "N"
+    desc: 直近 N 件だけを表示する (例 history 20)
+  - flag: "-c"
+    desc: 現在のシェルの履歴をすべて消去する
+examples:
+  - cmd: history 20
+    desc: 直近に自分が何を打ったかを振り返り、作業ミスがないか確認する
+  - cmd: history | grep chmod
+    desc: 「さっき打った長いコマンド」を検索して再利用する
+related_commands: [grep, tail, alias]
+related_articles: []
+related_scenarios: []
+note: >-
+  !番号 で履歴のコマンドを再実行、Ctrl+R で対話的に検索できる。
+  履歴はシェル終了時に ~/.bash_history へ保存されるため、
+  「前任者 (や過去の自分) が何をしたか」を調べる手がかりにもなる。

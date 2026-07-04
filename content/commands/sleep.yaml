@@ -1,0 +1,21 @@
+name: sleep
+summary: 指定した時間だけ何もせずに待つ
+group: processes
+synopsis: "sleep 時間"
+options:
+  - flag: "数値"
+    desc: 待つ秒数。小数も指定できる (sleep 0.5)
+  - flag: "数値s / m / h / d"
+    desc: 秒・分・時間・日の単位を付けて指定できる (sleep 5m)
+examples:
+  - cmd: sleep 300 &
+    desc: 無害な練習用プロセスを作る。pgrep で探して kill する練習台にちょうどよい
+  - cmd: while true; do ps aux | head -5; sleep 2; done
+    desc: 2秒おきに状態を表示する簡易監視ループを作る (Ctrl+C で止める)
+related_commands: [timeout, jobs, kill, pgrep]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  それ自体は「待つだけ」だが、プロセス操作の練習台として頻出。
+  sleep 300 & で起動したプロセスは jobs や pgrep -x sleep で確認でき、
+  kill %1 や pkill -x sleep で片付けられる。

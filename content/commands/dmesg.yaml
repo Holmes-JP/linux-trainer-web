@@ -1,0 +1,21 @@
+name: dmesg
+summary: カーネルが出力したメッセージ (起動時・デバイス関連) を表示する
+group: logs
+synopsis: "dmesg [オプション]"
+options:
+  - flag: "-T"
+    desc: タイムスタンプを人間が読める日時形式で表示する
+  - flag: "--level=err,warn"
+    desc: エラー・警告レベルのメッセージだけに絞る
+examples:
+  - cmd: dmesg | tail -n 20
+    desc: 直近にカーネルレベルで何か起きていないか、末尾だけ素早く確認する
+  - cmd: dmesg | grep -i error
+    desc: カーネルメッセージからエラーらしき行を拾い出す
+related_commands: [grep, tail, less, uname]
+related_articles: []
+related_scenarios: []
+note: >-
+  アプリのログ (/var/log 以下) に何も出ていないのに調子が悪いとき、
+  カーネル側 (ディスク I/O エラー、OOM killer によるプロセス強制終了など) を
+  疑う入口になる。出力が長いので tail や grep と組み合わせるのが基本。

@@ -1,0 +1,27 @@
+name: usermod
+summary: 既存ユーザーの設定 (グループ・シェル・ロック状態など) を変更する
+group: permissions
+synopsis: "usermod [オプション] ユーザー名"
+options:
+  - flag: "-aG グループ"
+    desc: 補助グループに追加する。-a を忘れると既存の所属が上書きで消えるため必ずセットで
+  - flag: "-s シェル"
+    desc: ログインシェルを変更する。/usr/sbin/nologin にされたアカウントの復旧に
+  - flag: "-L"
+    desc: アカウントをロックする (パスワードでのログインを禁止)
+  - flag: "-U"
+    desc: ロックを解除する
+examples:
+  - cmd: usermod -aG developers alice
+    desc: alice を developers グループに追加して、グループ権限のファイルを触れるようにする
+  - cmd: usermod -s /bin/bash appuser
+    desc: シェルを nologin にされてログインできなくなったアカウントを復旧する
+  - cmd: usermod -U appuser
+    desc: ロックされたアカウントのロックを解除する
+related_commands: [useradd, id, groups, passwd]
+related_articles: [permissions]
+related_scenarios: [locked-account, group-access]
+note: >-
+  root でしか実行できない。ロック状態は passwd -S ユーザー名 で確認でき、
+  ロック中は /etc/shadow のパスワード欄の先頭に ! が付いている。
+  グループ追加後の確認は id ユーザー名 か getent group グループ名 で。

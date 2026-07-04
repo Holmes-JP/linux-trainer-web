@@ -1,0 +1,25 @@
+name: umask
+summary: 新しく作られるファイルやディレクトリの初期権限を決めるマスク値を表示・設定する
+group: permissions
+synopsis: "umask [-S] [モード]"
+options:
+  - flag: "(引数なし)"
+    desc: 現在の umask 値を 022 のような数値で表示する
+  - flag: "-S"
+    desc: u=rwx,g=rx,o=rx のような記号形式で表示する
+  - flag: "022 など数値指定"
+    desc: マスク値を設定する。新規ファイルは 666、ディレクトリは 777 からこの値が引かれる
+examples:
+  - cmd: umask
+    desc: 作ったファイルの権限が想定と違うとき、まず現在の設定を確認する
+  - cmd: umask 022
+    desc: 新規ファイルを 644、ディレクトリを 755 で作るようにする (サーバーの定番値)
+  - cmd: umask 077
+    desc: 自分以外には一切見せないファイルを作りたいときの設定
+related_commands: [chmod, touch, mkdir]
+related_articles: [permissions]
+related_scenarios: [loose-permissions]
+note: >-
+  umask が変えるのは「これから作るファイル」の初期権限だけで、既存ファイルの権限は
+  変わらない。既に緩すぎる権限になっているファイルは chmod で直す。
+  設定はシェルごとで、ログアウトすると元に戻る。

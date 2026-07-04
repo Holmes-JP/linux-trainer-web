@@ -1,0 +1,21 @@
+name: umount
+summary: マウント済みのファイルシステムを取り外す
+group: disk
+synopsis: "umount [オプション] <マウント先またはデバイス>"
+options:
+  - flag: "-l"
+    desc: 使用中でも「遅延アンマウント」し、使われなくなった時点で取り外す
+  - flag: "-f"
+    desc: 強制的にアンマウントする (最後の手段)
+examples:
+  - cmd: umount /mnt/data
+    desc: 使い終わったマウントポイントを取り外す
+  - cmd: umount -l /mnt/busy
+    desc: "\"target is busy\" で外せないとき、遅延アンマウントで予約しておく"
+related_commands: [mount, lsblk, df]
+related_articles: []
+related_scenarios: []
+note: >-
+  "target is busy" と言われたら、そのマウント先を使っているプロセスや
+  カレントディレクトリ (cd で中にいるシェル) が残っていないかを疑う。
+  なおこの演習環境は単一の ext2 ディスク構成のため、ルート (/) は外せない。

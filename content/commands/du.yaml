@@ -1,0 +1,29 @@
+name: du
+summary: ディレクトリやファイルごとのディスク使用量を集計して表示する
+group: disk
+synopsis: "du [オプション] [パス...]"
+options:
+  - flag: "-s"
+    desc: 中身を個別に出さず、指定パスの合計だけを表示する
+  - flag: "-b"
+    desc: バイト単位で表示する (-s と組み合わせて du -sb が定番)
+  - flag: "-h"
+    desc: サイズを読みやすい単位 (K/M/G) で表示する
+  - flag: "-a"
+    desc: ディレクトリだけでなくファイルも一覧に含める
+  - flag: "--max-depth=N"
+    desc: 集計を N 階層までに制限する (太っている場所を段階的に絞り込む)
+examples:
+  - cmd: du -sb /var/log/* | sort -n
+    desc: どのログファイル・ディレクトリが容量を食っているかを大きい順に特定する
+  - cmd: du -sb /home/*
+    desc: ユーザーごとのホームディレクトリの使用量を比べる
+  - cmd: du -b --max-depth=1 /var | sort -n
+    desc: /var 直下のどのサブディレクトリが太っているかを 1 階層ずつ掘る
+related_commands: [df, sort, find, ls]
+related_articles: []
+related_scenarios: [biggest-subdir, disk-hog, find-big-file]
+note: >-
+  df が「ファイルシステム全体」の集計なのに対し、du は「ディレクトリ単位」の掘り下げ。
+  この演習環境ではブロック集計の都合で -s の結果がずれることがあるため、
+  バイト単位の du -sb が確実。sort -n と組み合わせて犯人を絞り込むのが定石。

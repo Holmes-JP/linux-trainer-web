@@ -1,0 +1,20 @@
+name: fg
+summary: バックグラウンドのジョブを前面 (フォアグラウンド) に戻す
+group: processes
+synopsis: "fg [%ジョブ番号]"
+options:
+  - flag: "(引数なし)"
+    desc: カレントジョブ (jobs で + が付いているもの) を前面に戻す
+  - flag: "%番号"
+    desc: jobs で確認したジョブ番号を指定して前面に戻す
+examples:
+  - cmd: fg
+    desc: 裏に回していた処理を前面に戻して様子を見る (必要なら Ctrl+C で止める)
+  - cmd: fg %1
+    desc: ジョブ番号 1 を前面に戻す
+related_commands: [bg, jobs, kill]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  前面に戻せば Ctrl+C で終了、Ctrl+Z で再び停止できる。
+  前面に戻さず終わらせたいときは kill %1 のようにジョブ番号で直接シグナルを送ればよい。

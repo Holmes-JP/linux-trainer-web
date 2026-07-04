@@ -1,0 +1,21 @@
+name: hostname
+summary: このマシンのホスト名を表示・設定する
+group: system
+synopsis: "hostname [オプション] [新しい名前]"
+options:
+  - flag: "-s"
+    desc: ドメイン部分を除いた短いホスト名を表示する
+  - flag: "-f"
+    desc: FQDN (ドメイン込みの完全な名前) を表示する
+examples:
+  - cmd: hostname
+    desc: 「今どのサーバーを触っているか」を確認する。複数台を行き来する調査の基本
+  - cmd: cat /etc/hostname
+    desc: 起動時に設定されるホスト名の定義ファイルを確認する
+related_commands: [uname, cat, getent]
+related_articles: []
+related_scenarios: [hosts-entry]
+note: >-
+  hostname -f は名前解決 (通常は /etc/hosts) に依存するため、hosts の記述が
+  壊れているとエラーになることがある — 逆に言えば、名前解決トラブルの
+  手がかりにもなる。引数を渡すと一時的にホスト名を変更できる (root 権限)。

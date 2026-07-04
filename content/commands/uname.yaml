@@ -1,0 +1,23 @@
+name: uname
+summary: カーネル名・バージョン・アーキテクチャなどシステムの基本情報を表示する
+group: system
+synopsis: "uname [オプション]"
+options:
+  - flag: "-a"
+    desc: すべての情報 (カーネル名・ホスト名・バージョン・アーキテクチャ) をまとめて表示する
+  - flag: "-r"
+    desc: カーネルのリリースバージョンを表示する
+  - flag: "-m"
+    desc: マシンのアーキテクチャ (x86_64 / i686 など) を表示する
+examples:
+  - cmd: uname -a
+    desc: 初めて触るサーバーで「何が動いているか」をまず把握する
+  - cmd: uname -m
+    desc: バイナリやパッケージを入れる前に、32bit か 64bit かを確認する
+related_commands: [hostname, uptime, free]
+related_articles: []
+related_scenarios: []
+note: >-
+  この演習環境は i386 (32bit) の Debian buster なので、uname -m は i686 と
+  出る。エラーメッセージを調べたり手順書を照合したりする前に、
+  まず uname でシステムの素性を押さえるのが調査の第一歩。

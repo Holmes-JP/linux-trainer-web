@@ -1,0 +1,21 @@
+name: bg
+summary: 停止中のジョブをバックグラウンドで再開する
+group: processes
+synopsis: "bg [%ジョブ番号]"
+options:
+  - flag: "(引数なし)"
+    desc: 直前に停止したジョブ (カレントジョブ) をバックグラウンドで再開する
+  - flag: "%番号"
+    desc: jobs で確認したジョブ番号を指定して再開する
+examples:
+  - cmd: bg
+    desc: Ctrl+Z で止めた処理を裏で続けさせ、ターミナルを取り戻して調査を続ける
+  - cmd: bg %2
+    desc: 停止中のジョブ番号 2 だけをバックグラウンドで再開する
+related_commands: [fg, jobs, nohup]
+related_articles: [processes-and-signals]
+related_scenarios: []
+note: >-
+  この演習環境はターミナルが1枚なので、「前面で動かしてしまった長い処理を
+  Ctrl+Z で止めて bg で裏に回す」は覚えておくと作業が詰まらない。
+  裏に回したジョブは jobs で確認、fg で前面に戻せる。

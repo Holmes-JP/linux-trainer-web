@@ -1,0 +1,21 @@
+name: groups
+summary: ユーザーが所属しているグループの一覧を表示する
+group: permissions
+synopsis: "groups [ユーザー名]"
+options:
+  - flag: "(引数なし)"
+    desc: 現在のユーザーの所属グループを表示する
+  - flag: "ユーザー名"
+    desc: 指定したユーザーの所属グループをデータベースから引いて表示する
+examples:
+  - cmd: groups
+    desc: グループ権限のファイルが読めないとき、まず自分の所属を確認する
+  - cmd: groups alice
+    desc: alice が developers グループに入っているか確認する
+related_commands: [id, getent, usermod]
+related_articles: [permissions]
+related_scenarios: [group-access]
+note: >-
+  usermod -aG で追加した直後は、実行中のシェルに反映されないため引数なしの groups
+  には出てこない。groups ユーザー名 と名前を指定すればデータベース上の最新状態が見える。
+  グループ側からメンバーを確認したいときは getent group グループ名。
