@@ -1,0 +1,23 @@
+name: rmdir
+summary: 空のディレクトリを削除する
+group: files
+synopsis: "rmdir [オプション] ディレクトリ..."
+options:
+  - flag: "-p"
+    desc: 指定したパスの親ディレクトリも、空になったものから順に削除する
+  - flag: "-v"
+    desc: 何を削除したか表示する
+  - flag: "--ignore-fail-on-non-empty"
+    desc: 空でないディレクトリはエラーにせず黙ってスキップする
+examples:
+  - cmd: rmdir /var/cache/app/old
+    desc: 空になったキャッシュ置き場を片付ける。空でなければエラーで止まる (安全)
+  - cmd: rmdir -p work/tmp/build
+    desc: 深く掘った作業ディレクトリを、空の階層ごとまとめて畳む
+related_commands: [mkdir, rm, ls, find]
+related_articles: []
+related_scenarios: []
+note: >-
+  中身のあるディレクトリは絶対に消せないのが rmdir の持ち味。
+  「空のはずのディレクトリだけ消したい」場面では rm -r より安全な選択。
+  中身ごと消す必要があるときだけ rm -r を使う。

@@ -1,0 +1,31 @@
+name: tar
+summary: 複数のファイルを1つのアーカイブにまとめる・アーカイブから取り出す
+group: files
+synopsis: "tar [オプション] [ファイル...]"
+options:
+  - flag: "-c"
+    desc: アーカイブを作成する (create)
+  - flag: "-x"
+    desc: アーカイブを展開する (extract)
+  - flag: "-t"
+    desc: 展開せずに中身の一覧を表示する (list)
+  - flag: "-z"
+    desc: gzip 圧縮 (.tar.gz / .tgz) を扱う
+  - flag: "-f"
+    desc: アーカイブのファイル名を指定する。ほぼ必須で、直後にファイル名を書く
+  - flag: "-C"
+    desc: 指定したディレクトリに移動してから作成・展開する
+examples:
+  - cmd: tar -tzf /backup/config-backup.tar.gz
+    desc: 展開する前に中身を一覧して、目当ての設定ファイルが入っているか確かめる
+  - cmd: tar -xzf /backup/config-backup.tar.gz -C /tmp/restore
+    desc: バックアップをいったん /tmp に展開し、必要なファイルだけ cp で戻す
+  - cmd: tar -czf /backup/etc-app.tar.gz -C / etc/app
+    desc: 大きな変更の前に、設定ディレクトリを丸ごとバックアップしておく
+related_commands: [gzip, gunzip, cp, file]
+related_articles: []
+related_scenarios: [tar-restore]
+note: >-
+  覚え方は「作るは czf、見るは tzf、出すは xzf」。いきなりカレントに
+  展開するとファイルをばら撒いて上書き事故になりがちなので、
+  まず -t で中身を確認し、-C で展開先を明示するのが安全な手順。

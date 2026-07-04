@@ -1,0 +1,26 @@
+name: base64
+summary: データを Base64 形式にエンコード・デコードする
+group: text
+synopsis: "base64 [オプション] [ファイル]"
+options:
+  - flag: "-d"
+    desc: デコードする (Base64 文字列を元のデータに戻す)
+  - flag: "-w 数"
+    desc: 出力を指定文字数で折り返す (-w 0 で折り返しなしの 1 行に)
+  - flag: "-i"
+    desc: デコード時に Base64 以外の文字を無視する
+examples:
+  - cmd: base64 -d /opt/app/secret.b64
+    desc: Base64 でエンコードされた値をデコードして、中身の文字列を読む
+  - cmd: echo 'SGVsbG8sIFdvcmxkIQ==' | base64 -d
+    desc: 設定ファイルから見つけた怪しい文字列を、その場でデコードして確認する
+  - cmd: base64 -w 0 data.bin > data.txt
+    desc: バイナリをテキスト 1 行に変換して、設定ファイルなどに埋め込める形にする
+related_commands: [echo, cat, md5sum, strings]
+related_articles: []
+related_scenarios: [decode-secret]
+note: >-
+  末尾が = で終わる英数字の長い文字列を見たら Base64 を疑う。
+  デコードが「invalid input」で失敗するときは、余計な空白や改行が
+  混ざっていることが多い。Base64 はただの符号化であって暗号化では
+  ない — 誰でも戻せるので秘密の保管には使えない。

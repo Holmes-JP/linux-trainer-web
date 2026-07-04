@@ -1,0 +1,26 @@
+name: md5sum
+summary: ファイルの MD5 ハッシュ値を計算・検証する
+group: text
+synopsis: "md5sum [オプション] [ファイル...]"
+options:
+  - flag: "-c ファイル"
+    desc: ハッシュ値の一覧ファイルと照合して、改変・破損がないか検証する
+  - flag: "--quiet"
+    desc: -c での検証時、OK の行は表示しない (問題のあるファイルだけ見える)
+  - flag: "--status"
+    desc: 何も表示せず、終了コードだけで検証結果を返す (スクリプト向け)
+examples:
+  - cmd: md5sum /var/backups/db.tar.gz /srv/restore/db.tar.gz
+    desc: バックアップと復元したファイルのハッシュを並べて、同一か確認する
+  - cmd: md5sum -c checksums.md5
+    desc: 記録しておいたハッシュ一覧と照合し、壊れたファイルを特定する
+  - cmd: md5sum /etc/app/app.conf
+    desc: 作業前に設定ファイルのハッシュを控えて、変更の有無を後で確認できるようにする
+related_commands: [diff, cat, tar]
+related_articles: []
+related_scenarios: []
+note: >-
+  出力されるハッシュ値が 1 文字でも違えば中身は別物。中身のどこが
+  違うかまで知りたいときは diff を使う。MD5 は衝突攻撃が知られている
+  ため改ざん検出のセキュリティ用途には不向きだが、コピーや復元の
+  「壊れていないか確認」には今でも十分実用的。

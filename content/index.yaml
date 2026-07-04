@@ -2,15 +2,59 @@
 # scripts/build-content-index.mjs がこのリストを元に各ファイルを検証し、
 # 全文検索用の content/search-index.json を生成する (dev/build の前に自動実行)。
 commands:
+  # files
   - ls
   - cd
+  - pwd
   - cat
+  - cp
+  - mv
+  - rm
+  - mkdir
+  - rmdir
+  - touch
+  - ln
+  - readlink
+  - stat
+  - file
+  - which
+  - basename
+  - dirname
+  - find
+  - tar
+  - gzip
+  - gunzip
+  - dd
+  - truncate
+  # text
+  - grep
+  - head
+  - tail
+  - less
+  - sed
+  - awk
+  - sort
+  - uniq
+  - wc
+  - cut
+  - tr
+  - diff
+  - echo
+  - printf
+  - xargs
+  - tee
+  - base64
+  - md5sum
+  - nl
+  - paste
+  - strings
+  # permissions
   - chmod
   - chown
+  # processes
   - ps
   - kill
-  - grep
-  - find
+  # disk
   - df
 articles:
   - permissions

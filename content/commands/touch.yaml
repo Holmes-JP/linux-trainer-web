@@ -1,0 +1,24 @@
+name: touch
+summary: 空ファイルを作成する。既存ファイルならタイムスタンプを更新する
+group: files
+synopsis: "touch [オプション] ファイル..."
+options:
+  - flag: "-c"
+    desc: ファイルが無くても新規作成しない (タイムスタンプ更新だけしたいとき)
+  - flag: "-d"
+    desc: 現在時刻ではなく指定した日時にする (例 `-d "2026-01-01 00:00"`)
+  - flag: "-r"
+    desc: 別のファイルと同じタイムスタンプに合わせる
+examples:
+  - cmd: touch /var/run/app/app.lock
+    desc: アプリが前提にしているロックファイルや目印ファイルを作って起動を通す
+  - cmd: touch -r /etc/app/app.conf.bak /etc/app/app.conf
+    desc: 復元したファイルの更新日時をバックアップと揃えて、比較調査を混乱させない
+  - cmd: touch newfile.txt && ls -l newfile.txt
+    desc: このディレクトリに書き込めるか (権限があるか) を手早く確かめる
+related_commands: [ls, stat, mkdir, echo]
+related_articles: []
+related_scenarios: []
+note: >-
+  既存ファイルに touch しても中身は一切変わらない (更新日時だけ変わる)。
+  中身を空にしたいときは touch ではなく truncate -s 0 や `: >` を使う。

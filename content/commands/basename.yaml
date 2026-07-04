@@ -1,0 +1,24 @@
+name: basename
+summary: パスからディレクトリ部分を取り除き、ファイル名だけを取り出す
+group: files
+synopsis: "basename パス [取り除く接尾辞]"
+options:
+  - flag: "-s"
+    desc: 指定した接尾辞 (拡張子など) も取り除く (例 `-s .log`)
+  - flag: "-a"
+    desc: 複数のパスをまとめて処理する
+  - flag: "接尾辞を第2引数に"
+    desc: "`basename path .bak` の形でも接尾辞を除ける (-s を使わない古い書き方)"
+examples:
+  - cmd: basename /var/log/app/error.log
+    desc: フルパスからファイル名 `error.log` だけを取り出す
+  - cmd: basename /backup/app.conf.bak .bak
+    desc: 接尾辞も外して復元先のファイル名 `app.conf` を得る
+  - cmd: for f in /var/log/app/*.log; do echo "$(basename "$f")"; done
+    desc: ループ内でパスからファイル名だけを扱いたいときの定番
+related_commands: [dirname, pwd, echo, cut]
+related_articles: []
+related_scenarios: []
+note: >-
+  シェルスクリプトの部品としてよく登場する。dirname と対になっており、
+  「パスを置き場所と名前に分解する」と覚えると使いどころが見えやすい。

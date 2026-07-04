@@ -1,0 +1,25 @@
+name: which
+summary: コマンドの実行ファイルが PATH 上のどこにあるかを表示する
+group: files
+synopsis: "which [オプション] コマンド名..."
+options:
+  - flag: "-a"
+    desc: PATH 上で見つかったものを1つ目だけでなくすべて表示する
+  - flag: "コマンド名を複数指定"
+    desc: まとめて調べられる。見つかったものだけがパス表示される
+  - flag: "(終了コード)"
+    desc: すべて見つかれば 0、1つでも見つからなければ 1。スクリプトでの存在チェックに使える
+examples:
+  - cmd: which app
+    desc: "「command not found」のとき、そもそも PATH 上に実行ファイルがあるか確かめる"
+  - cmd: which -a python
+    desc: 同名コマンドが複数あるとき、どれが先に使われるか (PATH の優先順) を確認する
+  - cmd: file $(which app)
+    desc: 見つかった実行ファイルの正体 (バイナリかスクリプトか、壊れたリンクか) まで確認する
+related_commands: [file, ls, readlink, find]
+related_articles: []
+related_scenarios: [restore-binary, wrong-shebang]
+note: >-
+  which が何も出さなければ PATH 上に無いということ。実体がどこかに
+  残っていないかは find で探す。逆に which でパスが出るのに動かないなら、
+  実行権限 (ls -l) や shebang 行 (head -1) を疑う。

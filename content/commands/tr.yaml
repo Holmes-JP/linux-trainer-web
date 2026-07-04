@@ -1,0 +1,25 @@
+name: tr
+summary: 文字を別の文字に置き換える・削除する
+group: text
+synopsis: "tr [オプション] 文字集合1 [文字集合2]"
+options:
+  - flag: "-d"
+    desc: 文字集合1 に含まれる文字を削除する
+  - flag: "-s"
+    desc: 連続する同じ文字を 1 つに圧縮する
+  - flag: "-c"
+    desc: 文字集合1 「以外」の文字を対象にする
+examples:
+  - cmd: tr -d '\r' < config.txt > config_fixed.txt
+    desc: Windows から持ち込んだファイルの余計な CR (^M) を削除して直す
+  - cmd: tr 'a-z' 'A-Z' < names.txt
+    desc: 小文字を大文字に揃えてから比較・集計する
+  - cmd: tr -s ' ' < messy.log | cut -d' ' -f2
+    desc: 連続スペースを 1 つに潰し、cut で列がずれないようにする
+related_commands: [sed, cut, awk]
+related_articles: []
+related_scenarios: []
+note: >-
+  tr はファイル名を引数に取れず、標準入力からしか読めない。
+  「tr -d '\r' file」はエラーになるので「tr -d '\r' < file」と書く。
+  行単位の置換 (単語の置換) は sed、文字単位の変換は tr と使い分ける。

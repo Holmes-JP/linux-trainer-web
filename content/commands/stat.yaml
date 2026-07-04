@@ -1,0 +1,25 @@
+name: stat
+summary: ファイルの詳細情報 (権限・所有者・サイズ・各種日時) を表示する
+group: files
+synopsis: "stat [オプション] ファイル..."
+options:
+  - flag: "-c"
+    desc: 表示形式を指定する。`%U`=所有者, `%G`=グループ, `%a`=権限(数値), `%s`=サイズ, `%n`=名前
+  - flag: "-L"
+    desc: シンボリックリンク自体ではなくリンク先の情報を表示する
+  - flag: "-t"
+    desc: 1行の簡潔な形式で表示する
+examples:
+  - cmd: stat /etc/app/app.conf
+    desc: 権限・所有者・更新日時をまとめて確認する。ls -l より情報が多い
+  - cmd: stat -c "%a %U:%G %n" /var/spool/app
+    desc: 権限を 755 のような数値で確認する。chmod の指定値をそのまま決められる
+  - cmd: stat -c "%U" /home/user/report.txt
+    desc: 所有者だけを取り出す。「自分のファイルが触れない」原因の切り分けに
+related_commands: [ls, chmod, chown, file]
+related_articles: [permissions]
+related_scenarios: [recursive-ownership]
+note: >-
+  ls -l の権限表示 (rw-r--r--) を数値に読み替えるのが苦手なうちは、
+  stat -c %a で直接数値を見るのが早い。Access/Modify/Change の3つの
+  日時の違い (読んだ時刻/中身の変更/属性の変更) も stat なら区別できる。

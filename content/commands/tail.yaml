@@ -1,0 +1,26 @@
+name: tail
+summary: ファイルの末尾部分だけを表示する
+group: text
+synopsis: "tail [オプション] [ファイル...]"
+options:
+  - flag: "-n 数"
+    desc: 末尾から指定した行数だけ表示する (省略時は 10 行)
+  - flag: "-n +数"
+    desc: 指定した行目「以降」をすべて表示する (先頭を読み飛ばす)
+  - flag: "-f"
+    desc: ファイルの追記を監視し続け、増えた分を表示する (ログ監視の定番)
+  - flag: "-c 数"
+    desc: 行数ではなく末尾から指定バイト数だけ表示する
+examples:
+  - cmd: tail -n 50 /var/log/app.log
+    desc: 障害調査はまずログの「最新 50 行」から。直近に何が起きたかを見る
+  - cmd: tail -f /var/log/app.log
+    desc: ログを監視しながら操作を再現し、リアルタイムでエラーを捕まえる
+  - cmd: tail -n +2 data.csv
+    desc: 1 行目のヘッダを飛ばして、データ行だけを集計に回す
+related_commands: [head, less, grep]
+related_articles: []
+related_scenarios: [log-detective, truncate-log]
+note: >-
+  -f は Ctrl+C で終了する。「-n 20」は末尾 20 行、「-n +20」は
+  20 行目以降 — マイナスとプラスで意味が変わるので注意。

@@ -1,0 +1,25 @@
+name: head
+summary: ファイルの先頭部分だけを表示する
+group: text
+synopsis: "head [オプション] [ファイル...]"
+options:
+  - flag: "-n 数"
+    desc: 先頭から指定した行数だけ表示する (省略時は 10 行)
+  - flag: "-n -数"
+    desc: 末尾の指定行数「以外」をすべて表示する
+  - flag: "-c 数"
+    desc: 行数ではなく先頭から指定バイト数だけ表示する
+examples:
+  - cmd: head -n 20 /var/log/app.log
+    desc: ログの冒頭だけ見て、いつから記録が始まっているか確認する
+  - cmd: head -n 1 access.log
+    desc: ログの 1 行目を見て、フォーマット (列の並び) を把握してから集計に入る
+  - cmd: awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -n 5
+    desc: 集計結果の上位 5 件だけを取り出す (パイプの最後に付ける定番)
+related_commands: [tail, less, cat]
+related_articles: []
+related_scenarios: [top-offender, log-detective]
+note: >-
+  集計パイプラインの最後に head を付けると「上位 N 件」になる。
+  逆にファイルの末尾側を見たいときは tail。巨大なログでも
+  head は先頭しか読まないので一瞬で返ってくる。

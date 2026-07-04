@@ -1,0 +1,25 @@
+name: wc
+summary: テキストの行数・単語数・バイト数を集計する
+group: text
+synopsis: "wc [オプション] [ファイル...]"
+options:
+  - flag: "-l"
+    desc: 行数だけを表示する (最もよく使う)
+  - flag: "-w"
+    desc: 単語数だけを表示する
+  - flag: "-c"
+    desc: バイト数だけを表示する
+examples:
+  - cmd: grep ERROR /var/log/app.log | wc -l
+    desc: エラー行が何件あるかを数える (grep -c でも同じ結果になる)
+  - cmd: awk '{print $1}' access.log | sort -u | wc -l
+    desc: 重複を除いた IP を数えて、ユニーク訪問者数を出す
+  - cmd: ls /var/spool/uploads | wc -l
+    desc: ディレクトリ内のファイル数を数える
+related_commands: [grep, sort, ls, awk]
+related_articles: []
+related_scenarios: [count-files, unique-visitors, find-error]
+note: >-
+  「wc -l ファイル名」はファイル名まで一緒に表示される。数値だけが
+  欲しいときはパイプで渡す (cat file | wc -l) か「wc -l < file」と書く。
+  1 つのファイル内の一致件数を数えるだけなら grep -c のほうが短い。

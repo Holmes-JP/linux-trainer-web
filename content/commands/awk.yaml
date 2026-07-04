@@ -1,0 +1,24 @@
+name: awk
+summary: 行を列 (フィールド) に分解して抽出・集計する
+group: text
+synopsis: "awk [オプション] 'パターン {アクション}' [ファイル...]"
+options:
+  - flag: "-F 区切り"
+    desc: 列の区切り文字を指定する (省略時は連続する空白)
+  - flag: "-v 名前=値"
+    desc: スクリプト内で使う変数を渡す
+examples:
+  - cmd: awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -n 5
+    desc: アクセスログの第 1 列 (IP) を抜き出し、リクエスト数の多い順に集計する
+  - cmd: awk '{sum += $10} END {print sum}' access.log
+    desc: 第 10 列 (転送バイト数) を合計して、総転送量を求める
+  - cmd: "awk -F: '{print $1}' /etc/passwd"
+    desc: コロン区切りのファイルから 1 列目 (ユーザー名) だけを取り出す
+related_commands: [cut, sort, uniq, grep]
+related_articles: []
+related_scenarios: [top-offender, total-bytes, sum-2xx-bytes]
+note: >-
+  $1 が第 1 列、$NF が最終列、$(NF-1) が最後から 2 番目、$0 が行全体。
+  「'$9 ~ /^2/ {sum += $10}'」のように条件を前に書けば「ステータスが
+  2xx の行だけ合計」もできる。cut と違い連続した空白を 1 つの区切りと
+  して扱うので、ログの列抽出には awk のほうが安全。

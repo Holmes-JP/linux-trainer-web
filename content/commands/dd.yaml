@@ -1,0 +1,28 @@
+name: dd
+summary: ブロック単位でデータをコピーする (サイズや回数を指定した低レベルコピー)
+group: files
+synopsis: "dd if=入力 of=出力 [bs=サイズ] [count=回数]"
+options:
+  - flag: "if="
+    desc: 入力元。ファイルのほか `/dev/zero` (ゼロ) や `/dev/urandom` (乱数) も指定できる
+  - flag: "of="
+    desc: 出力先。既存ファイルを指定すると先頭から上書きされる
+  - flag: "bs="
+    desc: 1回に読み書きするブロックサイズ (例 `bs=1M`)
+  - flag: "count="
+    desc: 何ブロック分コピーするか。bs=1M count=10 なら 10MB
+  - flag: "status=progress"
+    desc: 進捗を表示しながらコピーする
+examples:
+  - cmd: dd if=/dev/zero of=/tmp/test.img bs=1M count=10
+    desc: 10MB のテスト用ファイルを作る (ディスク容量アラートの再現実験など)
+  - cmd: dd if=/backup/app.bin of=/usr/local/bin/app bs=64K
+    desc: バイナリをブロック単位で複製する (通常のファイルなら cp で十分)
+related_commands: [truncate, cp, df, stat]
+related_articles: []
+related_scenarios: []
+note: >-
+  of= の指定を誤ると既存データを容赦なく上書きする、昔から事故の多いコマンド。
+  またこの演習環境 (ブラウザ内 VM) では /dev/zero からの大量書き込みが
+  不安定なことがある。単に大きなファイルが欲しいだけなら truncate -s を使うのが
+  速くて確実。

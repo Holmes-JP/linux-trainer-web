@@ -1,0 +1,24 @@
+name: dirname
+summary: パスからファイル名を取り除き、ディレクトリ部分だけを取り出す
+group: files
+synopsis: "dirname パス..."
+options:
+  - flag: "(なし)"
+    desc: 基本はオプションなしで使う。最後の `/` より前を表示する
+  - flag: "複数パス指定"
+    desc: 複数のパスをまとめて処理し、結果を1行ずつ出力する
+  - flag: "-z"
+    desc: 出力を改行ではなく NUL 文字で区切る (xargs -0 との連携用)
+examples:
+  - cmd: dirname /etc/app/app.conf
+    desc: 設定ファイルの置き場所 `/etc/app` を取り出す
+  - cmd: cd "$(dirname /var/spool/app/queue/job1)"
+    desc: エラーメッセージに出たパスの「親ディレクトリ」へ移動して周辺を調べる
+  - cmd: mkdir -p "$(dirname /var/spool/app/queue/job1)"
+    desc: ファイルを置く前に、その親ディレクトリをまとめて用意する
+related_commands: [basename, pwd, mkdir, cd]
+related_articles: []
+related_scenarios: []
+note: >-
+  パスに `/` が無ければ `.` (カレントディレクトリ) を返す。
+  basename と組み合わせれば、どんなパスも「置き場所 + 名前」に分解できる。

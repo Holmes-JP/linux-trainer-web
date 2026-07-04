@@ -1,0 +1,27 @@
+name: rm
+summary: ファイルやディレクトリを削除する
+group: files
+synopsis: "rm [オプション] ファイル..."
+options:
+  - flag: "-r"
+    desc: ディレクトリを中身ごと再帰的に削除する
+  - flag: "-f"
+    desc: 存在しないファイルでもエラーにせず、確認もせずに削除する
+  - flag: "-i"
+    desc: 1件ずつ削除してよいか確認を求める
+  - flag: "-v"
+    desc: 何を削除したか1件ずつ表示する
+examples:
+  - cmd: rm /var/tmp/huge_dump.bin
+    desc: ディスクを圧迫している不要ファイルを削除して空き容量を取り戻す
+  - cmd: rm -v /var/cache/app/*.tmp
+    desc: 一時ファイルをまとめて掃除する。-v で何が消えたか記録に残す
+  - cmd: rm -ri /var/tmp/old_build
+    desc: 不要になったディレクトリを、中身を1件ずつ確認しながら消す
+related_commands: [mv, rmdir, find, ls]
+related_articles: []
+related_scenarios: [disk-hog, find-empty-cleanup]
+note: >-
+  rm に「ゴミ箱」はなく、消したものは戻せない。特に -rf の組み合わせは
+  パスを1文字間違えるだけで大惨事になるので、打つ前に ls で同じパスを
+  確認する癖をつける。迷ったら rm ではなく mv で退避しておくのが安全。

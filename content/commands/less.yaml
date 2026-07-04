@@ -1,0 +1,27 @@
+name: less
+summary: 長いファイルを 1 画面ずつスクロールしながら閲覧する
+group: text
+synopsis: "less [オプション] ファイル"
+options:
+  - flag: "-N"
+    desc: 行番号を付けて表示する
+  - flag: "-S"
+    desc: 長い行を折り返さない (横に長いログが読みやすくなる)
+  - flag: "-i"
+    desc: 検索で大文字小文字を区別しない
+  - flag: "+G"
+    desc: 開いた直後にファイルの末尾へ移動する (ログの最新部分から読む)
+examples:
+  - cmd: less /var/log/app.log
+    desc: 巨大なログを cat で流さず、落ち着いてページ送りしながら読む
+  - cmd: grep ERROR /var/log/app.log | less
+    desc: 絞り込んだ結果が多いとき、パイプで less に渡してゆっくり確認する
+  - cmd: less -N /etc/nginx/nginx.conf
+    desc: エラーメッセージの「○行目」と突き合わせながら設定ファイルを読む
+related_commands: [cat, head, tail, grep]
+related_articles: []
+related_scenarios: [log-detective]
+note: >-
+  操作方法: q で終了、/ 文字列 で下方向に検索、n で次の一致、
+  N で前の一致、G で末尾へ、g で先頭へ。「q で抜けられる」ことを
+  知らないと固まったように見えるので、まず q を覚える。

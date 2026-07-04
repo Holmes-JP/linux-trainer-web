@@ -1,0 +1,29 @@
+name: sort
+summary: テキストの行を昇順・降順に整列する
+group: text
+synopsis: "sort [オプション] [ファイル...]"
+options:
+  - flag: "-n"
+    desc: 数値として並べ替える (指定しないと 10 が 9 より前に来る)
+  - flag: "-r"
+    desc: 逆順 (大きい順) に並べ替える
+  - flag: "-u"
+    desc: 並べ替えたうえで重複行を取り除く
+  - flag: "-k 数"
+    desc: 何列目をキーにして並べ替えるかを指定する
+  - flag: "-t 文字"
+    desc: 列の区切り文字を指定する (-k と組み合わせて使う)
+examples:
+  - cmd: awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -n 1
+    desc: IP ごとの件数を集計し、最も多い 1 件を取り出す (uniq -c の前後で 2 回使う)
+  - cmd: awk '{print $1}' access.log | sort -u | wc -l
+    desc: 重複を除いた IP の数 = ユニーク訪問者数を数える
+  - cmd: "sort -t: -k3 -n /etc/passwd"
+    desc: コロン区切りの 3 列目 (UID) 順にユーザーを並べて確認する
+related_commands: [uniq, awk, cut, wc]
+related_articles: []
+related_scenarios: [top-offender, unique-visitors, most-requested-path]
+note: >-
+  uniq は「隣り合った」重複しか見ないので、uniq の前には必ず sort。
+  数値の並べ替えで -n を忘れると文字列比較になり「10, 2, 9」の順に
+  なってしまう — 集計結果が変だったらまず -n を疑う。

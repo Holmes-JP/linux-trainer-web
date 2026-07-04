@@ -1,0 +1,24 @@
+name: paste
+summary: 複数のファイルを行ごとに横方向へ連結する
+group: text
+synopsis: "paste [オプション] [ファイル...]"
+options:
+  - flag: "-d 文字"
+    desc: 貼り合わせるときの区切り文字を指定する (省略時はタブ)
+  - flag: "-s"
+    desc: 縦のリストを 1 行に連結する
+examples:
+  - cmd: paste hostnames.txt ips.txt
+    desc: 2 つのリストを横に並べて、対応関係を一覧で確認する
+  - cmd: paste -sd, failed_ips.txt
+    desc: 調査で洗い出した IP のリストを、カンマ区切りの 1 行にまとめて報告する
+  - cmd: "cut -d: -f1 /etc/passwd | paste - - -"
+    desc: 縦に長い一覧を 3 列に折り返してコンパクトに眺める
+related_commands: [cut, sort, tr, cat]
+related_articles: []
+related_scenarios: []
+note: >-
+  cut が「列を切り出す」のに対し、paste は「横に貼り合わせる」逆の
+  操作。-s と -d の組み合わせ (paste -sd, file) は「縦のリストを
+  カンマ区切り 1 行へ」の定番ワンライナー。cat は縦の連結、paste は
+  横の連結、と覚える。

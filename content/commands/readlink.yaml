@@ -1,0 +1,25 @@
+name: readlink
+summary: シンボリックリンクが指している先のパスを表示する
+group: files
+synopsis: "readlink [オプション] ファイル..."
+options:
+  - flag: "(なし)"
+    desc: リンクに書かれているパスをそのまま表示する。リンクでなければ何も出さない
+  - flag: "-f"
+    desc: リンクを最後までたどった絶対パスを表示する。途中の存在しない部分も許容
+  - flag: "-e"
+    desc: -f と同様だが、最終的な実体が存在しないときはエラー (壊れたリンクの検出に)
+examples:
+  - cmd: readlink /opt/app/current
+    desc: デプロイの current リンクがどのリリースを指しているか確認する
+  - cmd: readlink -f /usr/local/bin/app
+    desc: リンクが多段になっていても、最終的にどの実体を指すかを突き止める
+  - cmd: readlink -e /home/user/app.conf || echo broken
+    desc: リンク先の実体が消えていないか (壊れたリンクか) を判定する
+related_commands: [ln, ls, file, stat]
+related_articles: []
+related_scenarios: [broken-symlink, relink-release]
+note: >-
+  ls -l でも `->` の先は見えるが、readlink はパスだけを出力するので
+  スクリプトや条件判定に組み込みやすい。壊れたリンク探しには
+  -e の終了コードを使うのが手軽。

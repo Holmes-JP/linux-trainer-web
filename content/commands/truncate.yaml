@@ -1,0 +1,25 @@
+name: truncate
+summary: ファイルを指定サイズに切り詰める・広げる (0 にすれば中身を空にする)
+group: files
+synopsis: "truncate -s サイズ ファイル..."
+options:
+  - flag: "-s"
+    desc: サイズを指定する。`0` で空に、`100M` で 100MB に。`+10M`/`-10M` の増減指定も可
+  - flag: "-c"
+    desc: ファイルが無くても新規作成しない
+  - flag: "-r"
+    desc: 別のファイルと同じサイズに合わせる
+examples:
+  - cmd: truncate -s 0 /var/log/app/app.log
+    desc: アプリが書き込み中のログを、ファイルを消さずに安全に空へ切り詰める
+  - cmd: truncate -s 100M /tmp/test.img
+    desc: 100MB のファイルを一瞬で作る (この環境では dd より確実)
+  - cmd: ls -lh /var/log/app/app.log
+    desc: 切り詰めの前後でサイズを見比べ、効果を確認する
+related_commands: [dd, rm, ls, tail]
+related_articles: []
+related_scenarios: [truncate-log]
+note: >-
+  使用中のログは rm で消してもプロセスが掴んだままだと容量が解放されない。
+  ファイル自体を残して中身だけ空にする truncate -s 0 (または `: > file`) が
+  ログ整理の正攻法。-s で広げた場合は中身がゼロの疎らなファイルになる。

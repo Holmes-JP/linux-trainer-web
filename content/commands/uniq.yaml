@@ -1,0 +1,25 @@
+name: uniq
+summary: 隣り合った重複行を 1 つにまとめ、出現回数を集計する
+group: text
+synopsis: "uniq [オプション] [入力 [出力]]"
+options:
+  - flag: "-c"
+    desc: 各行が何回続いたかを行頭に付けて表示する (集計の要)
+  - flag: "-d"
+    desc: 重複していた行だけを表示する
+  - flag: "-u"
+    desc: 一度しか現れなかった行だけを表示する
+examples:
+  - cmd: awk '{print $1}' access.log | sort | uniq -c | sort -rn | head -n 5
+    desc: IP ごとのアクセス回数を数え、多い順に上位 5 件を出す (集計の黄金パターン)
+  - cmd: awk '{print $7}' access.log | sort | uniq -c | sort -rn | head -n 1
+    desc: 最もリクエストされたパスを特定する
+  - cmd: sort users.txt | uniq -d
+    desc: リストに二重登録されている行だけを洗い出す
+related_commands: [sort, awk, wc, cut]
+related_articles: []
+related_scenarios: [top-offender, most-requested-path, unique-visitors]
+note: >-
+  uniq が見るのは「隣り合った」行だけ。sort せずに使うと離れた場所の
+  重複が残ってしまう。「sort | uniq -c | sort -rn」は集計の定番として
+  そのまま覚えてよい。単に重複を除くだけなら sort -u でも同じ。

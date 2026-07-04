@@ -1,0 +1,29 @@
+name: cp
+summary: ファイルやディレクトリをコピーする
+group: files
+synopsis: "cp [オプション] コピー元 コピー先"
+options:
+  - flag: "-r"
+    desc: ディレクトリを中身ごと再帰的にコピーする
+  - flag: "-p"
+    desc: パーミッション・所有者・タイムスタンプを保ったままコピーする
+  - flag: "-a"
+    desc: アーカイブモード。-r と -p をまとめたようなもので、丸ごと複製の定番
+  - flag: "-i"
+    desc: 上書きする前に確認を求める
+  - flag: "-v"
+    desc: 何をコピーしたか1件ずつ表示する
+examples:
+  - cmd: cp /backup/app.conf /etc/app/app.conf
+    desc: 消えてしまった設定ファイルをバックアップから元の場所へ復元する
+  - cmd: cp -p /etc/app/app.conf /etc/app/app.conf.bak
+    desc: 設定を編集する前に、属性ごと控えを取っておく (壊しても戻せる)
+  - cmd: cp -a /var/www/html /var/www/html.bak
+    desc: ディレクトリを権限ごと丸ごと複製してから大きな変更に挑む
+related_commands: [mv, rm, ls, stat]
+related_articles: []
+related_scenarios: [lost-config, restore-binary]
+note: >-
+  -p を付けないとコピー先の所有者・権限は実行したユーザー基準になる。
+  設定ファイルや実行ファイルの復元では、コピー後に ls -l で権限が
+  元どおりかを確認するとよい。

@@ -1,0 +1,25 @@
+name: diff
+summary: 2 つのファイルの違いを行単位で表示する
+group: text
+synopsis: "diff [オプション] ファイル1 ファイル2"
+options:
+  - flag: "-u"
+    desc: unified 形式で表示する (前後の文脈付きで読みやすい)
+  - flag: "-q"
+    desc: 違いの中身は出さず「異なるかどうか」だけ報告する
+  - flag: "-r"
+    desc: ディレクトリ同士を再帰的に比較する
+examples:
+  - cmd: diff -u /etc/app/config.json /etc/app/config.json.bak
+    desc: 壊れた設定ファイルとバックアップを見比べて、どこが変わったか特定する
+  - cmd: diff -q file1.tar.gz file2.tar.gz
+    desc: 2 つのファイルが同一かどうかだけをさっと確認する
+  - cmd: diff -r /etc/nginx /etc/nginx.orig
+    desc: 設定ディレクトリ全体で、変更されたファイルがどれかを洗い出す
+related_commands: [cat, less, sed, md5sum]
+related_articles: []
+related_scenarios: [broken-json, wrong-json-value]
+note: >-
+  出力が何もなければ 2 つは同一。-u 形式では「-」が第 1 ファイル側、
+  「+」が第 2 ファイル側の行を表す。「バックアップがあるなら、直す前に
+  まず diff」が設定ファイル調査の鉄則。

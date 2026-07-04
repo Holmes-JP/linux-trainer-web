@@ -1,0 +1,27 @@
+name: mv
+summary: ファイルやディレクトリを移動、または名前を変更する
+group: files
+synopsis: "mv [オプション] 移動元 移動先"
+options:
+  - flag: "-i"
+    desc: 上書きする前に確認を求める
+  - flag: "-n"
+    desc: 移動先に同名ファイルがあれば上書きしない
+  - flag: "-b"
+    desc: 上書きされる側のファイルをバックアップ (末尾に `~`) してから移動する
+  - flag: "-v"
+    desc: 何をどこへ移動したか表示する
+examples:
+  - cmd: mv /etc/app/app.conf.broken /tmp/
+    desc: 壊れた設定ファイルを消さずに退避して、あとで見比べられるようにする
+  - cmd: mv script.txt script.sh
+    desc: 間違った拡張子・名前を正しい名前に付け替える (リネームも mv)
+  - cmd: mv -n new.conf /etc/app/app.conf
+    desc: 既存ファイルをうっかり上書きしないよう安全に配置する
+related_commands: [cp, rm, mkdir, ls]
+related_articles: []
+related_scenarios: []
+note: >-
+  同じファイルシステム内なら中身はコピーされず名前の付け替えだけなので一瞬で終わる。
+  調査中は rm で消すより mv で /tmp などへ退避するほうが安全 —
+  原因調査の証拠が残り、間違いならすぐ戻せる。

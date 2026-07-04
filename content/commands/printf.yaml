@@ -1,0 +1,27 @@
+name: printf
+summary: 書式を指定して文字列や数値を整形して表示する
+group: text
+synopsis: "printf 書式 [引数...]"
+options:
+  - flag: "%s"
+    desc: 文字列として埋め込む
+  - flag: "%d"
+    desc: 整数として埋め込む
+  - flag: "\\n"
+    desc: 改行 (echo と違い自動では付かないので自分で書く)
+  - flag: "%05d"
+    desc: 5 桁ゼロ埋めのように幅や埋め方を指定できる
+examples:
+  - cmd: printf '%s\n' "$var"
+    desc: 変数の中身を余計な解釈をせずそのまま 1 行で表示する
+  - cmd: printf '%-10s %5d\n' error 42
+    desc: 列幅を揃えて表示し、集計結果を報告用に整形する
+  - cmd: printf 'line1\nline2\n' > test.txt
+    desc: 複数行のテストファイルをさっと作る
+related_commands: [echo, awk, tee]
+related_articles: []
+related_scenarios: []
+note: >-
+  echo と違って末尾の改行は自動では付かない — \n を書き忘れると
+  プロンプトが行末にくっつく。引数が書式より多いときは書式が
+  繰り返し適用される (printf '%s\n' a b c は 3 行出力)。

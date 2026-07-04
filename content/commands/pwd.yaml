@@ -1,0 +1,22 @@
+name: pwd
+summary: 現在いるディレクトリの絶対パスを表示する
+group: files
+synopsis: "pwd [オプション]"
+options:
+  - flag: "(なし)"
+    desc: 通常はオプションなしで使う。カレントディレクトリの絶対パスが1行表示される
+  - flag: "-L"
+    desc: シンボリックリンクをたどったままの論理パスを表示する (デフォルト)
+  - flag: "-P"
+    desc: シンボリックリンクを解決した物理的な実パスを表示する
+examples:
+  - cmd: pwd
+    desc: 迷子になったらまずこれ。相対パスで操作する前に現在地を確かめる
+  - cmd: pwd -P
+    desc: 今いる場所がシンボリックリンク経由なら、本当のディレクトリを確認する
+related_commands: [cd, ls, readlink]
+related_articles: []
+related_scenarios: []
+note: >-
+  cp や rm を相対パスで打つ前に pwd で現在地を確認する癖をつけると、
+  「別のディレクトリのファイルを消してしまった」という事故を防げる。

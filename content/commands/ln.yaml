@@ -1,0 +1,27 @@
+name: ln
+summary: ファイルへのリンク (別名) を作る。普段使うのはシンボリックリンク
+group: files
+synopsis: "ln [オプション] リンク先 リンク名"
+options:
+  - flag: "-s"
+    desc: シンボリックリンクを作る。付けない場合はハードリンクになる
+  - flag: "-f"
+    desc: 同名のリンクが既にあれば上書きする
+  - flag: "-n"
+    desc: リンク名がディレクトリへのリンクでも中に潜らず、リンク自体を置き換える
+  - flag: "-v"
+    desc: 何を作ったか表示する
+examples:
+  - cmd: ln -sfn /opt/app/releases/v2.1 /opt/app/current
+    desc: デプロイの current リンクを新しいリリースへ張り替える定番ワンライナー
+  - cmd: ln -sf /etc/app/app.conf /home/user/app.conf
+    desc: 壊れたシンボリックリンクを正しい実体へ張り直す
+  - cmd: ls -l /opt/app/current
+    desc: 張り替え後は必ず ls -l で `->` の先が意図どおりか確認する
+related_commands: [readlink, ls, rm, stat]
+related_articles: []
+related_scenarios: [broken-symlink, relink-release]
+note: >-
+  引数の順番は「実体が先、リンク名が後」。逆に打つと実体側を壊しかねない。
+  ディレクトリへのリンクを張り替えるときは -n を忘れると、
+  既存リンクの中に新しいリンクが作られてしまう (`-sfn` をセットで覚える)。

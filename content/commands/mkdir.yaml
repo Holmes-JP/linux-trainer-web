@@ -1,0 +1,25 @@
+name: mkdir
+summary: 新しいディレクトリを作成する
+group: files
+synopsis: "mkdir [オプション] ディレクトリ..."
+options:
+  - flag: "-p"
+    desc: 途中のディレクトリもまとめて作る。既に存在してもエラーにしない
+  - flag: "-m"
+    desc: 作成と同時にパーミッションを指定する (例 `-m 750`)
+  - flag: "-v"
+    desc: 作成したディレクトリを表示する
+examples:
+  - cmd: mkdir -p /var/spool/app/queue
+    desc: 消えてしまったスプールディレクトリを、親ごとまとめて再作成する
+  - cmd: mkdir -m 700 /home/user/.ssh
+    desc: 作成時点から正しい権限で作る (あとから chmod し忘れない)
+  - cmd: mkdir /var/www/html.bak && cp -a /var/www/html/. /var/www/html.bak/
+    desc: 作業前の退避先ディレクトリを用意してから丸ごとコピーする
+related_commands: [rmdir, rm, ls, chmod]
+related_articles: [permissions]
+related_scenarios: [missing-dir]
+note: >-
+  アプリが「No such file or directory」で落ちるときは、書き込み先の
+  ディレクトリごと消えていることがある。再作成しただけでは所有者が
+  root のままのこともあるので、ls -ld と chown での確認まで忘れずに。

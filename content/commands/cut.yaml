@@ -1,0 +1,25 @@
+name: cut
+summary: 各行から指定した列や文字位置を抽出する
+group: text
+synopsis: "cut [オプション] [ファイル...]"
+options:
+  - flag: "-d 文字"
+    desc: 列の区切り文字を指定する (省略時はタブ)
+  - flag: "-f 数"
+    desc: 何列目を取り出すか指定する (-f1,3 や -f2-4 のような範囲も可)
+  - flag: "-c 範囲"
+    desc: 列ではなく文字位置で切り出す (例 -c1-10)
+examples:
+  - cmd: "cut -d: -f1 /etc/passwd"
+    desc: コロン区切りの 1 列目を切り出して、ユーザー名の一覧を得る
+  - cmd: cut -d' ' -f1 access.log | sort | uniq -c | sort -rn
+    desc: スペース区切りのログから IP を切り出してアクセス数を集計する
+  - cmd: cut -c1-19 /var/log/app.log
+    desc: 行頭のタイムスタンプ部分だけを切り出して時間帯を眺める
+related_commands: [awk, sort, uniq, tr]
+related_articles: []
+related_scenarios: [top-offender, unique-visitors]
+note: >-
+  cut は区切り文字が連続すると「空の列」として数える。空白の数が
+  揃っていないログでは列がずれるので、そういうときは連続空白を
+  1 つとして扱う awk '{print $1}' のほうが安全。

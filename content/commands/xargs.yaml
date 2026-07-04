@@ -1,0 +1,28 @@
+name: xargs
+summary: 標準入力から受け取った行を、別のコマンドの引数にして実行する
+group: text
+synopsis: "コマンド | xargs [オプション] [コマンド]"
+options:
+  - flag: "-n 数"
+    desc: 1 回の実行に渡す引数の数を制限する
+  - flag: "-I {}"
+    desc: 受け取った値を {} の位置に埋め込んで実行する
+  - flag: "-r"
+    desc: 入力が空なら何も実行しない (空のとき 1 回実行してしまう事故を防ぐ)
+  - flag: "-0"
+    desc: NUL 区切りで受け取る (find -print0 とペアで、空白入りの名前も安全に)
+examples:
+  - cmd: find /etc/app -name '*.conf' | xargs grep -l max_connections
+    desc: 設定ファイルを探し出し、目的の設定がどのファイルに書いてあるか特定する
+  - cmd: find /tmp -name '*.tmp' -print0 | xargs -0 rm
+    desc: 見つけた一時ファイルをまとめて削除する (空白入りの名前でも安全)
+  - cmd: cat hosts.txt | xargs -I {} echo "checking {}"
+    desc: リストの各行を 1 件ずつコマンドに埋め込んで処理する
+related_commands: [find, grep, rm, echo]
+related_articles: []
+related_scenarios: [grep-which-file]
+note: >-
+  「find の結果に対して何かしたい」ときの接着剤。ファイル名に空白が
+  入り得るなら find -print0 | xargs -0 のペアで渡すのが安全。
+  find 単体でも -exec で同じことができるが、パイプで書ける xargs の
+  ほうが試行錯誤しやすい。

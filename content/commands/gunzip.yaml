@@ -1,0 +1,26 @@
+name: gunzip
+summary: gzip 形式 (.gz) のファイルを展開する
+group: files
+synopsis: "gunzip [オプション] ファイル..."
+options:
+  - flag: "-k"
+    desc: 展開後も .gz ファイルを残す (通常は .gz が消えて元の名前に戻る)
+  - flag: "-c"
+    desc: 結果を標準出力に書き出す。.gz を残したままパイプや別名保存ができる
+  - flag: "-t"
+    desc: 展開せずにアーカイブが壊れていないか検査する
+  - flag: "-l"
+    desc: 展開せずに元のサイズや圧縮率を表示する
+examples:
+  - cmd: gunzip -k /backup/dump.sql.gz
+    desc: バックアップ本体を残したまま展開して中身を調べる
+  - cmd: gunzip -t /backup/dump.sql.gz && echo OK
+    desc: 復元作業の前に、バックアップが壊れていないかを検査する
+  - cmd: gunzip -c /var/log/app/access.log.2.gz | grep ERROR
+    desc: 圧縮済みの古いログを展開せずに中身だけ検索する
+related_commands: [gzip, tar, grep, file]
+related_articles: []
+related_scenarios: [tar-restore]
+note: >-
+  gunzip は gzip -d と同じもの。.tar.gz は gunzip すると .tar が残るだけ
+  なので、最初から tar -xzf で一度に展開するほうが手数が少ない。

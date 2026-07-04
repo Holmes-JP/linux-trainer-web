@@ -1,0 +1,25 @@
+name: file
+summary: ファイルの種類 (テキスト・実行ファイル・アーカイブなど) を判定する
+group: files
+synopsis: "file [オプション] ファイル..."
+options:
+  - flag: "-b"
+    desc: ファイル名を省いて判定結果だけを表示する
+  - flag: "-i"
+    desc: MIME タイプ形式 (`text/plain` など) で表示する
+  - flag: "-L"
+    desc: シンボリックリンクをたどってリンク先を判定する
+examples:
+  - cmd: file /usr/local/bin/app
+    desc: 「実行できない」ファイルの正体を確かめる。スクリプトならインタプリタ行も表示される
+  - cmd: file /backup/config-backup
+    desc: 拡張子のないバックアップが tar なのか gzip なのかを判定して展開方法を決める
+  - cmd: file -L /opt/app/current
+    desc: シンボリックリンクの先にあるものの正体を確認する (`broken symbolic link` なら張り直し)
+related_commands: [stat, which, tar, strings]
+related_articles: []
+related_scenarios: [restore-binary, tar-restore]
+note: >-
+  拡張子は当てにならない (.txt でも中身はバイナリかもしれない)。
+  file は中身の先頭 (マジックナンバー) を見て判定するので、
+  cat する前・展開する前の「正体確認」として最初に打つ価値がある。

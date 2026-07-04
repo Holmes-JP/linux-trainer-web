@@ -1,0 +1,24 @@
+name: strings
+summary: バイナリファイルの中から読める文字列だけを抽出する
+group: text
+synopsis: "strings [オプション] ファイル..."
+options:
+  - flag: "-n 数"
+    desc: 表示する文字列の最小の長さを指定する (省略時は 4 文字以上)
+  - flag: "-t x"
+    desc: 各文字列のファイル内での位置 (16 進オフセット) も表示する
+examples:
+  - cmd: strings /usr/local/bin/mystery | less
+    desc: 正体不明のバイナリから読める文字列を抜き出し、何のプログラムか推測する
+  - cmd: strings app.bin | grep -i version
+    desc: バイナリに埋め込まれたバージョン表記を探す
+  - cmd: strings data.dat | grep -i password
+    desc: データファイルに設定値や認証情報が平文で残っていないか調べる
+related_commands: [file, grep, less, cat]
+related_articles: []
+related_scenarios: []
+note: >-
+  バイナリを cat すると制御文字で端末の表示が壊れることがある。
+  正体不明のファイルは、まず file で種類を確認し、strings で読める
+  部分だけを安全に取り出すのが手順。出力は多くなりがちなので
+  grep や less と組み合わせる。

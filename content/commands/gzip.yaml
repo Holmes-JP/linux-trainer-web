@@ -1,0 +1,27 @@
+name: gzip
+summary: ファイルを gzip 形式で圧縮する (元ファイルは .gz に置き換わる)
+group: files
+synopsis: "gzip [オプション] ファイル..."
+options:
+  - flag: "-d"
+    desc: 圧縮ではなく展開する (gunzip と同じ)
+  - flag: "-k"
+    desc: 圧縮後も元ファイルを残す (通常は元ファイルが消えて .gz になる)
+  - flag: "-l"
+    desc: 展開せずに圧縮率や元のサイズを表示する
+  - flag: "-c"
+    desc: 結果を標準出力に書き出す。リダイレクトと組み合わせて元を残せる
+examples:
+  - cmd: gzip /var/log/app/access.log.1
+    desc: ローテート済みの古いログを圧縮してディスクの空きを確保する
+  - cmd: gzip -l /backup/dump.sql.gz
+    desc: 展開したら何 MB になるかを先に確認して、置き場所の空き容量と見比べる
+  - cmd: gzip -c app.conf > app.conf.gz
+    desc: 元ファイルを残したまま圧縮版を作る
+related_commands: [gunzip, tar, df, ls]
+related_articles: []
+related_scenarios: [tar-restore]
+note: >-
+  gzip は「1ファイルの圧縮」専門で、複数ファイルをまとめる機能はない。
+  ディレクトリごと固めたいときは tar と組み合わせる (tar -czf)。
+  デフォルトでは元ファイルが消える点に注意 (残したければ -k か -c)。

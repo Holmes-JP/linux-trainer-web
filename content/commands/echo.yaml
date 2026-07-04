@@ -1,0 +1,23 @@
+name: echo
+summary: 文字列や変数の値を表示する
+group: text
+synopsis: "echo [オプション] [文字列...]"
+options:
+  - flag: "-n"
+    desc: 末尾の改行を付けない
+  - flag: "-e"
+    desc: \n (改行) や \t (タブ) などのエスケープを解釈する
+examples:
+  - cmd: echo $PATH
+    desc: 環境変数の中身を確認する (「コマンドが見つからない」調査の第一歩)
+  - cmd: echo $?
+    desc: 直前のコマンドの終了コードを見る (0 なら成功、それ以外は失敗)
+  - cmd: echo 'export EDITOR=nano' >> ~/.bashrc
+    desc: 設定ファイルの末尾に 1 行追記する (>> が追記、> は上書き)
+related_commands: [printf, cat, tee]
+related_articles: []
+related_scenarios: []
+note: >-
+  リダイレクトの「>」は上書き、「>>」は追記。設定ファイルに 1 行
+  足すつもりで > を使うと中身が全部消える — 事故の定番なので注意。
+  桁揃えや小数の整形など、きちんとした書式が必要なら printf を使う。

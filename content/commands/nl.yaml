@@ -1,0 +1,23 @@
+name: nl
+summary: ファイルの各行に行番号を付けて表示する
+group: text
+synopsis: "nl [オプション] [ファイル...]"
+options:
+  - flag: "-b a"
+    desc: 空行にも番号を付ける (省略時は空行を飛ばして番号を振る)
+  - flag: "-w 数"
+    desc: 番号の桁幅を指定する
+  - flag: "-s 文字"
+    desc: 番号と本文の間の区切り文字を指定する
+examples:
+  - cmd: nl -b a /etc/app/config.json
+    desc: 「12 行目が不正」というエラーと突き合わせるため、行番号付きで表示する
+  - cmd: nl script.sh | head -n 30
+    desc: スクリプトの前半を行番号付きで眺め、エラー行の周辺を確認する
+related_commands: [cat, less, head, sed]
+related_articles: []
+related_scenarios: [broken-json]
+note: >-
+  デフォルトでは空行に番号を振らないため、エディタやエラーメッセージの
+  行番号とずれることがある。行番号で突き合わせるときは -b a を付けるか、
+  同じ挙動の cat -n を使う。

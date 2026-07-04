@@ -1,0 +1,29 @@
+name: sed
+summary: テキストを行単位で置換・削除・抽出する
+group: text
+synopsis: "sed [オプション] 'スクリプト' [ファイル...]"
+options:
+  - flag: "-i"
+    desc: ファイルを直接書き換える (指定しなければ結果を表示するだけ)
+  - flag: "-i.bak"
+    desc: 書き換える前に .bak という拡張子でバックアップを残す
+  - flag: "-n"
+    desc: 自動出力を止める (p コマンドと組み合わせて特定行だけ表示)
+  - flag: "-E"
+    desc: 拡張正規表現 (+ や | など) を使う
+examples:
+  - cmd: sed -i 's/version=1.0.0/version=1.0.1/' /etc/app/app.conf
+    desc: 設定ファイル内の間違ったバージョン表記を置換して直す
+  - cmd: sed -n '15,25p' config.json
+    desc: エラーメッセージが指す行の周辺だけを抜き出して確認する
+  - cmd: sed 's/old/new/' file.txt
+    desc: まず -i なしで実行して、置換結果が正しいか画面で確かめる
+related_commands: [grep, awk, tr, diff]
+related_articles: []
+related_scenarios: [version-pin, broken-json, wrong-json-value]
+note: >-
+  -i は取り返しがつかないので、まず -i なしで結果を確認するか
+  -i.bak でバックアップを残すのが安全。s/// の区切りは / 以外も
+  使えるので、パスを置換するときは s|/var/old|/var/new| と書くと
+  エスケープ地獄を避けられる。s///g の g を忘れると各行の最初の
+  1 箇所しか置換されない。

@@ -1,0 +1,23 @@
+name: tee
+summary: 画面に表示しながら、同じ内容をファイルにも記録する
+group: text
+synopsis: "コマンド | tee [オプション] ファイル..."
+options:
+  - flag: "-a"
+    desc: 上書きではなくファイルの末尾に追記する
+  - flag: "-i"
+    desc: 割り込みシグナルを無視して書き込みを続ける
+examples:
+  - cmd: ./repair.sh 2>&1 | tee repair.log
+    desc: 修復作業の出力を目で追いながら、記録もファイルに残す
+  - cmd: ps aux | tee ps_before.txt
+    desc: 対処前のプロセス一覧を確認しつつ、あとで比較できるよう保存する
+  - cmd: dmesg | tail -n 50 | tee -a investigation.log
+    desc: 調査メモのファイルに、確認した内容を追記していく
+related_commands: [cat, echo, head, tail]
+related_articles: []
+related_scenarios: []
+note: >-
+  「> file」だと画面に何も出ず不安になるが、tee なら見ながら残せる。
+  エラー出力も記録したいときは「2>&1 | tee」の形にする。既存ファイル
+  への記録は -a を忘れると上書きで消えるので注意。
