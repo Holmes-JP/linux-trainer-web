@@ -1,0 +1,38 @@
+id: tar-restore
+verify_fix: "tar xf /opt/backups/config.tar -C / etc/importantapp/settings.conf"  # 模範修復 (テスト専用・UI 非表示)
+title: "バックアップから設定を取り出す"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  設定ファイル /etc/importantapp/settings.conf が消えてしまった。
+  ただし /opt/backups/config.tar というバックアップアーカイブに含まれている。
+  アーカイブから settings.conf を取り出し、元の場所 (/etc/importantapp/settings.conf) に
+  復元せよ。
+
+# 冪等: 毎回 設定を作ってアーカイブし直し、本体を消す。
+setup:
+  - description: "設定をアーカイブ化し、本体を削除する"
+    cmd: |
+      mkdir -p /etc/importantapp
+      printf 'mode=production\nretries=5\n' > /etc/importantapp/settings.conf
+      mkdir -p /opt/backups
+      tar cf /opt/backups/config.tar -C / etc/importantapp/settings.conf
+      rm -f /etc/importantapp/settings.conf
+
+check:
+  - description: "settings.conf が復元されている (mode=production を含む)"
+    test: "grep -q 'mode=production' /etc/importantapp/settings.conf"
+    expect_exit: 0
+
+hints:
+  - "アーカイブの中身を確認: tar tf /opt/backups/config.tar"
+  - "特定のファイルだけを取り出せる: tar xf <archive> -C <展開先> <パス>"
+  - "root (su root、パスワード: password) で: tar xf /opt/backups/config.tar -C / etc/importantapp/settings.conf"
+
+solution: |
+  `tar tf /opt/backups/config.tar` でアーカイブ内のパス (etc/importantapp/settings.conf) を確認。
+  `su root` (パスワード: password) で root になり、
+  `tar xf /opt/backups/config.tar -C / etc/importantapp/settings.conf` で
+  元の場所に展開すれば復元できる。

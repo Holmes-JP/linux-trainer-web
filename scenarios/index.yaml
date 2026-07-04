@@ -50,3 +50,9 @@ scenarios:
   - count-files
   - env-toggle
   - rogue-root-user
+  - process-count
+  - find-root-owned
+  - grep-which-file
+  - wrong-group
+  - tar-restore
+  - decode-secret

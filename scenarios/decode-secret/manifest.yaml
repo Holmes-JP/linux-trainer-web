@@ -1,0 +1,35 @@
+id: decode-secret
+verify_fix: "echo hunter2 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "Base64 でエンコードされた値"
+difficulty: medium
+category: logs
+time_estimate_min: 10
+
+description: |
+  設定ファイル /etc/app/token.b64 に、あるパスワードが Base64 でエンコードされて
+  1行だけ書かれている。これをデコードして元のパスワード (平文) を求め、
+  その文字列だけを /home/user/answer.txt に書け。
+
+# 冪等: 毎回 "hunter2" を Base64 エンコードして書き込む (printf で改行なし入力)。
+setup:
+  - description: "Base64 エンコードしたパスワードを設置する"
+    cmd: |
+      mkdir -p /etc/app
+      printf 'hunter2' | base64 > /etc/app/token.b64
+
+check:
+  - description: "/home/user/answer.txt にデコード後のパスワード (hunter2) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "hunter2"
+    run_as: user
+
+hints:
+  - "まず中身を確認: cat /etc/app/token.b64 (Base64 の文字列)"
+  - "Base64 をデコードするコマンド: base64 -d (--decode)"
+  - "base64 -d /etc/app/token.b64 の出力を answer.txt に書く"
+
+solution: |
+  Base64 のデコードは `base64 -d`:
+    base64 -d /etc/app/token.b64
+  → hunter2。
+  `echo hunter2 > /home/user/answer.txt` で答えを書けば完了。

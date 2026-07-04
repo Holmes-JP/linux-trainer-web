@@ -1,0 +1,39 @@
+id: grep-which-file
+verify_fix: "echo db.conf > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "設定が書かれたファイルを探す"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  /etc/myapp/conf.d/ の中に複数の設定ファイルがある。この中で "DATABASE_URL" という
+  設定キーが書かれているファイルはどれか。そのファイルの「名前」を特定し、
+  名前だけを /home/user/answer.txt に書け (パスではなくファイル名のみ)。
+
+# 冪等: 毎回同じ設定ファイル群を作り直す。DATABASE_URL は db.conf にだけある。
+setup:
+  - description: "複数の設定ファイルを配置する"
+    cmd: |
+      rm -rf /etc/myapp/conf.d
+      mkdir -p /etc/myapp/conf.d
+      printf 'LOG_LEVEL=info\nLOG_PATH=/var/log/app\n' > /etc/myapp/conf.d/logging.conf
+      printf 'CACHE_TTL=300\nCACHE_SIZE=64\n' > /etc/myapp/conf.d/cache.conf
+      printf 'DATABASE_URL=postgres://localhost/app\nPOOL=10\n' > /etc/myapp/conf.d/db.conf
+      printf 'PORT=8080\nWORKERS=4\n' > /etc/myapp/conf.d/server.conf
+
+check:
+  - description: "/home/user/answer.txt に該当ファイル名 (db.conf) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "db.conf"
+    run_as: user
+
+hints:
+  - "複数ファイルからキーワードを探す: grep -r DATABASE_URL /etc/myapp/conf.d"
+  - "ファイル名だけが欲しいときは -l オプション: grep -rl DATABASE_URL /etc/myapp/conf.d"
+  - "見つかったファイル名 (パスではなく名前だけ) を answer.txt に書く"
+
+solution: |
+  複数ファイルを横断して検索する:
+    grep -rl DATABASE_URL /etc/myapp/conf.d
+  → /etc/myapp/conf.d/db.conf。ファイル名は db.conf。
+  `echo db.conf > /home/user/answer.txt` で答えを書けば完了。

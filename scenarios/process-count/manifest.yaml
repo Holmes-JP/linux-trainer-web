@@ -1,0 +1,39 @@
+id: process-count
+verify_fix: "echo 3 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "動いているプロセスの数"
+difficulty: easy
+category: processes
+time_estimate_min: 5
+
+description: |
+  同期デーモン syncd が複数起動している。今この瞬間に何個の syncd プロセスが
+  動いているかを数え、その数だけを /home/user/answer.txt に書け。
+
+# 冪等: 毎回 syncd を一旦すべて止め、ちょうど 3 個起動する。
+# 注意: 常駐は setsid で detach。ループは hang するので3回明示的に起動する。
+setup:
+  - description: "syncd をちょうど3個起動する"
+    cmd: |
+      printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/sbin/syncd
+      chmod 755 /usr/local/sbin/syncd
+      pkill -x syncd 2>/dev/null || true
+      sleep 1
+      setsid /usr/local/sbin/syncd </dev/null >/dev/null 2>&1 &
+      setsid /usr/local/sbin/syncd </dev/null >/dev/null 2>&1 &
+      setsid /usr/local/sbin/syncd </dev/null >/dev/null 2>&1 &
+      sleep 1
+
+check:
+  - description: "/home/user/answer.txt に syncd の数 (3) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "3"
+    run_as: user
+
+hints:
+  - "動いている syncd を一覧する: ps aux | grep syncd、または pgrep -a syncd"
+  - "個数を数える方法: pgrep -c syncd (プロセス数を数えて表示する)"
+  - "pgrep -c syncd の結果を書き込む: echo 3 > /home/user/answer.txt"
+
+solution: |
+  `pgrep -c syncd` で syncd プロセスの個数を数えられる (答えは 3)。
+  `echo 3 > /home/user/answer.txt` で答えを書けば完了。

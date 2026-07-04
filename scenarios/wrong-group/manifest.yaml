@@ -1,0 +1,37 @@
+id: wrong-group
+verify_fix: "chgrp www-data /var/www/html/config.php"  # 模範修復 (テスト専用・UI 非表示)
+title: "グループ所有者が違うファイル"
+difficulty: medium
+category: permissions
+time_estimate_min: 10
+
+description: |
+  Web の設定ファイル /var/www/html/config.php は www-data グループのプロセスから
+  読めるべきだが、グループ所有者が root になっているためアクセスできない。
+  このファイルのグループ所有者を www-data に変更せよ。
+
+# 冪等: www-data グループが無ければ作成し、毎回ファイルのグループを root に戻す。
+setup:
+  - description: "config.php を root グループ所有にする"
+    cmd: |
+      getent group www-data >/dev/null 2>&1 || groupadd www-data
+      mkdir -p /var/www/html
+      echo '<?php $db = "app"; ?>' > /var/www/html/config.php
+      chown root:root /var/www/html/config.php
+      chmod 640 /var/www/html/config.php
+
+check:
+  - description: "config.php のグループ所有者が www-data になっている"
+    test: "stat -c '%G' /var/www/html/config.php | grep -qx www-data"
+    expect_exit: 0
+
+hints:
+  - "所有者とグループを確認: ls -l /var/www/html/config.php (グループが root)"
+  - "グループだけを変える: chgrp <グループ名> <ファイル>"
+  - "root (su root、パスワード: password) で: chgrp www-data /var/www/html/config.php"
+
+solution: |
+  `ls -l /var/www/html/config.php` を見るとグループ所有者が root になっている。
+  `su root` (パスワード: password) で root になり
+  `chgrp www-data /var/www/html/config.php` (または chown root:www-data ...) で
+  グループを www-data に変更すれば www-data のプロセスから読めるようになる。

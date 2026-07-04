@@ -1,0 +1,40 @@
+id: find-root-owned
+verify_fix: "echo secret.env > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "所有者が違うファイルを探す"
+difficulty: medium
+category: permissions
+time_estimate_min: 10
+
+description: |
+  /home/user/project 以下のファイルは本来すべて user 所有のはずだが、
+  1つだけ root 所有のファイルが紛れ込んでいる。その root 所有ファイルの「名前」を
+  特定し、名前だけを /home/user/answer.txt に書け (パスではなくファイル名のみ)。
+
+# 冪等: 毎回プロジェクトを作り直し、secret.env だけ root 所有にする。
+setup:
+  - description: "user 所有のファイル群に root 所有ファイルを1つ紛れ込ませる"
+    cmd: |
+      rm -rf /home/user/project
+      mkdir -p /home/user/project
+      echo 'print(1)' > /home/user/project/main.py
+      echo 'def u(): pass' > /home/user/project/utils.py
+      echo '# project' > /home/user/project/README.md
+      echo 'API_KEY=xxxx' > /home/user/project/secret.env
+      chown -R user:user /home/user/project
+      chown root:root /home/user/project/secret.env
+
+check:
+  - description: "/home/user/answer.txt に root 所有ファイル名 (secret.env) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "secret.env"
+    run_as: user
+
+hints:
+  - "所有者を一覧で確認: ls -l /home/user/project (1つだけ root がいる)"
+  - "所有者で絞り込む: find /home/user/project -user root"
+  - "見つかったファイル名 (パスではなく名前だけ) を answer.txt に書く"
+
+solution: |
+  `ls -l /home/user/project` を見ると secret.env だけ所有者が root になっている。
+  `find /home/user/project -user root` でも特定できる。
+  `echo secret.env > /home/user/answer.txt` で答えを書けば完了。
