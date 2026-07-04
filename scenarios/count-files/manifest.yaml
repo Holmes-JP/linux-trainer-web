@@ -1,0 +1,42 @@
+id: count-files
+verify_fix: "echo 6 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "ファイル数を数える"
+difficulty: easy
+category: filesystem
+time_estimate_min: 5
+
+description: |
+  受信ディレクトリ /var/spool/incoming にあるファイルの数を数え、その数だけを
+  /home/user/answer.txt に書け。ただし数えるのは「通常ファイル」だけで、
+  中にあるサブディレクトリは数に含めないこと。
+
+# 冪等: 毎回 6 個のファイルと 1 個のサブディレクトリ (数に含めない) を作り直す。
+setup:
+  - description: "6 個のファイルと 1 個のサブディレクトリを配置する"
+    cmd: |
+      rm -rf /var/spool/incoming
+      mkdir -p /var/spool/incoming/archive
+      echo a > /var/spool/incoming/msg-001.txt
+      echo b > /var/spool/incoming/msg-002.txt
+      echo c > /var/spool/incoming/msg-003.txt
+      echo d > /var/spool/incoming/msg-004.txt
+      echo e > /var/spool/incoming/msg-005.txt
+      echo f > /var/spool/incoming/msg-006.txt
+
+check:
+  - description: "/home/user/answer.txt に通常ファイルの数 (6) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "6"
+    run_as: user
+
+hints:
+  - "中身を確認: ls -l /var/spool/incoming (ファイルと archive ディレクトリがある)"
+  - "ls | wc -l だとディレクトリも数えてしまう。通常ファイルだけを数えたい"
+  - "find /var/spool/incoming -maxdepth 1 -type f | wc -l → その数を answer.txt へ"
+
+solution: |
+  通常ファイルだけを数えるには -type f を使う:
+    find /var/spool/incoming -maxdepth 1 -type f | wc -l
+  → 6 (archive ディレクトリは含まない)。
+  `echo 6 > /home/user/answer.txt` で答えを書けば完了。
+  (`ls | wc -l` だと archive も数えて 7 になってしまう点に注意)

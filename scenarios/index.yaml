@@ -44,3 +44,9 @@ scenarios:
   - sum-2xx-bytes
   - world-writable-hunt
   - version-pin
+  - kill-specific
+  - biggest-subdir
+  - relink-release
+  - count-files
+  - env-toggle
+  - rogue-root-user

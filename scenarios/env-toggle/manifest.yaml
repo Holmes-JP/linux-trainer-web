@@ -1,0 +1,58 @@
+id: env-toggle
+verify_fix: "sed -i 's/^ENABLED=0/ENABLED=1/' /etc/default/reportd && /etc/init.d/reportd start && sleep 1"  # 模範修復 (テスト専用・UI 非表示)
+title: "環境ファイルで無効化されたサービス"
+difficulty: medium
+category: services
+time_estimate_min: 15
+
+description: |
+  レポート生成デーモン reportd を起動しても常駐しない。
+  デーモンは起動時に /etc/default/reportd を読み、ENABLED が 1 でなければ「無効」と
+  判断して即終了する。今この値が 0 になっている。ENABLED を 1 にして reportd を起動せよ。
+  (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
+
+# 冪等: 本体/init/環境ファイルを毎回設置し、ENABLED=0 (無効) で停止した状態にする。
+# 注意: プロセス検出は pgrep -x reportd。常駐は setsid で detach。
+setup:
+  - description: "reportd を設置し、環境ファイルで無効化して停止する"
+    cmd: |
+      cat > /usr/local/sbin/reportd <<'EOF'
+      #!/bin/sh
+      . /etc/default/reportd 2>/dev/null
+      if [ "$ENABLED" != "1" ]; then
+        echo "$(date) reportd is disabled (ENABLED=$ENABLED); exiting" >> /var/log/reportd.err
+        exit 0
+      fi
+      while true; do sleep 3; done
+      EOF
+      chmod 755 /usr/local/sbin/reportd
+      cat > /etc/init.d/reportd <<'EOF'
+      #!/bin/sh
+      BIN=/usr/local/sbin/reportd
+      case "$1" in
+        start) setsid "$BIN" </dev/null >/dev/null 2>&1 & echo "reportd start requested" ;;
+        stop) pkill -x reportd && echo "reportd stopped" ;;
+        status) pgrep -x reportd >/dev/null && echo "running" || { echo "stopped"; exit 3; } ;;
+        *) echo "usage: $0 {start|stop|status}"; exit 2 ;;
+      esac
+      EOF
+      chmod 755 /etc/init.d/reportd
+      mkdir -p /etc/default
+      printf 'ENABLED=0\nINTERVAL=60\n' > /etc/default/reportd
+      pkill -x reportd 2>/dev/null || true
+
+check:
+  - description: "reportd プロセスが常駐している"
+    test: "pgrep -x reportd"
+    expect_exit: 0
+
+hints:
+  - "起動を試すと常駐しない: service reportd start → service reportd status は stopped"
+  - "原因のヒント: cat /var/log/reportd.err と cat /etc/default/reportd (ENABLED=0)"
+  - "root (su root、パスワード: password) で ENABLED=1 にして起動: /etc/default/reportd を編集 → service reportd start"
+
+solution: |
+  reportd は /etc/default/reportd の ENABLED が 1 でないと即終了する。今は 0。
+  `su root` (パスワード: password) で root になり、
+  `sed -i 's/^ENABLED=0/ENABLED=1/' /etc/default/reportd` (または vim で編集) してから
+  `service reportd start` で起動すれば常駐する。

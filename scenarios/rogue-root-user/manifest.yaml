@@ -1,0 +1,32 @@
+id: rogue-root-user
+verify_fix: "sed -i '/^hacker:/d' /etc/passwd"  # 模範修復 (テスト専用・UI 非表示)
+title: "権限昇格用の不正アカウント"
+difficulty: hard
+category: permissions
+time_estimate_min: 15
+
+description: |
+  侵入調査で、攻撃者が仕込んだ不正なアカウント "hacker" が /etc/passwd に
+  追加されているのが見つかった。しかも UID が 0 に細工されており、root と同じ特権を持つ。
+  非常に危険なので、この hacker アカウントを削除して塞げ。
+
+# 冪等: hacker が無ければ UID 0 の不正アカウントとして追加する。
+setup:
+  - description: "UID 0 の不正アカウント hacker を /etc/passwd に仕込む"
+    cmd: |
+      grep -q '^hacker:' /etc/passwd || echo 'hacker:x:0:0:backdoor:/root:/bin/bash' >> /etc/passwd
+
+check:
+  - description: "hacker アカウントが存在しない"
+    test: "! getent passwd hacker >/dev/null"
+    expect_exit: 0
+
+hints:
+  - "UID 0 (root 特権) のアカウントを洗い出す: awk -F: '$3==0' /etc/passwd → root 以外に hacker がいる"
+  - "hacker の詳細を確認: getent passwd hacker"
+  - "root (su root、パスワード: password) で削除: userdel hacker、または /etc/passwd の hacker 行を削除する"
+
+solution: |
+  `awk -F: '$3==0' /etc/passwd` で UID 0 のアカウントを列挙すると、root 以外に hacker がいる。
+  `su root` (パスワード: password) で root になり `userdel hacker`
+  (または `sed -i '/^hacker:/d' /etc/passwd` で該当行を削除) すれば不正アカウントを塞げる。

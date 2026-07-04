@@ -1,0 +1,38 @@
+id: biggest-subdir
+verify_fix: "echo videos > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "最も容量を食っているディレクトリ"
+difficulty: medium
+category: disk
+time_estimate_min: 10
+
+description: |
+  /var/data の下に複数のサブディレクトリがある。その中で最もディスクを使っている
+  「サブディレクトリの名前」を特定し、その名前だけを /home/user/answer.txt に書け。
+  (パスではなくディレクトリ名のみ。例: videos)
+
+# 冪等: 毎回サブディレクトリと中の大きさの異なるファイルを作り直す。videos が最大 (8MB)。
+# 注意: /dev/zero は無いので /dev/urandom。du はブロック集計 0 なので du -b (apparent) を使う。
+setup:
+  - description: "サイズの異なるサブディレクトリを配置する"
+    cmd: |
+      mkdir -p /var/data/videos /var/data/logs /var/data/cache
+      head -c 8388608 /dev/urandom > /var/data/videos/clip.mp4
+      head -c 2097152 /dev/urandom > /var/data/logs/app.log
+      head -c 1048576 /dev/urandom > /var/data/cache/blob.bin
+
+check:
+  - description: "/home/user/answer.txt に最大サブディレクトリ名 (videos) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "videos"
+    run_as: user
+
+hints:
+  - "サブディレクトリごとの実サイズを集計する (この環境では du -b): du -sb /var/data/*"
+  - "大きい順に並べる: du -sb /var/data/* | sort -rn | head"
+  - "先頭の行のパスからディレクトリ名だけ取り出す (basename)。その名前を answer.txt へ"
+
+solution: |
+  サブディレクトリごとに実サイズを集計して最大を探す:
+    du -sb /var/data/* | sort -rn | head -1
+  → /var/data/videos が最大 (8MB)。ディレクトリ名は videos。
+  `echo videos > /home/user/answer.txt` で答えを書けば完了。

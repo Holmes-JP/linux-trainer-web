@@ -1,0 +1,47 @@
+id: kill-specific
+verify_fix: "pkill -x cryptosync"  # 模範修復 (テスト専用・UI 非表示)
+title: "正規プロセスと紛らわしい不正プロセス"
+difficulty: medium
+category: processes
+time_estimate_min: 10
+
+description: |
+  サーバーに datasync (正規の同期プロセス) と cryptosync (不正なプロセス) が
+  両方動いている。名前が似ているので注意して、不正な cryptosync「だけ」を停止せよ。
+  正規の datasync は動かしたまま残すこと (誤って止めないこと)。
+
+# 冪等: 本体を毎回設置し、動いていなければ起動する (どちらかが消えても復活)。
+# 注意: pkill -x <comm> で完全一致停止。pkill sync のような部分一致は両方止めてしまう。
+setup:
+  - description: "正規/不正の2プロセスを起動する"
+    cmd: |
+      printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/sbin/datasync
+      chmod 755 /usr/local/sbin/datasync
+      if ! pgrep -x datasync >/dev/null; then
+        setsid /usr/local/sbin/datasync </dev/null >/dev/null 2>&1 &
+      fi
+      printf '#!/bin/sh\nwhile true; do sleep 5; done\n' > /usr/local/sbin/cryptosync
+      chmod 755 /usr/local/sbin/cryptosync
+      if ! pgrep -x cryptosync >/dev/null; then
+        setsid /usr/local/sbin/cryptosync </dev/null >/dev/null 2>&1 &
+      fi
+      sleep 1
+
+check:
+  - description: "不正な cryptosync が停止している"
+    test: "pgrep -x cryptosync"
+    expect_exit: 1
+  - description: "正規の datasync は動いたまま残っている"
+    test: "pgrep -x datasync"
+    expect_exit: 0
+
+hints:
+  - "動いているプロセスを確認: ps aux (datasync と cryptosync がある)"
+  - "名前を完全一致で狙う。pkill sync のような部分一致は両方止めてしまうので使わない"
+  - "root (su root、パスワード: password) で不正なものだけ停止: pkill -x cryptosync"
+
+solution: |
+  datasync は残し、cryptosync だけを止めるのがポイント。
+  `su root` (パスワード: password) で root になり `pkill -x cryptosync`
+  (完全一致) で不正プロセスだけを停止する。`pkill sync` などの部分一致は
+  datasync まで巻き込むので使わない。

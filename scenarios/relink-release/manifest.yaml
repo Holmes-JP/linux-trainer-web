@@ -1,0 +1,40 @@
+id: relink-release
+verify_fix: "ln -sfn /opt/app/releases/v3 /opt/app/current"  # 模範修復 (テスト専用・UI 非表示)
+title: "デプロイの current リンクが古い"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  アプリは /opt/app/current 経由で最新リリースを参照するが、この symlink が
+  古いリリース (v1) を指したままで、先ほどデプロイした最新の v3 が反映されていない。
+  /opt/app/current が v3 (/opt/app/releases/v3) を指すように張り直せ。
+
+# 冪等: 毎回リリース群を用意し、current を古い v1 に向ける。
+setup:
+  - description: "リリース群を用意し current を古い v1 に向ける"
+    cmd: |
+      mkdir -p /opt/app/releases/v1 /opt/app/releases/v2 /opt/app/releases/v3
+      echo "app 1.0" > /opt/app/releases/v1/VERSION
+      echo "app 2.0" > /opt/app/releases/v2/VERSION
+      echo "app 3.0" > /opt/app/releases/v3/VERSION
+      ln -sfn /opt/app/releases/v1 /opt/app/current
+
+check:
+  - description: "current が v3 を指している"
+    test: "readlink /opt/app/current | grep -q '/v3$'"
+    expect_exit: 0
+  - description: "current 経由で v3 の中身が読める"
+    test: "cat /opt/app/current/VERSION"
+    expect_stdout_contains: "3.0"
+
+hints:
+  - "現在のリンク先を確認: ls -l /opt/app/current (v1 を指している)"
+  - "利用可能なリリースを確認: ls /opt/app/releases (v3 が最新)"
+  - "root (su root、パスワード: password) で張り直す: ln -sfn /opt/app/releases/v3 /opt/app/current"
+
+solution: |
+  `ls -l /opt/app/current` を見ると古い v1 を指している。最新は v3。
+  `su root` (パスワード: password) で root になり、
+  `ln -sfn /opt/app/releases/v3 /opt/app/current` で current を v3 に張り直せば完了
+  (-s: シンボリック, -f: 上書き, -n: リンク先ディレクトリの中に潜らせない)。
