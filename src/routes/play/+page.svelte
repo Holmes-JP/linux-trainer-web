@@ -13,7 +13,8 @@
 	import { ControlChannel, runSetup, runChecks } from '$lib/scenario/runner';
 	import { loadScenario, loadScenarioIndex } from '$lib/scenario/loader';
 	import { markComplete } from '$lib/stores/progress';
-	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
+	import { t, themes, FONT_SANS, FONT_MONO } from '$lib/design/theme';
+	import '$lib/design/theme.css';
 
 	// 挑戦画面 (Refined - Challenge) の見た目マップ
 	const catIcons = {
@@ -38,12 +39,12 @@
 		'setup-failed': { label: 'FAILED', color: t.red }
 	};
 	$: ph = phaseMap[phase] ?? phaseMap.ready;
-	// xterm を暗緑ターミナルに合わせる
+	// xterm は CSS var を解決できないため実 hex を使う (ターミナルは常に暗色)
 	const termTheme = {
-		background: t.termBg,
-		foreground: t.termText,
-		cursor: t.accent,
-		cursorAccent: t.termBg,
+		background: themes.dark.termBg,
+		foreground: themes.dark.termText,
+		cursor: themes.dark.accent,
+		cursorAccent: themes.dark.termBg,
 		selectionBackground: 'rgba(74,222,128,0.25)'
 	};
 
@@ -338,7 +339,7 @@
 		transition: color 0.15s ease;
 	}
 	.panel-toggle:hover {
-		color: #4ade80 !important;
+		color: var(--accent) !important;
 	}
 	/* パネルの折りたたみ: 幅をスライドさせる。inner は 400px 固定で中身が潰れないようにする */
 	.panel-wrap {

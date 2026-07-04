@@ -1,0 +1,49 @@
+/* デザイントークンを CSS 変数として定義 (Refined デザイン)。
+   既定 (:root) = ダーク。<html data-theme="light"> でライトに切り替わる。
+   theme.js の `t` は各トークンを var(--x) 参照するので、これを切り替えれば全画面が追従する。
+   (xterm など CSS var を解決できない箇所は theme.js の themes[] 実値を使う) */
+:root,
+:root[data-theme='dark'] {
+	--bg: #0b0f0d;
+	--surface: #121816;
+	--surfaceHover: #161e1a;
+	--border: #232e28;
+	--track: #1c2621;
+	--text: #e4ede7;
+	--dim: #87988e;
+	--accent: #4ade80;
+	--accentText: #08130c;
+	--accentBorder: rgba(74, 222, 128, 0.4);
+	--accentDim: rgba(74, 222, 128, 0.08);
+	--amber: #d9b44a;
+	--red: #e57368;
+	--redDim: rgba(229, 115, 104, 0.1);
+	--termBg: #060907;
+	--termBorder: #17201b;
+	--termText: #c8d6cd;
+	--termDim: #5d6f64;
+	--font-sans: 'IBM Plex Sans JP', sans-serif;
+	--font-mono: 'JetBrains Mono', monospace;
+}
+
+:root[data-theme='light'] {
+	--bg: #f3f6f4;
+	--surface: #ffffff;
+	--surfaceHover: #f6faf7;
+	--border: #d9e2db;
+	--track: #e7ede8;
+	--text: #182019;
+	--dim: #5f6f65;
+	--accent: #1a9d54;
+	--accentText: #ffffff;
+	--accentBorder: rgba(26, 157, 84, 0.45);
+	--accentDim: rgba(26, 157, 84, 0.07);
+	--amber: #a8801e;
+	--red: #c8503f;
+	--redDim: rgba(200, 80, 63, 0.08);
+	/* ターミナルはライトでも暗色を維持 (可読性) */
+	--termBg: #0d120f;
+	--termBorder: #1d2721;
+	--termText: #c8d6cd;
+	--termDim: #5d6f64;
+}

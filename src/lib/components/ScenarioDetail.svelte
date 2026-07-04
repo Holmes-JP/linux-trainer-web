@@ -72,10 +72,7 @@
 	$: firstHint = scenario?.hints?.[0] ?? null;
 </script>
 
-<main
-	class="detail-root scrollbar"
-	style="--bg:{t.bg}; --text:{t.text}; --font-sans:{FONT_SANS};"
->
+<main class="detail-root scrollbar">
 	<!-- Top bar -->
 	<header style="display:flex; align-items:center; gap:20px; height:52px; flex-shrink:0; padding:0 20px; border-bottom:1px solid {t.border}; background:{t.surface};">
 		<a href="/play" id="back-to-list" data-sveltekit-reload class="backlink" style="color:{t.dim};"><i class="fas fa-arrow-left" style="font-size:12px;"></i>一覧</a>
@@ -190,7 +187,7 @@
 		transition: color 0.15s ease;
 	}
 	.backlink:hover {
-		color: #e4ede7 !important;
+		color: var(--text) !important;
 	}
 	.detail-icon {
 		width: 44px;
@@ -202,8 +199,8 @@
 		border-radius: 8px;
 	}
 	.card {
-		background: #121816;
-		border: 1px solid #232e28;
+		background: var(--surface);
+		border: 1px solid var(--border);
 		border-radius: 10px;
 		padding: 18px 20px;
 		margin-bottom: 16px;

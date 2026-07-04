@@ -3,7 +3,7 @@
 	// トップバー / ヒーロー+進捗 / 難易度・カテゴリフィルタ / LEVEL 1-3 の学習パス。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { progress, resetProgress } from '$lib/stores/progress';
-	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
+	import { t, FONT_SANS, FONT_MONO, themeMode, toggleTheme } from '$lib/design/theme';
 	import { fmtDuration } from '$lib/util/format';
 
 	/** Scenario[] (loader が読み込んだ manifest メタ) */
@@ -87,18 +87,23 @@
 	}
 </script>
 
-<main
-	class="list-root scrollbar"
-	style="--bg:{t.bg}; --surface:{t.surface}; --surface-hover:{t.surfaceHover}; --border:{t.border};
-	       --track:{t.track}; --text:{t.text}; --dim:{t.dim}; --accent:{t.accent}; --font-sans:{FONT_SANS}; --font-mono:{FONT_MONO};"
->
+<main class="list-root scrollbar">
 	<!-- Top bar -->
 	<header class="topbar">
 		<div style="display:flex; align-items:center; gap:12px;">
 			<span style="font-family:{FONT_MONO}; font-size:14px; color:{t.accent};">user@webvm:~$</span>
 			<span style="font-weight:600; font-size:15px; letter-spacing:0.02em;">Linux トラブルシューティング演習</span>
 		</div>
-		<span style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">POWERED BY WEBVM / CHEERPX</span>
+		<div style="display:flex; align-items:center; gap:16px;">
+			<span style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">POWERED BY WEBVM / CHEERPX</span>
+			<button
+				class="theme-toggle"
+				title="テーマ切り替え (ライト/ダーク)"
+				aria-label="テーマ切り替え"
+				on:click={toggleTheme}
+				style="color:{t.dim};"
+			><i class="fas {$themeMode === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
+		</div>
 	</header>
 
 	<div class="container">
@@ -186,7 +191,7 @@
 							data-sveltekit-reload
 							class="card"
 							class:is-next={s.id === nextId}
-							style="--card-border:{s.id === nextId ? t.accent + '66' : t.border};"
+							style="--card-border:{s.id === nextId ? t.accentBorder : t.border};"
 						>
 							<span style="font-family:{FONT_MONO}; font-size:13px; color:{s.completed ? t.accent : t.dim}; width:24px; flex-shrink:0;">{s.num}</span>
 							<span class="card-icon" style="color:{diffColor[s.difficulty]};"><i class={s.icon} style="font-size:14px;"></i></span>
@@ -293,6 +298,17 @@
 		font-size: 11px;
 		cursor: pointer;
 		padding: 0;
+	}
+	.theme-toggle {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		font-size: 14px;
+		padding: 4px 6px;
+		transition: color 0.15s ease;
+	}
+	.theme-toggle:hover {
+		color: var(--accent) !important;
 	}
 	.reset-link:disabled {
 		opacity: 0.4;

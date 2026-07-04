@@ -1,7 +1,25 @@
-// Refined デザイン (Claude Design: デザイン洗練のご依頼) のデザイントークン。
-// Refined - Challenge / Refined - Scenario List の themes() と同一の値。
-// コンポーネントは `import { t } from '$lib/design/theme'` して inline style で参照する
-// (デザイン原本の {{ t.xxx }} をそのまま移植する形)。
+// Refined デザインのデザイントークン。
+//
+// 実際の色は theme.css が CSS 変数 (--bg 等) として定義し、<html data-theme> で
+// dark/light を切り替える。ここの `t` は各トークンを var(--x) 参照する文字列なので、
+// コンポーネントが `style="background:{t.bg}"` と書くだけでテーマ追従する。
+// (xterm など CSS var を解決できない箇所は下の themes[] の実 hex を使うこと)
+import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+
+// CSS var 参照 (インライン style / style 文字列に埋める用)
+const TOKENS = [
+	'bg', 'surface', 'surfaceHover', 'border', 'track', 'text', 'dim',
+	'accent', 'accentText', 'accentBorder', 'accentDim',
+	'amber', 'red', 'redDim',
+	'termBg', 'termBorder', 'termText', 'termDim'
+];
+export const t = Object.fromEntries(TOKENS.map((k) => [k, `var(--${k})`]));
+
+export const FONT_SANS = "'IBM Plex Sans JP', sans-serif";
+export const FONT_MONO = "'JetBrains Mono', monospace";
+
+// 実 hex (CSS var を解決できない箇所: xterm のターミナルテーマ等)
 export const themes = {
 	dark: {
 		bg: '#0b0f0d', surface: '#121816', surfaceHover: '#161e1a', border: '#232e28', track: '#1c2621',
@@ -19,9 +37,19 @@ export const themes = {
 	}
 };
 
-// 既定はダーク (デザインの default、現行アプリと一致)。light は将来のトグル用に保持。
-export const t = themes.dark;
-
-// フォントスタック
-export const FONT_SANS = "'IBM Plex Sans JP', sans-serif";
-export const FONT_MONO = "'JetBrains Mono', monospace";
+// --- テーマ切り替え (localStorage 永続 + <html data-theme>) ---
+const THEME_KEY = 'linux-trainer:theme';
+function initialTheme() {
+	if (!browser) return 'dark';
+	return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark';
+}
+export const themeMode = writable(initialTheme());
+if (browser) {
+	themeMode.subscribe((m) => {
+		localStorage.setItem(THEME_KEY, m);
+		document.documentElement.dataset.theme = m;
+	});
+}
+export function toggleTheme() {
+	themeMode.update((m) => (m === 'dark' ? 'light' : 'dark'));
+}

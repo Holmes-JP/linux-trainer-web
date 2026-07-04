@@ -57,7 +57,7 @@
 	}
 </script>
 
-<aside class="mission" style="--surface:{t.surface}; --border:{t.border};">
+<aside class="mission">
 	<div class="mission-body scrollbar">
 		<!-- MISSION -->
 		<section style="padding:20px 20px 16px 20px; border-bottom:1px solid {t.border};">
