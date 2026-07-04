@@ -1,0 +1,33 @@
+id: downloads-full
+verify_fix: "rm -f /home/user/downloads/bigfile.iso"  # 模範修復 (テスト専用・UI 非表示)
+title: "ダウンロードフォルダの肥大化"
+difficulty: easy
+category: disk
+time_estimate_min: 5
+
+description: |
+  /home/user/downloads に巨大な不要ファイルが残っていて容量を圧迫している。
+  /home/user/downloads の合計サイズを 1MB 以下に減らせ。
+
+# 冪等: 毎回 9MB の不要ファイルを作り直す (head -c で上書き)。
+# 注意: /dev/zero は無いので /dev/urandom を使う。du はブロック集計が 0 なので du -sb で実サイズ判定。
+setup:
+  - description: "巨大な不要ファイルを配置する"
+    cmd: |
+      mkdir -p /home/user/downloads
+      head -c 9437184 /dev/urandom > /home/user/downloads/bigfile.iso
+
+check:
+  - description: "/home/user/downloads が合計 1MB 以下に減っている"
+    test: '[ "$(du -sb /home/user/downloads | cut -f1)" -le 1048576 ]'
+    expect_exit: 0
+
+hints:
+  - "何が容量を食っているか確認: ls -lh /home/user/downloads"
+  - "実サイズで集計する (この環境では du -h ではなく du -b / ls -l): du -ab /home/user/downloads | sort -rn | head"
+  - "root (su root、パスワード: password) で不要ファイルを削除: rm /home/user/downloads/bigfile.iso"
+
+solution: |
+  `ls -lh /home/user/downloads` で bigfile.iso が肥大化しているのが分かる。
+  `su root` (パスワード: password) で root になり `rm /home/user/downloads/bigfile.iso`
+  で削除すれば合計は 1MB 以下になる。

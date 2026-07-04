@@ -26,3 +26,9 @@ scenarios:
   - unique-visitors
   - broken-json
   - stale-lock
+  - script-not-executable
+  - downloads-full
+  - count-warnings
+  - total-bytes
+  - restore-binary
+  - missing-data-file

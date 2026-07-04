@@ -1,0 +1,58 @@
+id: missing-data-file
+verify_fix: "mkdir -p /var/lib/aggregator && echo seed > /var/lib/aggregator/seed.dat && /etc/init.d/aggregator start && sleep 1"  # 模範修復 (テスト専用・UI 非表示)
+title: "起動直後に落ちる集計サービス"
+difficulty: medium
+category: services
+time_estimate_min: 15
+
+description: |
+  集計サービス aggregator を起動しても、すぐに落ちて常駐しない。
+  エラーログに手がかりがあるらしい。原因を調べ、aggregator が常駐するように修復せよ。
+  (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
+
+# 冪等: 本体と init を毎回設置し、必須データファイルを消して停止した状態にする。
+# 注意: プロセス検出は pgrep -x aggregatord。本体(aggregatord)と init(aggregator)は名前を分ける。
+#       常駐は setsid で detach。デーモンは seed.dat が無いと即終了しエラーログを残す。
+setup:
+  - description: "aggregator を設置し、必須データを消して停止する"
+    cmd: |
+      cat > /usr/local/sbin/aggregatord <<'EOF'
+      #!/bin/sh
+      if [ ! -f /var/lib/aggregator/seed.dat ]; then
+        echo "$(date) FATAL: data file /var/lib/aggregator/seed.dat is missing" >> /var/log/aggregator.err
+        exit 1
+      fi
+      while true; do sleep 3; done
+      EOF
+      chmod 755 /usr/local/sbin/aggregatord
+      cat > /etc/init.d/aggregator <<'EOF'
+      #!/bin/sh
+      BIN=/usr/local/sbin/aggregatord
+      case "$1" in
+        start) setsid "$BIN" </dev/null >/dev/null 2>&1 & echo "aggregator started" ;;
+        stop) pkill -x aggregatord && echo "aggregator stopped" ;;
+        status) pgrep -x aggregatord >/dev/null && echo "running" || { echo "stopped"; exit 3; } ;;
+        *) echo "usage: $0 {start|stop|status}"; exit 2 ;;
+      esac
+      EOF
+      chmod 755 /etc/init.d/aggregator
+      # 壊す: サービスを止め、必須データを消す
+      pkill -x aggregatord 2>/dev/null || true
+      rm -rf /var/lib/aggregator
+
+check:
+  - description: "aggregatord プロセスが常駐している"
+    test: "pgrep -x aggregatord"
+    expect_exit: 0
+
+hints:
+  - "起動を試す: service aggregator start (root で)。直後に status を見ると stopped のまま"
+  - "エラーログを読む: cat /var/log/aggregator.err (必須データファイルが無いと出る)"
+  - "root (su root、パスワード: password) で不足を用意して起動: mkdir -p /var/lib/aggregator; echo seed > /var/lib/aggregator/seed.dat; service aggregator start"
+
+solution: |
+  `service aggregator start` してもすぐ落ちる。`cat /var/log/aggregator.err` を見ると
+  「data file /var/lib/aggregator/seed.dat is missing」とある。
+  `su root` (パスワード: password) で root になり、
+  `mkdir -p /var/lib/aggregator && echo seed > /var/lib/aggregator/seed.dat` で
+  必須データを用意してから `service aggregator start` で起動すれば常駐する。

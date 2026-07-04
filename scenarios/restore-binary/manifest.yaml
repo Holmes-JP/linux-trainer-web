@@ -1,0 +1,40 @@
+id: restore-binary
+verify_fix: "cp /usr/local/bin/report.bak /usr/local/bin/report && chmod +x /usr/local/bin/report"  # 模範修復 (テスト専用・UI 非表示)
+title: "消えた実行ファイル"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  レポート生成コマンド /usr/local/bin/report を実行しようとすると
+  「そんなコマンドは無い」と言われる。どうやら本体が消えてしまったらしい。
+  以前のバックアップが同じディレクトリに残っている。report を復元し、
+  user が実行できるようにせよ。
+
+# 冪等: 毎回 バックアップ (.bak、実行権限なし) を作り直し、本体を消す。
+setup:
+  - description: "本体を消し、実行権限なしのバックアップだけ残す"
+    cmd: |
+      cat > /usr/local/bin/report.bak <<'EOF'
+      #!/bin/sh
+      echo REPORT_OK
+      EOF
+      chmod 644 /usr/local/bin/report.bak
+      rm -f /usr/local/bin/report
+
+check:
+  - description: "user が report を実行でき REPORT_OK を出力する"
+    test: "/usr/local/bin/report"
+    expect_stdout_contains: "REPORT_OK"
+    run_as: user
+
+hints:
+  - "本体を探す: ls -l /usr/local/bin/ (report は無いが report.bak がある)"
+  - "バックアップから復元する。ただし .bak には実行権限が無い点に注意"
+  - "root (su root、パスワード: password) で: cp /usr/local/bin/report.bak /usr/local/bin/report && chmod +x /usr/local/bin/report"
+
+solution: |
+  本体 /usr/local/bin/report は消えているが、バックアップ report.bak が同じディレクトリにある。
+  `su root` (パスワード: password) で root になり、
+  `cp /usr/local/bin/report.bak /usr/local/bin/report` で復元し、
+  `chmod +x /usr/local/bin/report` で実行権限を付ければ動く。

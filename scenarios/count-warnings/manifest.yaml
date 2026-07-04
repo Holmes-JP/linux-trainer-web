@@ -1,0 +1,43 @@
+id: count-warnings
+verify_fix: "echo 4 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "警告ログの件数"
+difficulty: easy
+category: logs
+time_estimate_min: 5
+
+description: |
+  アプリのログ /var/log/app/service.log を調べたい。
+  このログの中で "WARN" を含む行の数を数え、その数字だけを
+  /home/user/answer.txt に書き込め。
+
+# 冪等: 毎回同じログを作り直す。WARN 行はちょうど 4 行。
+setup:
+  - description: "調査対象のログを設置する"
+    cmd: |
+      mkdir -p /var/log/app
+      cat > /var/log/app/service.log <<'EOF'
+      2026-07-04 09:00:00 INFO  service started
+      2026-07-04 09:00:05 WARN  slow query detected (120ms)
+      2026-07-04 09:00:07 INFO  request handled
+      2026-07-04 09:00:11 WARN  cache miss ratio high
+      2026-07-04 09:00:15 ERROR upstream timeout
+      2026-07-04 09:00:18 WARN  retrying connection
+      2026-07-04 09:00:22 INFO  recovered
+      2026-07-04 09:00:26 WARN  disk usage above 80%
+      2026-07-04 09:00:30 INFO  shutting down
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に正しい件数 (4) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "4"
+    run_as: user
+
+hints:
+  - "ログの中身を見る: cat /var/log/app/service.log"
+  - "文字列を含む行を数えるオプション: grep -c"
+  - "grep -c WARN /var/log/app/service.log の結果を書き込む: echo 4 > /home/user/answer.txt"
+
+solution: |
+  `grep -c WARN /var/log/app/service.log` で WARN を含む行数を数えると 4。
+  `echo 4 > /home/user/answer.txt` で答えを書けば完了。

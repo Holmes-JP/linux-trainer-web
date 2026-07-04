@@ -1,0 +1,42 @@
+id: total-bytes
+verify_fix: "echo 7250 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "転送バイト数の合計"
+difficulty: medium
+category: logs
+time_estimate_min: 10
+
+description: |
+  アクセスログ /var/log/webserver/access.log の各行の「最後のフィールド」は
+  そのリクエストで転送したバイト数を表す。全リクエストの転送バイト数の合計を求め、
+  その数字だけを /home/user/answer.txt に書き込め。
+
+# 冪等: 毎回同じログを作り直す。最後のフィールドの合計は 7250。
+setup:
+  - description: "集計対象のアクセスログを設置する"
+    cmd: |
+      mkdir -p /var/log/webserver
+      cat > /var/log/webserver/access.log <<'EOF'
+      10.0.0.1 - - [04/Jul/2026:04:00:01 +0000] "GET /index.html HTTP/1.1" 200 1000
+      10.0.0.2 - - [04/Jul/2026:04:00:02 +0000] "GET /assets/app.js HTTP/1.1" 200 2500
+      10.0.0.3 - - [04/Jul/2026:04:00:03 +0000] "GET /missing HTTP/1.1" 404 0
+      10.0.0.1 - - [04/Jul/2026:04:00:04 +0000] "GET /api/items HTTP/1.1" 200 500
+      10.0.0.4 - - [04/Jul/2026:04:00:05 +0000] "POST /api/upload HTTP/1.1" 200 3000
+      10.0.0.2 - - [04/Jul/2026:04:00:06 +0000] "GET /api/report HTTP/1.1" 500 250
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に合計バイト数 (7250) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "7250"
+    run_as: user
+
+hints:
+  - "最後のフィールドは awk の $NF で取れる: awk '{print $NF}' access.log"
+  - "合計は awk で累算する: awk '{sum+=$NF} END{print sum}'"
+  - "awk '{sum+=$NF} END{print sum}' /var/log/webserver/access.log の結果を answer.txt へ"
+
+solution: |
+  最後のフィールド ($NF) を累算する定番:
+    awk '{sum+=$NF} END{print sum}' /var/log/webserver/access.log
+  → 1000+2500+0+500+3000+250 = 7250。
+  `echo 7250 > /home/user/answer.txt` で答えを書けば完了。

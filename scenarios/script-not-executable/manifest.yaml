@@ -1,0 +1,37 @@
+id: script-not-executable
+verify_fix: "chmod +x /usr/local/bin/backup.sh"  # 模範修復 (テスト専用・UI 非表示)
+title: "実行できないバックアップスクリプト"
+difficulty: easy
+category: permissions
+time_estimate_min: 5
+
+description: |
+  定期バックアップに使う /usr/local/bin/backup.sh を実行しようとすると
+  「Permission denied」になって動かない。実行権限が付いていないのが原因。
+  user がこのスクリプトを実行できるように修復せよ。
+
+# 冪等: 毎回スクリプトを作り直し、実行権限を外した状態 (644) にする。
+setup:
+  - description: "backup.sh を実行権限なしで設置する"
+    cmd: |
+      cat > /usr/local/bin/backup.sh <<'EOF'
+      #!/bin/sh
+      echo BACKUP_DONE
+      EOF
+      chmod 644 /usr/local/bin/backup.sh
+
+check:
+  - description: "user が backup.sh を実行でき BACKUP_DONE を出力する"
+    test: "/usr/local/bin/backup.sh"
+    expect_stdout_contains: "BACKUP_DONE"
+    run_as: user
+
+hints:
+  - "実行してエラーを確認: /usr/local/bin/backup.sh"
+  - "権限を確認: ls -l /usr/local/bin/backup.sh (x が無い)"
+  - "root (su root、パスワード: password) で実行権限を付与: chmod +x /usr/local/bin/backup.sh"
+
+solution: |
+  スクリプトに実行権限 (x) が無いため実行できない。
+  `su root` (パスワード: password) で root になり `chmod +x /usr/local/bin/backup.sh`
+  で実行権限を付ければ動く。
