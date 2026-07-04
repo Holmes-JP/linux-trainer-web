@@ -47,16 +47,291 @@ terms:
     def: >-
       画面を持たずバックグラウンドで常駐し続けるプロセス。Web サーバーや SSH サーバーなど、
       「サービス」の実体。名前が d で終わるものが多い (sshd, crond など)。
-    related_articles: [processes-and-signals]
+    related_articles: [services-and-daemons]
+    related_commands: [service, ps]
   - term: シンボリックリンク
     reading: symbolic link
     def: >-
       別のパスを指す「ショートカット」のようなファイル。ls -l では l で始まり、
       「リンク名 -> 実体」と表示される。指す先が消えるとリンク切れになる。
-    related_commands: [ls]
+    related_articles: [links-and-inode]
+    related_commands: [ls, ln, readlink]
   - term: inode
     reading: アイノード
     def: >-
       ファイルの実体を管理する台帳の番号。ファイルシステムごとに総数が決まっており、
       容量が空いていても inode を使い切ると新しいファイルを作れなくなる。
-    related_commands: [df]
+    related_articles: [links-and-inode]
+    related_commands: [df, stat]
+  - term: パス
+    reading: path
+    def: >-
+      ファイルやディレクトリの居場所を表す文字列。/ から始めて位置を厳密に示す「絶対パス」と、
+      今いる場所を起点にする「相対パス」がある。相対パスの . は現在地、.. は一つ上を指す。
+    related_articles: [filesystem-and-paths]
+    related_commands: [cd, pwd]
+  - term: ルートディレクトリ
+    reading: root directory
+    def: >-
+      ファイルシステムの最上位、/ のこと。すべてのディレクトリはここから枝分かれする。
+      管理者ユーザーの root とは別物なので混同しないこと。
+    related_articles: [filesystem-and-paths]
+    related_commands: [ls]
+  - term: ホームディレクトリ
+    reading: home directory
+    def: >-
+      各ユーザー専用の作業場所。多くは /home/ユーザー名 で、~ (チルダ) と書いても同じ場所を指す。
+      引数なしの cd で戻れる。
+    related_articles: [filesystem-and-paths]
+    related_commands: [cd]
+  - term: カレントディレクトリ
+    reading: current directory
+    def: >-
+      今シェルが「いる」ディレクトリ。相対パスやファイル操作の起点になる。
+      pwd で現在地を確認できる。作業前にまず今どこにいるかを確かめる癖が事故を防ぐ。
+    related_articles: [filesystem-and-paths]
+    related_commands: [pwd, cd]
+  - term: 隠しファイル
+    reading: dotfile
+    def: >-
+      名前が . で始まるファイル・ディレクトリ。ls では通常表示されず、ls -a で見える。
+      設定ファイル (.bashrc など) に使われる。「見えないだけで消えてはいない」。
+    related_articles: [filesystem-and-paths]
+    related_commands: [ls]
+  - term: ワイルドカード
+    reading: glob
+    def: >-
+      複数のファイル名をまとめて指定する記号。* は任意の文字列、? は任意の1文字。
+      シェルが展開してからコマンドに渡すため、rm *.log のような一括操作ができる (打ち間違いに注意)。
+    related_commands: [ls, find, rm]
+  - term: ハードリンク
+    reading: hard link
+    def: >-
+      同じ inode (ファイルの実体) を指す複数の名前。シンボリックリンクと違い実体そのものへの別名なので、
+      元を消しても中身は残る。ln で作る (-s を付けないとハードリンク)。
+    related_articles: [links-and-inode]
+    related_commands: [ln, stat]
+  - term: 実行ビット
+    reading: x / execute bit
+    def: >-
+      ファイルに付けると「プログラムとして実行してよい」を意味する x 権限。
+      ディレクトリでは「中に入れる (cd できる)」の意味になる。スクリプトが動かない原因の定番。
+    related_articles: [permissions]
+    related_commands: [chmod]
+  - term: 所有者
+    reading: owner
+    def: >-
+      そのファイルを持っているユーザー。ls -l の3列目に出る。所有者だけが持つ権限があり、
+      持ち主の変更は chown で行う (root のみ)。
+    related_articles: [permissions]
+    related_commands: [chown, ls]
+  - term: グループ
+    reading: group
+    def: >-
+      複数ユーザーをまとめた単位。ファイルには所有グループが設定され、そのグループに属す人には
+      グループ権限が適用される。自分の所属は groups、変更は chgrp。
+    related_articles: [users-and-groups]
+    related_commands: [groups, chgrp]
+  - term: UID / GID
+    reading: ユーザーID / グループID
+    def: >-
+      ユーザーとグループに割り振られる番号。root の UID は 0。システムは名前ではなくこの番号で権限を判断する。
+      自分の UID/GID は id で確認できる。
+    related_articles: [users-and-groups]
+    related_commands: [id]
+  - term: umask
+    reading: ユーマスク
+    def: >-
+      新しく作るファイルの初期パーミッションから「差し引く」値。022 なら他人の書き込み権限を落とす。
+      「なぜか毎回 644 で作られる」の裏側にいる設定。
+    related_commands: [umask]
+  - term: sudo
+    reading: スードゥ
+    def: >-
+      1コマンドだけ root 権限で実行するための仕組み。本番サーバーでの標準作法だが、
+      この演習環境には sudo 設定が無いため、root 作業は su root (パスワード password) で行う。
+    related_articles: [users-and-groups]
+    related_commands: [sudo, su]
+  - term: su
+    reading: エスユー
+    def: >-
+      ユーザーを切り替えるコマンド。su root で管理者になれる (この演習のパスワードは password)。
+      su - のようにハイフンを付けると、切り替え先の環境変数まで読み込んでログインし直す。
+    related_articles: [users-and-groups]
+    related_commands: [su]
+  - term: /etc/passwd
+    reading: パスワードファイル
+    def: >-
+      ユーザーアカウントの一覧が1行1ユーザーで書かれたファイル。名前・UID・GID・ホーム・ログインシェルが
+      コロン区切りで並ぶ (名前の由来と違い今はパスワード本体は入っていない)。getent passwd でも引ける。
+    related_articles: [users-and-groups]
+    related_commands: [getent]
+  - term: プロセス
+    reading: process
+    def: >-
+      メモリ上で実行中のプログラム。1つのプログラムから複数のプロセスが動くこともある。
+      それぞれに PID が振られ、ps や top で一覧・監視できる。
+    related_articles: [processes-and-signals]
+    related_commands: [ps, top]
+  - term: 親プロセス / PPID
+    reading: parent process
+    def: >-
+      あるプロセスを生み出した側のプロセス。その PID を PPID と呼ぶ。
+      すべてのプロセスは PID 1 を頂点とする家系図に連なる。ps -ef の PPID 列で辿れる。
+    related_articles: [processes-and-signals]
+    related_commands: [ps]
+  - term: フォアグラウンド / バックグラウンド
+    reading: foreground / background
+    def: >-
+      端末を占有して実行するのがフォアグラウンド、裏に回して端末を空けるのがバックグラウンド。
+      コマンド末尾に & で裏へ、fg で手前へ、bg で止めたジョブを裏で再開する。
+    related_articles: [process-monitoring-and-jobs]
+    related_commands: [bg, fg]
+  - term: ジョブ
+    reading: job
+    def: >-
+      1つのシェルが管理する実行単位。jobs で一覧でき、%1 のようなジョブ番号で指す。
+      Ctrl+Z で一時停止し、bg / fg で裏・表を切り替える。
+    related_articles: [process-monitoring-and-jobs]
+    related_commands: [jobs, bg, fg]
+  - term: ゾンビプロセス
+    reading: zombie
+    def: >-
+      すでに終了したのに、親がその終了を回収していないため一覧に残るプロセス (STAT が Z)。
+      CPU は食わないので基本無害だが、大量に残るなら親プロセス側の不具合を疑う。
+    related_articles: [processes-and-signals]
+    related_commands: [ps]
+  - term: nice 値
+    reading: ナイス値
+    def: >-
+      プロセスの CPU 優先度を表す -20〜19 の数値。小さいほど優先される。
+      起動時に nice、実行中の変更は renice。重い処理を控えめに走らせたいときに使う。
+    related_articles: [process-monitoring-and-jobs]
+    related_commands: [nice, renice]
+  - term: ロードアベレージ
+    reading: load average
+    def: >-
+      実行待ちを含めた「システムの混み具合」を1・5・15分平均で表した数値。
+      CPU コア数を大きく超え続けていたら過負荷のサイン。uptime や top の右上に出る。
+    related_articles: [process-monitoring-and-jobs]
+    related_commands: [uptime, top]
+  - term: パイプ
+    reading: pipe
+    def: >-
+      | 記号で、前のコマンドの標準出力を次のコマンドの標準入力へ流す仕組み。
+      単純なコマンドを数珠つなぎにして複雑な絞り込みを組み立てる、Unix の基本発想。
+    related_articles: [finding-and-filtering]
+    related_commands: [grep, wc]
+  - term: リダイレクト
+    reading: redirect
+    def: >-
+      コマンドの入出力の行き先を切り替える記号。> はファイルへ上書き、>> は追記、< はファイルから入力。
+      2> はエラー出力を分けて扱う。ログの保存や結果の書き出しに使う。
+    related_commands: [tee, echo]
+  - term: 環境変数
+    reading: environment variable
+    def: >-
+      シェルやプログラムに渡される設定値。PATH や HOME など。env で一覧、export で子プロセスにも
+      引き継がれる形で設定する。「動くはずのコマンドが見つからない」ときは PATH をまず疑う。
+    related_commands: [env, export]
+  - term: PATH
+    reading: パス (環境変数)
+    def: >-
+      コマンド名を打ったときに実行ファイルを探しに行くディレクトリの一覧 (: 区切り)。
+      ここに無い場所のプログラムはフルパスで指定しないと動かない。which で実際に呼ばれる実体を確認できる。
+    related_commands: [which, echo]
+  - term: エイリアス
+    reading: alias
+    def: >-
+      長いコマンドに短い別名を付ける機能。alias ll='ls -la' のように定義する。
+      打ったコマンドが思った動きと違うときは、エイリアスで別のオプションが付いていないか type で確認する。
+    related_commands: [alias, type]
+  - term: ブロックデバイス
+    reading: block device
+    def: >-
+      ディスクや USB メモリなど、ブロック単位で読み書きする記憶装置。/dev/sda のような名前を持つ。
+      lsblk でデバイスとパーティションの構成を木構造で確認できる。
+    related_articles: [disk-and-mount]
+    related_commands: [lsblk]
+  - term: マウント
+    reading: mount
+    def: >-
+      ディスク (ブロックデバイス) をディレクトリの木に接続し、その配下として読み書きできるようにする操作。
+      接続点をマウントポイントと呼ぶ。mount で接続、umount で切り離す。
+    related_articles: [disk-and-mount]
+    related_commands: [mount, umount]
+  - term: ファイルシステム
+    reading: file system
+    def: >-
+      ディスク上でファイルを名前・階層・パーミッション付きで管理する仕組み (ext4 など)。
+      df でマウント済みファイルシステムごとの空き容量、lsblk で構成を見られる。
+    related_articles: [disk-and-mount]
+    related_commands: [df, lsblk]
+  - term: ディスクフル
+    reading: No space left on device
+    def: >-
+      ディスクの空き容量が尽きた状態。書き込みが軒並み失敗する。df で満杯の領域を特定し、
+      du で容量を食っているディレクトリを掘って犯人を探すのが定石。
+    related_articles: [disk-and-mount]
+    related_commands: [df, du]
+  - term: スワップ
+    reading: swap
+    def: >-
+      物理メモリが足りなくなったとき、一時的にディスクへ退避させる領域。
+      スワップが多用され始めると急激に遅くなる。free でメモリとスワップの使用量を確認できる。
+    related_commands: [free]
+  - term: サービス
+    reading: service
+    def: >-
+      OS が管理する常駐機能 (Web サーバーや SSH など)。実体はデーモンプロセス。
+      この演習環境では service 名前 start|stop|status で操作する (systemctl は使えない)。
+    related_articles: [services-and-daemons]
+    related_commands: [service]
+  - term: systemd
+    reading: システムディー
+    def: >-
+      現代の Linux で主流の、サービスとシステム起動を統括する管理基盤 (PID 1)。
+      systemctl で操作する。ただしこの演習環境は systemd で起動していないため systemctl は使えない。
+    related_articles: [services-and-daemons]
+    related_commands: [systemctl]
+  - term: init / PID 1
+    reading: イニット
+    def: >-
+      システム起動時に最初に立ち上がり、他のすべてのプロセスの祖先になる PID 1 のプロセス。
+      古典的な SysV init と現代の systemd がある。この演習では systemd ではない init が PID 1 を担う。
+    related_articles: [services-and-daemons]
+    related_commands: [ps]
+  - term: crontab
+    reading: クロンタブ
+    def: >-
+      「分 時 日 月 曜日 コマンド」の予定表で定期実行を仕込む仕組み。crontab -e で編集、-l で確認。
+      実体は cron デーモンが読み取って実行するため、cron が動いていないと予定は走らない。
+    related_articles: [services-and-daemons]
+    related_commands: [crontab]
+  - term: syslog
+    reading: シスログ
+    def: >-
+      システムやサービスのログを集約する仕組み、およびその出力先 (/var/log/syslog など)。
+      何が起きたかの時系列が残るので、障害調査は tail や grep でここを読むのが出発点。
+    related_articles: [reading-logs]
+    related_commands: [tail, grep]
+  - term: /var/log
+    reading: バーログ
+    def: >-
+      各種ログファイルが集まるディレクトリ。syslog・auth.log (認証)・messages などが置かれる。
+      tail -f で追尾、less でじっくり、grep で絞り込む。調査はまずここを見る。
+    related_articles: [reading-logs]
+    related_commands: [tail, less]
+  - term: カーネル
+    reading: kernel
+    def: >-
+      ハードウェアとプロセスの橋渡しをする OS の中核。メモリ・CPU・デバイスを管理する。
+      起動やデバイス関連のメッセージは dmesg、バージョンは uname -a で確認できる。
+    related_commands: [dmesg, uname]
+  - term: アーカイブと圧縮
+    reading: archive / compression
+    def: >-
+      複数ファイルを1つにまとめるのがアーカイブ (tar)、サイズを小さくするのが圧縮 (gzip)。
+      .tar.gz は「まとめてから圧縮」した形。別概念なので tar -z で両方を一度に行う。
+    related_articles: [archive-and-compression]
+    related_commands: [tar, gzip]
