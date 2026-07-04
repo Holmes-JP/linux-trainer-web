@@ -1,4 +1,5 @@
 id: recursive-ownership
+verify_fix: "chown -R user:user /home/user/project"  # 模範修復 (テスト専用・UI 非表示)
 title: "自分のファイルが触れない"
 difficulty: hard
 category: filesystem

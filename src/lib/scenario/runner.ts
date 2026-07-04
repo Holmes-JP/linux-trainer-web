@@ -39,6 +39,11 @@ const USER_ENV = [
 	"LC_ALL=C"
 ];
 
+/** 1コマンドあたりの実行タイムアウト (ミリ秒)。暴走コマンドで UI が固まるのを防ぐ */
+const EXEC_TIMEOUT_MS = 30000;
+/** タイムアウト時に返す合成 exit code (GNU timeout 準拠) */
+const EXIT_TIMEOUT = 124;
+
 export class ControlChannel {
 	private cx: CheerpXLinux;
 	private ctrlDevice: CheerpXIDBDevice;
@@ -62,11 +67,13 @@ export class ControlChannel {
 		redirect: string,
 		opts: { env: string[]; cwd: string; uid: number; gid: number }
 	): Promise<{ status: number }> {
-		return this.cx.run(
-			"/bin/sh",
-			["-c", `bash -c "$0" ${redirect}`, cmd],
-			opts
+		const run = this.cx.run("/bin/sh", ["-c", `bash -c "$0" ${redirect}`, cmd], opts);
+		// タイムアウトで固まらないよう race する。時間切れ時は合成 exit code を返す
+		// (元プロセスは残り続けるが UI は先へ進める)。
+		const timeout = new Promise<{ status: number }>((resolve) =>
+			setTimeout(() => resolve({ status: EXIT_TIMEOUT }), EXEC_TIMEOUT_MS)
 		);
+		return Promise.race([run, timeout]);
 	}
 
 	/**

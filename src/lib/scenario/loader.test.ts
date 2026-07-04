@@ -37,6 +37,10 @@ describe("parseManifest: 実物の manifest", () => {
 		expect(scenario.hints).toHaveLength(3);
 		expect(scenario.solution).toContain("chmod 644");
 	});
+
+	it("verify_fix (模範修復) が読める", () => {
+		expect(scenario.verify_fix).toBe("chmod 644 /home/user/flag.txt");
+	});
 });
 
 describe("parseManifest: バリデーション", () => {

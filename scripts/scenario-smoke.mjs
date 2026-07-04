@@ -1,45 +1,45 @@
-// 全シナリオのスモークテスト:
-//  各シナリオについて (a) setup が成功する (b) 直後の Check が全項目 ❌ (正しく壊れている)
-//  (c) solution 相当の修復を control channel で適用すると全項目 ✅ (解ける) を確認する。
+// 全シナリオのスモークテスト。各シナリオについて次を検証する:
+//  (a) setup が成功する
+//  (b) 直後の Check が未解決 (壊れている)
+//  (c) 冪等性: setup を再実行しても壊れず、状態が変わらない (Spec 鉄則①)
+//  (d) manifest の verify_fix (模範修復) を適用すると全 check pass (解ける)
+// verify_fix と id 一覧は manifest / index.yaml から読む (単一ソース)。
 // 使い方: M0_PORT=5174 node scripts/scenario-smoke.mjs [id ...]
 import { chromium } from 'playwright';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { load } from 'js-yaml';
 
 const port = process.env.M0_PORT ?? '5173';
 const base = `http://localhost:${port}`;
+const root = fileURLToPath(new URL('..', import.meta.url));
+const readManifest = (id) => load(readFileSync(`${root}scenarios/${id}/manifest.yaml`, 'utf8'));
+const allIds = load(readFileSync(`${root}scenarios/index.yaml`, 'utf8')).scenarios;
 
-// solution を control channel (root) で適用するためのコマンド
-const FIXES = {
-	'locked-flag': 'chmod 644 /home/user/flag.txt',
-	'lost-config': 'cp /etc/myapp/app.conf.bak /etc/myapp/app.conf',
-	'rogue-process': 'pkill -x cryptominer; rm -f /usr/local/bin/cryptominer',
-	'log-flood': 'rm -f /var/log/webapp/access.log',
-	'dead-service': 'chmod +x /usr/local/bin/sensord && /etc/init.d/sensor-agent start && sleep 1',
-	'log-detective': 'echo 6 > /home/user/answer.txt',
-	'backdoor-cleanup': 'pkill -x backdoord; rm -f /usr/local/sbin/backdoord /etc/rc.local.d/backdoor.sh',
-	'broken-symlink': 'ln -sfn /etc/webapp/settings.prod.conf /etc/webapp/current.conf',
-	'top-offender': 'echo 10.0.0.66 > /home/user/answer.txt',
-	'web-permissions': 'chown user:user /var/www/html/uploads',
-	'disk-hog': 'rm -f /var/data/dump1.bin /var/data/cache.tmp',
-	'flaky-service': 'chmod +x /usr/local/sbin/monitord && mkdir -p /var/lib/monitord && /etc/init.d/monitor start && sleep 1',
-	'loose-permissions': 'chmod 755 /usr/local/bin/deploy.sh && chmod 600 /etc/deploy/secrets.env',
-	'recursive-ownership': 'chown -R user:user /home/user/project',
-	'find-error': 'echo 3 > /home/user/answer.txt',
-	'runaway-loop': 'pkill -x busyloop',
-	'find-big-file': 'rm -f /var/lib/app/cache/data/blob.bin',
-	'missing-dir': 'mkdir -p /var/spool/myapp && chown user:user /var/spool/myapp',
-	'stopped-service': '/etc/init.d/heartbeat start && sleep 1',
-	'wrong-config': "sed -i 's/^enabled = false/enabled = true/' /etc/api-gateway/gateway.conf"
-};
-
-const ids = process.argv.slice(2).length > 0 ? process.argv.slice(2) : Object.keys(FIXES);
+const ids = process.argv.slice(2).length > 0 ? process.argv.slice(2) : allIds;
 const browser = await chromium.launch();
 const summary = [];
 
+const runCheck = async (page) => {
+	await page.click('#m1-check-btn');
+	await page.waitForFunction(
+		() => window.__PLAY__?.results?.length > 0 && window.__PLAY__?.phase === 'ready',
+		null, { timeout: 120000 }
+	);
+	return page.evaluate(() => window.__PLAY__);
+};
+// 「壊れている / 未解決」= 少なくとも1つの check が fail。
+// (important.db を残す等の不変条件チェックは壊れた状態でも pass するため some() で判定)
+const isBroken = (state) => state.results.some((r) => !r.pass);
+
 for (const id of ids) {
 	const page = await browser.newPage();
-	page.on('pageerror', e => console.log(`[${id}] pageerror:`, e.message));
-	const row = { id, setup: false, broken: false, fixable: false };
+	page.on('pageerror', (e) => console.log(`[${id}] pageerror:`, e.message));
+	const row = { id, setup: false, broken: false, idempotent: false, fixable: false };
 	try {
+		const fix = readManifest(id).verify_fix;
+		if (!fix) throw new Error('manifest に verify_fix が無い');
+
 		await page.goto(`${base}/play?id=${id}&start=1`, { waitUntil: 'domcontentloaded' });
 		await page.waitForFunction(
 			() => ['ready', 'setup-failed'].includes(window.__PLAY__?.phase),
@@ -50,30 +50,27 @@ for (const id of ids) {
 		if (!row.setup) {
 			console.log(`[${id}] setup FAILED:`, state.error);
 		} else {
-			// (b) 壊れていることの確認: 全 check が fail のはず
-			await page.click('#m1-check-btn');
-			await page.waitForFunction(
-				() => window.__PLAY__?.results?.length > 0 && window.__PLAY__?.phase === 'ready',
-				null, { timeout: 120000 }
-			);
-			state = await page.evaluate(() => window.__PLAY__);
-			// 「壊れている」= 未解決 = 少なくとも1つの check が fail。
-			// (important.db を残す等の不変条件チェックは壊れた状態でも pass するため、
-			//  「全 check fail」ではなく「全 check pass ではない」で判定する)
-			row.broken = state.results.some(r => !r.pass);
-			console.log(`[${id}] after setup:`, state.results.map(r => `${r.pass ? '✅' : '❌'} ${r.description}`).join(' | '));
+			// (b) 壊れている
+			state = await runCheck(page);
+			row.broken = isBroken(state);
+			console.log(`[${id}] after setup:`, state.results.map((r) => `${r.pass ? '✅' : '❌'} ${r.description}`).join(' | '));
 
-			// (c) 修復を適用して全 pass になること
-			const fixResult = await page.evaluate((cmd) => window.__PLAY_EXEC__(cmd, 'root'), FIXES[id]);
-			if (fixResult.exitCode !== 0) console.log(`[${id}] fix cmd exit=${fixResult.exitCode}: ${fixResult.stdout}`);
-			await page.click('#m1-check-btn');
-			await page.waitForFunction(
-				() => window.__PLAY__?.phase === 'ready' && window.__PLAY__?.passed !== null,
-				null, { timeout: 120000 }
-			);
-			state = await page.evaluate(() => window.__PLAY__);
+			// (c) 冪等性: setup 再実行が成功し、まだ壊れている
+			const re = await page.evaluate(() => window.__PLAY_SETUP__());
+			if (!re.ok) {
+				console.log(`[${id}] re-setup FAILED (冪等性違反):`, re.error);
+			} else {
+				state = await runCheck(page);
+				row.idempotent = isBroken(state);
+				if (!row.idempotent) console.log(`[${id}] 冪等性: 再 setup 後に壊れていない`);
+			}
+
+			// (d) 模範修復で解ける
+			const fixResult = await page.evaluate((cmd) => window.__PLAY_EXEC__(cmd, 'root'), fix);
+			if (fixResult.exitCode !== 0) console.log(`[${id}] verify_fix exit=${fixResult.exitCode}: ${fixResult.stdout}`);
+			state = await runCheck(page);
 			row.fixable = state.passed === true;
-			console.log(`[${id}] after fix:`, state.results.map(r => `${r.pass ? '✅' : '❌'} ${r.description}`).join(' | '));
+			console.log(`[${id}] after fix:`, state.results.map((r) => `${r.pass ? '✅' : '❌'} ${r.description}`).join(' | '));
 		}
 	} catch (e) {
 		console.log(`[${id}] ERROR:`, e.message);
@@ -83,7 +80,8 @@ for (const id of ids) {
 }
 
 console.log('=== SMOKE SUMMARY ===');
+const ok = (r) => r.setup && r.broken && r.idempotent && r.fixable;
 for (const r of summary)
-	console.log(`${r.setup && r.broken && r.fixable ? 'PASS' : 'FAIL'}  ${r.id}  (setup=${r.setup} broken=${r.broken} fixable=${r.fixable})`);
+	console.log(`${ok(r) ? 'PASS' : 'FAIL'}  ${r.id}  (setup=${r.setup} broken=${r.broken} idempotent=${r.idempotent} fixable=${r.fixable})`);
 await browser.close();
-process.exit(summary.every(r => r.setup && r.broken && r.fixable) ? 0 : 1);
+process.exit(summary.every(ok) ? 0 : 1);

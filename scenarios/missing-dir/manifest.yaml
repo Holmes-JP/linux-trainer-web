@@ -1,4 +1,5 @@
 id: missing-dir
+verify_fix: "mkdir -p /var/spool/myapp && chown user:user /var/spool/myapp"  # 模範修復 (テスト専用・UI 非表示)
 title: "無くなったスプールディレクトリ"
 difficulty: easy
 category: filesystem

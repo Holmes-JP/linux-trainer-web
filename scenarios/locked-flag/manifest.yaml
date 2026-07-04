@@ -1,5 +1,6 @@
 # scenarios/locked-flag/manifest.yaml (Spec.md §4)
 id: locked-flag
+verify_fix: "chmod 644 /home/user/flag.txt"  # 模範修復 (テスト専用・UI 非表示)
 title: "読めなくなった flag.txt"
 difficulty: easy
 category: permissions

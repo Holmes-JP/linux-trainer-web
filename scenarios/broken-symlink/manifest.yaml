@@ -1,4 +1,5 @@
 id: broken-symlink
+verify_fix: "ln -sfn /etc/webapp/settings.prod.conf /etc/webapp/current.conf"  # 模範修復 (テスト専用・UI 非表示)
 title: "壊れたシンボリックリンク"
 difficulty: medium
 category: filesystem

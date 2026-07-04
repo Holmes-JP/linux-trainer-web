@@ -34,6 +34,12 @@ export interface Check {
 	run_as?: "root" | "user";
 }
 
+/** 詳細ページに出す想定コマンド (任意)。省略時はカテゴリ既定を使う */
+export interface CommandRef {
+	cmd: string;
+	desc: string;
+}
+
 export interface Scenario {
 	id: string;
 	title: string;
@@ -45,6 +51,12 @@ export interface Scenario {
 	check: Check[];
 	hints?: string[];
 	solution?: string;
+	/** 詳細ページの想定コマンド (任意)。無ければカテゴリ既定 */
+	commands?: CommandRef[];
+	/** 詳細ページの攻略のコツ (任意)。無ければ hints[0] 等で代替 */
+	tips?: string[];
+	/** テスト用の模範修復コマンド (任意)。scenario-smoke がこれで解けることを検証する */
+	verify_fix?: string;
 }
 
 export interface ExecResult {

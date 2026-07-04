@@ -1,4 +1,5 @@
 id: rogue-process
+verify_fix: "pkill -x cryptominer; rm -f /usr/local/bin/cryptominer"  # 模範修復 (テスト専用・UI 非表示)
 title: "不審なプロセス"
 difficulty: medium
 category: processes

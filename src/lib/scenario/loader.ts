@@ -105,6 +105,18 @@ export function parseManifest(yamlText: string): Scenario {
 		scenario.hints = o.hints.map(String);
 	}
 	if (o.solution !== undefined) scenario.solution = String(o.solution);
+	if (o.commands !== undefined) {
+		if (!Array.isArray(o.commands)) throw new ManifestError(`"commands" は配列`);
+		scenario.commands = o.commands.map((c, i) => {
+			const co = c as Record<string, unknown>;
+			return { cmd: requireString(co, "cmd", `commands[${i}]`), desc: requireString(co, "desc", `commands[${i}]`) };
+		});
+	}
+	if (o.tips !== undefined) {
+		if (!Array.isArray(o.tips)) throw new ManifestError(`"tips" は文字列の配列`);
+		scenario.tips = o.tips.map(String);
+	}
+	if (o.verify_fix !== undefined) scenario.verify_fix = String(o.verify_fix);
 	return scenario;
 }
 

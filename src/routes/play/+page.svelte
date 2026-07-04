@@ -121,11 +121,23 @@
 		mounted = true;
 	});
 
+	let solveStartMs = 0; // 修復開始 (ready になった) 時刻。クリア時間の計測用
+
 	async function handleCxReady(cx, ctrlDevice) {
 		channel = new ControlChannel(cx, ctrlDevice);
-		// 検証・デバッグ用: control channel を直接叩けるようにする
-		if (typeof window !== 'undefined')
+		// 検証・デバッグ用: control channel / setup 再実行を叩けるようにする
+		if (typeof window !== 'undefined') {
 			window.__PLAY_EXEC__ = (cmd, runAs) => channel.exec(cmd, runAs);
+			// 冪等性テスト用: setup を再実行し {ok} を返す (二重実行で壊れないことの検証)
+			window.__PLAY_SETUP__ = async () => {
+				try {
+					await runSetup(channel, scenario);
+					return { ok: true };
+				} catch (e) {
+					return { ok: false, error: String(e) };
+				}
+			};
+		}
 		phase = 'setting-up';
 		try {
 			await scenarioPromise; // manifest の取得完了を待ってから壊す
@@ -133,6 +145,7 @@
 			await waitForShellPrompt(); // プロンプト描画まで待つ (端末獲得の競合を避ける)
 			await runSetup(channel, scenario);
 			phase = 'ready';
+			solveStartMs = Date.now(); // 計測開始
 		} catch (e) {
 			errorMsg = e.toString();
 			phase = 'setup-failed';
@@ -145,7 +158,10 @@
 		try {
 			results = await runChecks(channel, scenario);
 			passed = results.every((r) => r.pass);
-			if (passed) markComplete(scenario.id);
+			if (passed) {
+				const elapsed = solveStartMs ? Date.now() - solveStartMs : undefined;
+				markComplete(scenario.id, elapsed);
+			}
 		} catch (e) {
 			errorMsg = e.toString();
 		}
