@@ -109,5 +109,14 @@ commands:
   - man
   - clear
 articles:
+  - filesystem-and-paths
+  - links-and-inode
+  - archive-and-compression
+  - finding-and-filtering
   - permissions
+  - users-and-groups
   - processes-and-signals
+  - process-monitoring-and-jobs
+  - disk-and-mount
+  - services-and-daemons
+  - reading-logs
