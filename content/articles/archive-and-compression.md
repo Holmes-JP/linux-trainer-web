@@ -17,6 +17,25 @@ order: 7
 
 `gzip` は基本的に 1 ファイルしか縮められない。だから「フォルダごと配りたい」ときは、まず `tar` でまとめて 1 個にし、それを `gzip` で縮める。これが `.tar.gz` (通称 tarball) の正体だ。**まとめる → 縮める** の 2 段階だと分かれば怖くない。
 
+<figure class="diagram">
+<svg viewBox="0 0 640 150" role="img" aria-label="tar でまとめて gzip で縮める流れの図">
+<defs><marker id="tgArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<rect x="16" y="50" width="120" height="50" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="76" y="72" text-anchor="middle" font-size="12" fill="var(--text)">複数ファイル</text>
+<text x="76" y="90" text-anchor="middle" font-size="11" fill="var(--dim)">a.txt b.txt c.txt</text>
+<text x="182" y="60" text-anchor="middle" font-size="11" fill="var(--accent)">まとめる (tar -c)</text>
+<line x1="138" y1="75" x2="226" y2="75" stroke="var(--accent)" marker-end="url(#tgArrow)"/>
+<rect x="230" y="55" width="140" height="40" rx="8" fill="var(--track)" stroke="var(--border)"/>
+<text class="mono" x="300" y="80" text-anchor="middle" font-size="13" fill="var(--text)">archive.tar</text>
+<text x="416" y="60" text-anchor="middle" font-size="11" fill="var(--accent)">縮める (gzip)</text>
+<line x1="372" y1="75" x2="460" y2="75" stroke="var(--accent)" marker-end="url(#tgArrow)"/>
+<rect x="464" y="55" width="160" height="40" rx="8" fill="var(--track)" stroke="var(--accent)" stroke-width="2"/>
+<text class="mono" x="544" y="80" text-anchor="middle" font-size="13" fill="var(--accent)">archive.tar.gz</text>
+<text x="320" y="128" text-anchor="middle" font-size="12" fill="var(--dim)">「まとめる → 縮める」の2段階。これが .tar.gz (tarball) の正体</text>
+</svg>
+<figcaption>図: tar で1個にまとめてから gzip で圧縮する</figcaption>
+</figure>
+
 ## tar の基本オプション
 
 `tar` はオプションの組み合わせで動く。まず覚えるのは 5 つ。

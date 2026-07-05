@@ -24,6 +24,29 @@ order: 50
 
 ログは無限に増え続けないよう、一定サイズ・期間で **ローテート** され、古いものは `.1` や圧縮された `.gz` として残る。読むには root が必要なものが多いので `su root` (パスワード: `password`) になっておく。
 
+<figure class="diagram">
+<svg viewBox="0 0 600 200" role="img" aria-label="ログ調査の道具の使い分けの図">
+<defs><marker id="lgArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<rect x="16" y="66" width="150" height="54" rx="8" fill="var(--track)" stroke="var(--accent)" stroke-width="2"/>
+<text class="mono" x="91" y="90" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">/var/log/*.log</text>
+<text x="91" y="108" text-anchor="middle" font-size="10.5" fill="var(--dim)">一次資料</text>
+<line x1="166" y1="47" x2="246" y2="47" stroke="var(--accent)" marker-end="url(#lgArrow)"/>
+<line x1="166" y1="93" x2="246" y2="93" stroke="var(--accent)" marker-end="url(#lgArrow)"/>
+<line x1="166" y1="139" x2="246" y2="139" stroke="var(--accent)" marker-end="url(#lgArrow)"/>
+<rect x="250" y="28" width="334" height="38" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="266" y="52" font-size="12.5" fill="var(--accent)">tail -f</text>
+<text x="340" y="52" font-size="11.5" fill="var(--dim)">末尾を追う（今出るログを監視）</text>
+<rect x="250" y="74" width="334" height="38" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="266" y="98" font-size="12.5" fill="var(--accent)">grep</text>
+<text x="340" y="98" font-size="11.5" fill="var(--dim)">キーワードで絞り込む</text>
+<rect x="250" y="120" width="334" height="38" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="266" y="144" font-size="12.5" fill="var(--accent)">less</text>
+<text x="330" y="144" font-size="11.5" fill="var(--dim)">大きなログを頁送りで読む</text>
+<text x="300" y="184" text-anchor="middle" font-size="11" fill="var(--dim)">過去ログ(.gz)は zgrep ・ カーネルは dmesg ・ ログイン履歴は last</text>
+</svg>
+<figcaption>図: /var/log を一次資料に、tail・grep・less を使い分けて原因を追う</figcaption>
+</figure>
+
 ## tail -f でリアルタイムに追いかける
 
 いま起きている問題を捕まえたいときは `tail` が主役だ。`-f` (follow) を付けると、ログに新しい行が書き込まれるたびに **画面に流れ続ける**。

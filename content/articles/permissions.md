@@ -14,6 +14,32 @@ Linux では、すべてのファイルとディレクトリに **所有者 (use
 -rw-r--r-- 1 user user 1024 Jul  1 10:00 report.txt
 ```
 
+<figure class="diagram">
+<svg viewBox="0 0 600 200" role="img" aria-label="ls -l の権限10文字の内訳図">
+<rect x="100" y="40" width="40" height="44" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<rect x="140" y="40" width="120" height="44" rx="6" fill="var(--accentDim)" stroke="var(--accentBorder)"/>
+<rect x="260" y="40" width="120" height="44" rx="6" fill="var(--track)" stroke="var(--border)"/>
+<rect x="380" y="40" width="120" height="44" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="120" y="70" text-anchor="middle" font-size="20" fill="var(--dim)">-</text>
+<text class="mono" x="160" y="70" text-anchor="middle" font-size="20" fill="var(--accent)">r</text>
+<text class="mono" x="200" y="70" text-anchor="middle" font-size="20" fill="var(--accent)">w</text>
+<text class="mono" x="240" y="70" text-anchor="middle" font-size="20" fill="var(--accent)">-</text>
+<text class="mono" x="280" y="70" text-anchor="middle" font-size="20" fill="var(--text)">r</text>
+<text class="mono" x="320" y="70" text-anchor="middle" font-size="20" fill="var(--text)">-</text>
+<text class="mono" x="360" y="70" text-anchor="middle" font-size="20" fill="var(--text)">-</text>
+<text class="mono" x="400" y="70" text-anchor="middle" font-size="20" fill="var(--dim)">r</text>
+<text class="mono" x="440" y="70" text-anchor="middle" font-size="20" fill="var(--dim)">-</text>
+<text class="mono" x="480" y="70" text-anchor="middle" font-size="20" fill="var(--dim)">-</text>
+<text x="120" y="106" text-anchor="middle" font-size="12" fill="var(--accent)">種類</text>
+<text x="200" y="106" text-anchor="middle" font-size="12" fill="var(--accent)">所有者</text>
+<text x="320" y="106" text-anchor="middle" font-size="12" fill="var(--accent)">グループ</text>
+<text x="440" y="106" text-anchor="middle" font-size="12" fill="var(--accent)">その他</text>
+<text x="300" y="146" text-anchor="middle" font-size="12.5" fill="var(--dim)">各枠は3文字。r = 読み (4) ・ w = 書き (2) ・ x = 実行 (1)</text>
+<text class="mono" x="300" y="176" text-anchor="middle" font-size="13" fill="var(--text)">644 = rw-r--r--    755 = rwxr-xr-x    600 = rw-------</text>
+</svg>
+<figcaption>図: ls -l の先頭10文字は「種類＋3人分（所有者/グループ/その他）」に分かれる</figcaption>
+</figure>
+
 先頭の 10 文字が権限の表示で、次のように区切って読む。
 
 | 位置 | 意味 |

@@ -12,6 +12,30 @@ order: 15
 
 Linux はユーザーを名前ではなく **番号** で管理している。ユーザーには **UID**、グループには **GID** が振られ、内部の判定はすべてこの数字で行われる。名前は人間向けの見た目にすぎない。
 
+<figure class="diagram">
+<svg viewBox="0 0 600 200" role="img" aria-label="アクセス権の判定順の図">
+<defs><marker id="ugArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<rect x="16" y="76" width="130" height="44" rx="8" fill="var(--track)" stroke="var(--accent)"/>
+<text x="81" y="98" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent)">アクセスする人</text>
+<text x="81" y="114" text-anchor="middle" font-size="10.5" fill="var(--dim)">UID / 所属グループ</text>
+<line x1="146" y1="57" x2="206" y2="57" stroke="var(--border)"/>
+<line x1="146" y1="98" x2="206" y2="107" stroke="var(--border)"/>
+<line x1="146" y1="150" x2="206" y2="157" stroke="var(--border)"/>
+<line x1="146" y1="98" x2="146" y2="150" stroke="var(--border)"/>
+<line x1="146" y1="57" x2="146" y2="98" stroke="var(--border)"/>
+<text x="210" y="52" font-size="12" fill="var(--dim)">所有者なら →</text>
+<rect x="330" y="34" width="250" height="34" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="455" y="56" text-anchor="middle" font-size="12.5" fill="var(--text)">所有者の rwx が適用</text>
+<text x="210" y="112" font-size="12" fill="var(--dim)">グループの一員なら →</text>
+<rect x="330" y="90" width="250" height="34" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="455" y="112" text-anchor="middle" font-size="12.5" fill="var(--text)">グループの rwx が適用</text>
+<text x="210" y="172" font-size="12" fill="var(--dim)">どちらでもなければ →</text>
+<rect x="330" y="150" width="250" height="34" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="455" y="172" text-anchor="middle" font-size="12.5" fill="var(--text)">その他の rwx が適用</text>
+</svg>
+<figcaption>図: 上から順に判定し、最初に当てはまった立場の権限「だけ」が使われる</figcaption>
+</figure>
+
 ## /etc/passwd の見方
 
 ユーザーの定義は `/etc/passwd` に1行1ユーザーで並んでいる。`getent passwd user` で1件だけ引ける。

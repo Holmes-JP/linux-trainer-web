@@ -17,6 +17,28 @@ touch: cannot touch 'newfile': No space left on device
 
 このエラーが出たら、慌てて消す前に **どこが、なぜ埋まったか** を順に突き止める。使う道具は「全体を見る `df`」「犯人を探す `du`」「装置を見る `lsblk`」の3つだ。
 
+<figure class="diagram">
+<svg viewBox="0 0 600 170" role="img" aria-label="df・du・lsblk の役割分担の図">
+<text x="300" y="22" text-anchor="middle" font-size="12" fill="var(--dim)">ディスクフルは 3 つの道具を「粗→細」で使い分ける</text>
+<rect x="20" y="40" width="176" height="100" rx="10" fill="var(--surface)" stroke="var(--accent)"/>
+<text class="mono" x="108" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent)">df</text>
+<text x="108" y="90" text-anchor="middle" font-size="12" fill="var(--text)">全体を見る</text>
+<text x="108" y="110" text-anchor="middle" font-size="10.5" fill="var(--dim)">ファイルシステム単位</text>
+<text x="108" y="126" text-anchor="middle" font-size="10.5" fill="var(--dim)">どこが満杯か</text>
+<rect x="212" y="40" width="176" height="100" rx="10" fill="var(--surface)" stroke="var(--accent)"/>
+<text class="mono" x="300" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent)">du</text>
+<text x="300" y="90" text-anchor="middle" font-size="12" fill="var(--text)">犯人を探す</text>
+<text x="300" y="110" text-anchor="middle" font-size="10.5" fill="var(--dim)">ディレクトリ/ファイル単位</text>
+<text x="300" y="126" text-anchor="middle" font-size="10.5" fill="var(--dim)">何が食っているか</text>
+<rect x="404" y="40" width="176" height="100" rx="10" fill="var(--surface)" stroke="var(--accent)"/>
+<text class="mono" x="492" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent)">lsblk</text>
+<text x="492" y="90" text-anchor="middle" font-size="12" fill="var(--text)">装置を見る</text>
+<text x="492" y="110" text-anchor="middle" font-size="10.5" fill="var(--dim)">物理ディスク/パーティション</text>
+<text x="492" y="126" text-anchor="middle" font-size="10.5" fill="var(--dim)">どう繋がっているか</text>
+</svg>
+<figcaption>図: df で全体 → du で犯人 → lsblk で装置構成、と粗いところから絞り込む</figcaption>
+</figure>
+
 ## df — どの領域が満杯か
 
 `df` は **ファイルシステム単位** の使用量を表示する。まずこれで「そもそもどこが埋まっているのか」を掴む。`-h` で読みやすい単位になる。

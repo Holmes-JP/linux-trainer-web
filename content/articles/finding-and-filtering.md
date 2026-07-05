@@ -13,6 +13,27 @@ order: 8
 - **find** — 名前・所有者・サイズ・時刻などの **属性** でファイル自体を探す (どこにあるか)
 - **grep** — ファイルの **中身のテキスト** を探す (何が書いてあるか)
 
+<figure class="diagram">
+<svg viewBox="0 0 600 180" role="img" aria-label="find と grep の役割の違いの図">
+<defs><marker id="fgArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<rect x="20" y="34" width="110" height="44" rx="8" fill="var(--track)" stroke="var(--accent)"/>
+<text class="mono" x="75" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">find</text>
+<text x="75" y="71" text-anchor="middle" font-size="10.5" fill="var(--dim)">どこにある?</text>
+<text x="300" y="46" text-anchor="middle" font-size="11" fill="var(--dim)">名前・サイズ・時刻・所有者などの属性で</text>
+<line x1="130" y1="56" x2="330" y2="56" stroke="var(--accent)" marker-end="url(#fgArrow)"/>
+<rect x="334" y="34" width="246" height="44" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="457" y="61" text-anchor="middle" font-size="12.5" fill="var(--text)">ファイル自体の場所を特定</text>
+<rect x="20" y="108" width="110" height="44" rx="8" fill="var(--track)" stroke="var(--accent)"/>
+<text class="mono" x="75" y="129" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">grep</text>
+<text x="75" y="145" text-anchor="middle" font-size="10.5" fill="var(--dim)">何が書いてある?</text>
+<text x="300" y="120" text-anchor="middle" font-size="11" fill="var(--dim)">ファイルの中身のテキストで</text>
+<line x1="130" y1="130" x2="330" y2="130" stroke="var(--accent)" marker-end="url(#fgArrow)"/>
+<rect x="334" y="108" width="246" height="44" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="457" y="135" text-anchor="middle" font-size="12.5" fill="var(--text)">一致した行を抜き出す</text>
+</svg>
+<figcaption>図: find は「ファイルの場所」を、grep は「中身のテキスト」を探す</figcaption>
+</figure>
+
 ## find で条件を指定して探す
 
 `find 起点 条件` の形。起点ディレクトリから下を丸ごと辿り、条件に合うものを出す。

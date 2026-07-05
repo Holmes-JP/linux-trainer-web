@@ -17,6 +17,27 @@ $ ls -i report.txt
 131074 report.txt
 ```
 
+<figure class="diagram">
+<svg viewBox="0 0 600 220" role="img" aria-label="ハードリンクとシンボリックリンクの違いの図">
+<defs><marker id="lnArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<rect x="410" y="58" width="160" height="66" rx="8" fill="var(--track)" stroke="var(--accent)" stroke-width="2"/>
+<text class="mono" x="490" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">inode 131074</text>
+<text x="490" y="106" text-anchor="middle" font-size="11" fill="var(--dim)">データの実体</text>
+<rect x="200" y="44" width="150" height="34" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="215" y="65" font-size="13" fill="var(--text)">report.txt</text>
+<line x1="350" y1="61" x2="408" y2="74" stroke="var(--accent)" marker-end="url(#lnArrow)"/>
+<rect x="200" y="100" width="150" height="34" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="215" y="121" font-size="13" fill="var(--text)">backup.txt</text>
+<line x1="350" y1="117" x2="408" y2="104" stroke="var(--accent)" marker-end="url(#lnArrow)"/>
+<text x="360" y="94" text-anchor="middle" font-size="11" fill="var(--dim)">ハードリンク＝同じ inode を共有</text>
+<rect x="30" y="160" width="150" height="34" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="45" y="181" font-size="13" fill="var(--text)">shortcut.lnk</text>
+<line x1="185" y1="168" x2="245" y2="80" stroke="var(--accent)" stroke-dasharray="5 4" marker-end="url(#lnArrow)"/>
+<text x="60" y="210" font-size="11" fill="var(--dim)">シンボリックリンク＝「report.txt」というパス名を指す（元が消えると切れる）</text>
+</svg>
+<figcaption>図: ハードリンクは inode（実体）を直接共有、シンボリックリンクはパス名を指す</figcaption>
+</figure>
+
 ## ハードリンク vs シンボリックリンク
 
 リンクとは「同じファイルに別の入口を作る」仕組みで、2 種類ある。
