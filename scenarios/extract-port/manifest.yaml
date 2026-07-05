@@ -1,0 +1,37 @@
+id: extract-port
+verify_fix: "echo 8443 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "設定ファイルからポート番号を取り出す"
+difficulty: easy
+category: services
+time_estimate_min: 5
+
+description: |
+  サービスの設定ファイル /etc/app/server.conf に待ち受けポートが書かれている。
+  このポート番号 (数字だけ) を調べ、/home/user/answer.txt に書き込め。
+
+setup:
+  - description: "設定ファイルを設置する"
+    cmd: |
+      mkdir -p /etc/app
+      cat > /etc/app/server.conf <<'EOF'
+      # app server config
+      HOST=0.0.0.0
+      LISTEN_PORT=8443
+      WORKERS=4
+      LOG_LEVEL=info
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に正しいポート番号 (8443) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "8443"
+    run_as: user
+
+hints:
+  - "設定ファイルの中身を見る: cat /etc/app/server.conf"
+  - "ポートの行だけ取り出す: grep PORT /etc/app/server.conf"
+  - "= の右側 (数字) だけ取り出す: grep LISTEN_PORT /etc/app/server.conf | cut -d= -f2"
+
+solution: |
+  `grep LISTEN_PORT /etc/app/server.conf | cut -d= -f2` で 8443 が得られる。
+  `echo 8443 > /home/user/answer.txt` で書けば完了。

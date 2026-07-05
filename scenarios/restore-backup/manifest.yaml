@@ -1,0 +1,37 @@
+id: restore-backup
+verify_fix: "cp /home/user/notes.txt.bak /home/user/notes.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "バックアップからファイルを復元する"
+difficulty: easy
+category: filesystem
+time_estimate_min: 5
+
+description: |
+  大事なメモ /home/user/notes.txt が消えてしまった。
+  幸いバックアップ /home/user/notes.txt.bak が残っている。
+  バックアップから notes.txt を復元せよ。
+
+setup:
+  - description: "バックアップを用意し、本体を消しておく"
+    cmd: |
+      echo 'MEMO meeting Tue 10:00 room-A' > /home/user/notes.txt.bak
+      chown 1000:1000 /home/user/notes.txt.bak
+      rm -f /home/user/notes.txt
+
+check:
+  - description: "notes.txt が復元されている"
+    test: "cat /home/user/notes.txt"
+    expect_exit: 0
+    run_as: user
+  - description: "notes.txt の中身がバックアップと一致する"
+    test: "cat /home/user/notes.txt"
+    expect_stdout_contains: "meeting Tue 10:00"
+    run_as: user
+
+hints:
+  - "バックアップがあるか確認: ls -l /home/user/"
+  - "ファイルをコピーするコマンド: cp"
+  - "cp /home/user/notes.txt.bak /home/user/notes.txt で復元できる"
+
+solution: |
+  `cp /home/user/notes.txt.bak /home/user/notes.txt` でバックアップから復元できる。
+  cat /home/user/notes.txt で中身が戻っていれば完了。

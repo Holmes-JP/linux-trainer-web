@@ -1,0 +1,32 @@
+id: secure-key-perms
+verify_fix: "chmod 600 /home/user/secret.key"  # 模範修復 (テスト専用・UI 非表示)
+title: "秘密鍵のパーミッションを安全にする"
+difficulty: medium
+category: permissions
+time_estimate_min: 8
+
+description: |
+  /home/user/secret.key は本来「所有者だけが読み書きできる」べき秘密鍵だが、
+  今は他人からも読めてしまう緩い権限になっている。
+  所有者だけがアクセスできる権限 (600 = -rw-------) に修正せよ。
+
+setup:
+  - description: "秘密鍵を緩い権限で設置する"
+    cmd: |
+      echo 'PRIVATE-KEY-DATA' > /home/user/secret.key
+      chown 1000:1000 /home/user/secret.key
+      chmod 644 /home/user/secret.key
+
+check:
+  - description: "secret.key の権限が 600 (-rw-------) になっている"
+    test: "ls -l /home/user/secret.key"
+    expect_stdout_contains: "-rw-------"
+
+hints:
+  - "現在の権限を確認: ls -l /home/user/secret.key (rw-r--r-- は 644 で他人も読める)"
+  - "CheerpX では自分のファイルでも一般ユーザーは chmod できない。su root (パスワード: password) で root になる"
+  - "root で chmod 600 /home/user/secret.key"
+
+solution: |
+  `su root` (パスワード: password) で root になり、`chmod 600 /home/user/secret.key`。
+  ls -l で -rw------- になれば完了。

@@ -1,0 +1,33 @@
+id: verify-checksum
+verify_fix: "echo ok > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "SHA-256 で改ざんチェック"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  配布ファイル /srv/pkg.tar と、その正しい SHA-256 ハッシュ値 /srv/pkg.sha256 がある。
+  pkg.tar のハッシュを計算し、pkg.sha256 の値と一致するか確認せよ。
+  一致すれば (改ざんされていなければ) /home/user/answer.txt に ok と書け。
+
+setup:
+  - description: "配布ファイルと正しいハッシュ値を設置する"
+    cmd: |
+      mkdir -p /srv
+      printf 'release-1.0 payload contents\n' > /srv/pkg.tar
+      sha256sum /srv/pkg.tar | cut -d' ' -f1 > /srv/pkg.sha256
+
+check:
+  - description: "/home/user/answer.txt に ok が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "ok"
+    run_as: user
+
+hints:
+  - "ファイルのハッシュを計算: sha256sum /srv/pkg.tar"
+  - "正しい値と見比べる: cat /srv/pkg.sha256"
+  - "2つのハッシュが一致していれば改ざんなし。echo ok > /home/user/answer.txt"
+
+solution: |
+  `sha256sum /srv/pkg.tar` の先頭のハッシュと `cat /srv/pkg.sha256` の値を見比べると一致する。
+  改ざんされていないので `echo ok > /home/user/answer.txt` で完了。

@@ -1,0 +1,31 @@
+id: reverse-code
+verify_fix: "echo 321cba > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "文字列を左右逆順にする"
+difficulty: easy
+category: filesystem
+time_estimate_min: 5
+
+description: |
+  /home/user/code.txt に 1 行の文字列が書かれている。
+  この文字列を左右逆順にしたものを /home/user/answer.txt に書け。
+
+setup:
+  - description: "元の文字列を設置する"
+    cmd: |
+      echo 'abc123' > /home/user/code.txt
+      chown 1000:1000 /home/user/code.txt
+
+check:
+  - description: "/home/user/answer.txt に逆順の文字列 (321cba) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "321cba"
+    run_as: user
+
+hints:
+  - "中身を見る: cat /home/user/code.txt"
+  - "各行を左右逆順にするコマンド: rev"
+  - "rev /home/user/code.txt の出力を answer.txt に書く"
+
+solution: |
+  `rev /home/user/code.txt` で abc123 が 321cba になる。
+  `rev /home/user/code.txt > /home/user/answer.txt` で完了。

@@ -56,3 +56,9 @@ scenarios:
   - wrong-group
   - tar-restore
   - decode-secret
+  - extract-port
+  - reverse-code
+  - restore-backup
+  - secure-key-perms
+  - first-error-line
+  - verify-checksum

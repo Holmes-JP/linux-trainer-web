@@ -1,0 +1,39 @@
+id: first-error-line
+verify_fix: "echo 5 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "最初のエラー行を特定する"
+difficulty: medium
+category: logs
+time_estimate_min: 8
+
+description: |
+  ログ /var/log/app/run.log の中で、最初に "ERROR" が現れる行が何行目かを調べ、
+  その行番号 (数字だけ) を /home/user/answer.txt に書け。
+
+setup:
+  - description: "調査対象のログを設置する"
+    cmd: |
+      mkdir -p /var/log/app
+      cat > /var/log/app/run.log <<'EOF'
+      INFO  boot sequence start
+      INFO  loading config
+      INFO  cache warmed
+      WARN  slow disk detected
+      ERROR failed to bind socket
+      INFO  retrying
+      ERROR still failing
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に最初の ERROR の行番号 (5) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "5"
+    run_as: user
+
+hints:
+  - "行番号つきで ERROR を探す: grep -n ERROR /var/log/app/run.log"
+  - "最初の1件だけ見る: grep -n ERROR /var/log/app/run.log | head -1"
+  - "出力の先頭 5: が行番号。echo 5 > /home/user/answer.txt"
+
+solution: |
+  `grep -n ERROR /var/log/app/run.log | head -1` の先頭が `5:` なので 5 行目。
+  `echo 5 > /home/user/answer.txt` で完了。
