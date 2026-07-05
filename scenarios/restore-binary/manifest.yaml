@@ -6,10 +6,8 @@ category: filesystem
 time_estimate_min: 10
 
 description: |
-  レポート生成コマンド /usr/local/bin/report を実行しようとすると
-  「そんなコマンドは無い」と言われる。どうやら本体が消えてしまったらしい。
-  以前のバックアップが同じディレクトリに残っている。report を復元し、
-  user が実行できるようにせよ。
+  レポート生成コマンド /usr/local/bin/report を実行しようとすると「そんなコマンドは無い」と言われる。どうやら本体が消えてしまったらしい。
+  以前のバックアップが同じディレクトリに残っている。report を復元し、user が実行できるようにせよ。
 
 # 冪等: 毎回 バックアップ (.bak、実行権限なし) を作り直し、本体を消す。
 setup:
@@ -35,6 +33,4 @@ hints:
 
 solution: |
   本体 /usr/local/bin/report は消えているが、バックアップ report.bak が同じディレクトリにある。
-  `su root` (パスワード: password) で root になり、
-  `cp /usr/local/bin/report.bak /usr/local/bin/report` で復元し、
-  `chmod +x /usr/local/bin/report` で実行権限を付ければ動く。
+  `su root` (パスワード: password) で root になり、`cp /usr/local/bin/report.bak /usr/local/bin/report` で復元し、`chmod +x /usr/local/bin/report` で実行権限を付ければ動く。

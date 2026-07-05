@@ -6,8 +6,7 @@ category: filesystem
 time_estimate_min: 10
 
 description: |
-  アプリは設定を /etc/webapp/current.conf 経由で読むが、このシンボリックリンクの
-  リンク先が存在せず「壊れたリンク」になっている。
+  アプリは設定を /etc/webapp/current.conf 経由で読むが、このシンボリックリンクのリンク先が存在せず「壊れたリンク」になっている。
   正しい設定ファイルを指すようにリンクを張り直し、current.conf から設定を読めるようにせよ。
 
 # 冪等: 毎回「正しい設定ファイル + 壊れたリンク」の状態に戻す (ln -sfn で上書き)。
@@ -35,5 +34,4 @@ hints:
 
 solution: |
   `ls -l /etc/webapp/current.conf` を見ると settings.OLD.conf (存在しない) を指す壊れたリンク。
-  実在するのは settings.prod.conf。`su root` (パスワード: password) で root になり、
-  `ln -sfn /etc/webapp/settings.prod.conf /etc/webapp/current.conf` で張り直せば完了。
+  実在するのは settings.prod.conf。`su root` (パスワード: password) で root になり、`ln -sfn /etc/webapp/settings.prod.conf /etc/webapp/current.conf` で張り直せば完了。

@@ -6,8 +6,7 @@ category: processes
 time_estimate_min: 20
 
 description: |
-  侵入の痕跡が見つかった。攻撃者は不審なデーモン「backdoord」を仕込み、
-  さらに再起動後も復活するよう「持続化 (persistence)」の細工をしている。
+  侵入の痕跡が見つかった。攻撃者は不審なデーモン「backdoord」を仕込み、さらに再起動後も復活するよう「持続化 (persistence)」の細工をしている。
   次の3点をすべて満たすように、バックドアを完全に駆除せよ:
     1. backdoord プロセスを停止する
     2. 実行ファイル本体 /usr/local/sbin/backdoord を削除する

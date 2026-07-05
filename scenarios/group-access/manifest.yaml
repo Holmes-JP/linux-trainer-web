@@ -6,8 +6,7 @@ category: permissions
 time_estimate_min: 10
 
 description: |
-  共有データを扱うには user が appdata グループのメンバーである必要があるが、
-  現在そのグループに所属していないため作業ができない。
+  共有データを扱うには user が appdata グループのメンバーである必要があるが、現在そのグループに所属していないため作業ができない。
   user を appdata グループに追加せよ。
 
 # 冪等: グループが無ければ作成し、毎回 user を appdata から外した状態に戻す。
@@ -29,5 +28,4 @@ hints:
 
 solution: |
   `id user` を見ると appdata グループに入っていない。
-  `su root` (パスワード: password) で root になり `usermod -aG appdata user` を実行して
-  user を appdata グループに追加すれば解決 (-a を付けて既存の所属を保持する)。
+  `su root` (パスワード: password) で root になり `usermod -aG appdata user` を実行して user を appdata グループに追加すれば解決 (-a を付けて既存の所属を保持する)。

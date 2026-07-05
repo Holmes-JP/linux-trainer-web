@@ -6,8 +6,7 @@ category: services
 time_estimate_min: 20
 
 description: |
-  監視デーモン monitord (/usr/local/sbin/monitord) を起動しようとしても、
-  すぐに落ちてしまい常駐しない。原因は1つではないかもしれない。
+  監視デーモン monitord (/usr/local/sbin/monitord) を起動しようとしても、すぐに落ちてしまい常駐しない。原因は1つではないかもしれない。
   エラーログも手がかりに、monitord が常駐するまで修復せよ。
   (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
 

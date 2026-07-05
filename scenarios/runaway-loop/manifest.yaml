@@ -32,5 +32,4 @@ hints:
   - "名前で停止する: pkill busyloop (または kill <PID>)"
 
 solution: |
-  `pgrep -a busyloop` で PID を確認し、`su root` (パスワード: password) で root になって
-  `pkill busyloop` (または `kill <PID>`) で停止すれば完了。
+  `pgrep -a busyloop` で PID を確認し、`su root` (パスワード: password) で root になって `pkill busyloop` (または `kill <PID>`) で停止すれば完了。

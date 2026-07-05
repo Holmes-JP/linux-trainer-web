@@ -25,6 +25,9 @@ check:
   - description: "設定内容が正しい (port=8080 を含む)"
     test: "grep -q '^port=8080' /etc/myapp/app.conf"
     expect_exit: 0
+  - description: "設定内容が完全である (mode=production も含む)"
+    test: "grep -q '^mode=production' /etc/myapp/app.conf"
+    expect_exit: 0
 
 hints:
   - "まず /etc/myapp の中を見てみよう: ls -la /etc/myapp"
@@ -33,5 +36,4 @@ hints:
 
 solution: |
   /etc/myapp/app.conf.bak というバックアップが残っている。
-  `su root` (パスワード: password) で root になり、
-  `cp /etc/myapp/app.conf.bak /etc/myapp/app.conf` で復元すれば完了。
+  `su root` (パスワード: password) で root になり、`cp /etc/myapp/app.conf.bak /etc/myapp/app.conf` で復元すれば完了。

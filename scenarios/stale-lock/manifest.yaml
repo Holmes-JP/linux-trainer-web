@@ -60,7 +60,4 @@ hints:
   - "root (su root、パスワード: password) で古いロックを消して起動: rm /run/worker.lock && service worker start"
 
 solution: |
-  `su root` (パスワード: password) で root になり `service worker start` を実行すると
-  「stale lock /run/worker.lock present」と出る。ワーカーは動いていない (前回の異常終了で
-  ロックだけ残った) ので、`rm /run/worker.lock` で古いロックを削除してから
-  `service worker start` で起動すれば常駐する。
+  `su root` (パスワード: password) で root になり `service worker start` を実行すると「stale lock /run/worker.lock present」と出る。ワーカーは動いていない (前回の異常終了でロックだけ残った) ので、`rm /run/worker.lock` で古いロックを削除してから `service worker start` で起動すれば常駐する。

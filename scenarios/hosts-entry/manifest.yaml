@@ -29,6 +29,4 @@ hints:
 
 solution: |
   /etc/hosts に appserver の行が無いため名前解決できない。
-  `su root` (パスワード: password) で root になり、
-  `echo '10.0.0.50 appserver' >> /etc/hosts` で「IP ホスト名」の行を追記すれば
-  `getent hosts appserver` で解決できるようになる。
+  `su root` (パスワード: password) で root になり、`echo '10.0.0.50 appserver' >> /etc/hosts` で「IP ホスト名」の行を追記すれば `getent hosts appserver` で解決できるようになる。

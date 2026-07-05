@@ -7,8 +7,7 @@ time_estimate_min: 15
 
 description: |
   レポート生成デーモン reportd を起動しても常駐しない。
-  デーモンは起動時に /etc/default/reportd を読み、ENABLED が 1 でなければ「無効」と
-  判断して即終了する。今この値が 0 になっている。ENABLED を 1 にして reportd を起動せよ。
+  デーモンは起動時に /etc/default/reportd を読み、ENABLED が 1 でなければ「無効」と判断して即終了する。今この値が 0 になっている。ENABLED を 1 にして reportd を起動せよ。
   (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
 
 # 冪等: 本体/init/環境ファイルを毎回設置し、ENABLED=0 (無効) で停止した状態にする。
@@ -45,6 +44,9 @@ check:
   - description: "reportd プロセスが常駐している"
     test: "pgrep -x reportd"
     expect_exit: 0
+  - description: "/etc/default/reportd で ENABLED=1 になっている"
+    test: "grep -q '^ENABLED=1' /etc/default/reportd"
+    expect_exit: 0
 
 hints:
   - "起動を試すと常駐しない: service reportd start → service reportd status は stopped"
@@ -53,6 +55,4 @@ hints:
 
 solution: |
   reportd は /etc/default/reportd の ENABLED が 1 でないと即終了する。今は 0。
-  `su root` (パスワード: password) で root になり、
-  `sed -i 's/^ENABLED=0/ENABLED=1/' /etc/default/reportd` (または vim で編集) してから
-  `service reportd start` で起動すれば常駐する。
+  `su root` (パスワード: password) で root になり、`sed -i 's/^ENABLED=0/ENABLED=1/' /etc/default/reportd` (または vim で編集) してから `service reportd start` で起動すれば常駐する。

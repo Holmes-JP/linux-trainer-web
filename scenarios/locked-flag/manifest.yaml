@@ -7,8 +7,7 @@ category: permissions
 time_estimate_min: 5
 
 description: |
-  ホームディレクトリに大事なメモ /home/user/flag.txt があるが、
-  いつの間にか読めなくなってしまった。原因を調査し、user が中身を読めるように修復せよ。
+  ホームディレクトリに大事なメモ /home/user/flag.txt があるが、いつの間にか読めなくなってしまった。原因を調査し、user が中身を読めるように修復せよ。
 
 # --- 起動時に一度だけ実行し、箱を「壊す」(root で実行される) ---
 # 冪等であること (reload / 再挑戦で二重実行されても壊れない)
@@ -43,5 +42,4 @@ hints:
 # パーミッション修復系シナリオは「su で root になって直す」導線で設計する。
 solution: |
   flag.txt のパーミッションが 000 になっている。
-  `su root` (パスワード: password) で root になり、
-  `chmod 644 /home/user/flag.txt` で読み取り権限を戻せば修復完了。
+  `su root` (パスワード: password) で root になり、`chmod 644 /home/user/flag.txt` で読み取り権限を戻せば修復完了。

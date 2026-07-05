@@ -6,8 +6,7 @@ category: permissions
 time_estimate_min: 10
 
 description: |
-  Web アプリ (user 権限で動作) がログ /var/log/webapp/app.log に書き込めず
-  エラーになっている。ログファイルが root 所有で、user が追記できないのが原因。
+  Web アプリ (user 権限で動作) がログ /var/log/webapp/app.log に書き込めずエラーになっている。ログファイルが root 所有で、user が追記できないのが原因。
   user がこのログに追記できるように修復せよ。
 
 # 冪等: 毎回 root 所有・644 (user は書けない) に戻す。
@@ -28,9 +27,9 @@ check:
 hints:
   - "所有者と権限を確認: ls -l /var/log/webapp/app.log (root 所有・その他は書き込み不可)"
   - "アプリは user 権限で動く。所有者を user にするか、書き込み権を与える必要がある"
-  - "root (su root、パスワード: password) で: chown user:user /var/log/webapp/app.log (または chmod 666)"
+  - "root (su root、パスワード: password) で: chown user:user /var/log/webapp/app.log"
 
 solution: |
-  `ls -l /var/log/webapp/app.log` を見ると root 所有・644 で、その他ユーザー (user) は
-  書き込めない。`su root` (パスワード: password) で root になり
-  `chown user:user /var/log/webapp/app.log` (または `chmod 666`) とすれば user が追記できる。
+  `ls -l /var/log/webapp/app.log` を見ると root 所有・644 で、その他ユーザー (user) は書き込めない。
+  `su root` (パスワード: password) で root になり `chown user:user /var/log/webapp/app.log` とすれば user が追記できる。
+  (chmod 666 でも追記はできるが、誰でも書けるログは改ざんの温床になるため実運用では避ける)

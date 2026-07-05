@@ -6,8 +6,7 @@ category: permissions
 time_estimate_min: 15
 
 description: |
-  侵入調査で、攻撃者が仕込んだ不正なアカウント "hacker" が /etc/passwd に
-  追加されているのが見つかった。しかも UID が 0 に細工されており、root と同じ特権を持つ。
+  侵入調査で、攻撃者が仕込んだ不正なアカウント "hacker" が /etc/passwd に追加されているのが見つかった。しかも UID が 0 に細工されており、root と同じ特権を持つ。
   非常に危険なので、この hacker アカウントを削除して塞げ。
 
 # 冪等: hacker が無ければ UID 0 の不正アカウントとして追加する。
@@ -28,5 +27,4 @@ hints:
 
 solution: |
   `awk -F: '$3==0' /etc/passwd` で UID 0 のアカウントを列挙すると、root 以外に hacker がいる。
-  `su root` (パスワード: password) で root になり `userdel hacker`
-  (または `sed -i '/^hacker:/d' /etc/passwd` で該当行を削除) すれば不正アカウントを塞げる。
+  `su root` (パスワード: password) で root になり `userdel hacker` (または `sed -i '/^hacker:/d' /etc/passwd` で該当行を削除) すれば不正アカウントを塞げる。

@@ -6,9 +6,9 @@ category: services
 time_estimate_min: 10
 
 description: |
-  API ゲートウェイが全リクエストを拒否している。設定ファイル
-  /etc/api-gateway/gateway.conf を見ると、サービスが無効化 (enabled = false) されている。
+  API ゲートウェイが全リクエストを拒否している。設定ファイル /etc/api-gateway/gateway.conf を見ると、サービスが無効化 (enabled = false) されている。
   設定を修正してゲートウェイを有効化せよ (enabled = true にする)。
+  enabled 以外の設定行 (listen_port など) は変更・削除しないこと。
 
 # 冪等: 毎回 enabled = false に戻す (行が無ければ足す)。
 setup:
@@ -25,6 +25,9 @@ setup:
 check:
   - description: "gateway.conf で enabled = true になっている"
     test: "grep -q '^enabled = true' /etc/api-gateway/gateway.conf"
+    expect_exit: 0
+  - description: "他の設定 (listen_port = 8080 など) が失われていない"
+    test: "grep -q '^listen_port = 8080' /etc/api-gateway/gateway.conf && grep -q '^max_connections = 256' /etc/api-gateway/gateway.conf"
     expect_exit: 0
 
 hints:

@@ -27,5 +27,4 @@ hints:
   - "root で書き換える: echo 2.4.0 > /etc/myapp/VERSION (または vim で編集)"
 
 solution: |
-  /etc 以下のファイルなので root で編集する。`su root` (パスワード: password) で root になり
-  `echo 2.4.0 > /etc/myapp/VERSION` で中身を 2.4.0 に書き換えれば完了。
+  /etc 以下のファイルなので root で編集する。`su root` (パスワード: password) で root になり `echo 2.4.0 > /etc/myapp/VERSION` で中身を 2.4.0 に書き換えれば完了。

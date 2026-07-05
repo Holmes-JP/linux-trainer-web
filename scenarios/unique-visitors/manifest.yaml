@@ -7,8 +7,7 @@ time_estimate_min: 10
 
 description: |
   アクセスログ /var/log/webserver/access.log を調べたい。
-  このログにアクセスしてきた「異なる送信元 IP アドレスの数 (ユニーク数)」を求め、
-  その数字だけを /home/user/answer.txt に書き込め。
+  このログにアクセスしてきた「異なる送信元 IP アドレスの数 (ユニーク数)」を求め、その数字だけを /home/user/answer.txt に書き込め。
 
 # 冪等: 毎回同じログを作り直す。ユニーク IP は 5 個 (10.0.0.1〜5)、うち一部は重複あり。
 # 注意: for/seq ループや yes|head は CheerpX で hang するため固定内容を heredoc で書く。

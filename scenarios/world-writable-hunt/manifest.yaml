@@ -6,9 +6,9 @@ category: permissions
 time_estimate_min: 15
 
 description: |
-  セキュリティ監査で、/etc/appconf 以下に「誰でも書き込める (world-writable)」ファイルが
-  複数あると指摘された。改ざんの温床になり危険だ。
+  セキュリティ監査で、/etc/appconf 以下に「誰でも書き込める (world-writable)」ファイルが複数あると指摘された。改ざんの温床になり危険だ。
   /etc/appconf 以下のすべてのファイルから、その他ユーザー (other) の書き込み権限を外せ。
+  どれも運用に必要な設定ファイルなので、削除するのではなく権限を直すこと。
 
 # 冪等: 毎回 複数ファイルを world-writable な状態に戻す。normal.conf は最初から安全 (644)。
 setup:
@@ -26,6 +26,9 @@ check:
   - description: "world-writable なファイルが残っていない"
     test: "! find /etc/appconf -type f -perm -0002 | grep -q ."
     expect_exit: 0
+  - description: "設定ファイル自体は削除されず残っている"
+    test: "[ -f /etc/appconf/settings.ini ] && [ -f /etc/appconf/secrets.key ] && [ -f /etc/appconf/normal.conf ]"
+    expect_exit: 0
 
 hints:
   - "誰でも書けるファイルを探す: find /etc/appconf -type f -perm -0002 (末尾 w が付いているもの)"
@@ -33,7 +36,4 @@ hints:
   - "root (su root、パスワード: password) で一括修正: find /etc/appconf -type f -perm -0002 -exec chmod o-w {} +"
 
 solution: |
-  `find /etc/appconf -type f -perm -0002` で world-writable なファイル (settings.ini,
-  secrets.key) が見つかる。`su root` (パスワード: password) で root になり、
-  `find /etc/appconf -type f -perm -0002 -exec chmod o-w {} +`
-  (または各ファイルに chmod o-w) で other の書き込み権を外せば安全になる。
+  `find /etc/appconf -type f -perm -0002` で world-writable なファイル (settings.ini, secrets.key) が見つかる。`su root` (パスワード: password) で root になり、`find /etc/appconf -type f -perm -0002 -exec chmod o-w {} +` (または各ファイルに chmod o-w) で other の書き込み権を外せば安全になる。

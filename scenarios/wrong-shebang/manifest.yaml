@@ -7,8 +7,7 @@ time_estimate_min: 10
 
 description: |
   自作コマンド /usr/local/bin/greet を実行するとエラーになって動かない。
-  スクリプトの中身自体は単純で正しそうなのに、「bad interpreter」のような
-  エラーが出る。原因を突き止め、greet が正しく実行できるように修復せよ。
+  スクリプトの中身自体は単純で正しそうなのに、「bad interpreter」のようなエラーが出る。原因を突き止め、greet が正しく実行できるように修復せよ。
 
 # 冪等: 毎回 壊れた shebang で作り直す (cat > で上書き)。
 setup:
@@ -32,6 +31,4 @@ hints:
   - "root (su root、パスワード: password) で1行目を #!/bin/sh に直す (sed や vim で)"
 
 solution: |
-  1行目の shebang が存在しないインタプリタ (/bin/nonexistent-shell) を指しているため
-  「bad interpreter」で実行できない。`su root` (パスワード: password) で root になり、
-  `sed -i '1s|.*|#!/bin/sh|' /usr/local/bin/greet` として1行目を #!/bin/sh に直せば動く。
+  1行目の shebang が存在しないインタプリタ (/bin/nonexistent-shell) を指しているため「bad interpreter」で実行できない。`su root` (パスワード: password) で root になり、`sed -i '1s|.*|#!/bin/sh|' /usr/local/bin/greet` として1行目を #!/bin/sh に直せば動く。

@@ -6,8 +6,7 @@ category: logs
 time_estimate_min: 8
 
 description: |
-  ログ /var/log/app/run.log の中で、最初に "ERROR" が現れる行が何行目かを調べ、
-  その行番号 (数字だけ) を /home/user/answer.txt に書け。
+  ログ /var/log/app/run.log の中で、最初に "ERROR" が現れる行が何行目かを調べ、その行番号 (数字だけ) を /home/user/answer.txt に書け。
 
 setup:
   - description: "調査対象のログを設置する"

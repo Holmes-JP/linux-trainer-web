@@ -6,9 +6,9 @@ category: services
 time_estimate_min: 10
 
 description: |
-  アプリが設定ファイル /etc/app/config.json の読み込みに失敗して起動しない。
-  どうやら JSON の書式が壊れているらしい。構文エラーを直し、
-  config.json が正しい JSON として読み込める状態に修復せよ。
+  アプリが設定ファイル /etc/app/config.json の読み込みに失敗して起動しない。どうやら JSON の書式が壊れているらしい。
+  構文エラーを直し、config.json が正しい JSON として読み込める状態に修復せよ。
+  既存の設定値 (service / port / debug) は消さずに保つこと。
 
 # 冪等: 毎回 末尾カンマ付きの不正な JSON で作り直す。
 setup:
@@ -28,6 +28,9 @@ check:
   - description: "config.json が正しい JSON として読み込める"
     test: "python3 -m json.tool /etc/app/config.json > /dev/null"
     expect_exit: 0
+  - description: "既存の設定値 (service / port / debug) が失われていない"
+    test: "grep -q '\"service\"' /etc/app/config.json && grep -q '\"port\"' /etc/app/config.json && grep -q '\"debug\"' /etc/app/config.json"
+    expect_exit: 0
 
 hints:
   - "中身を確認: cat /etc/app/config.json"
@@ -36,5 +39,4 @@ hints:
 
 solution: |
   JSON では最後の要素の後ろにカンマを置けない。`"debug": false,` の末尾カンマが不正。
-  `su root` (パスワード: password) で root になり、
-  `sed -i 's/false,/false/' /etc/app/config.json` (または vim で該当カンマを削除) すれば妥当になる。
+  `su root` (パスワード: password) で root になり、`sed -i 's/false,/false/' /etc/app/config.json` (または vim で該当カンマを削除) すれば妥当になる。

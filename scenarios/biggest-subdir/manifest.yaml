@@ -6,8 +6,7 @@ category: disk
 time_estimate_min: 10
 
 description: |
-  /var/data の下に複数のサブディレクトリがある。その中で最もディスクを使っている
-  「サブディレクトリの名前」を特定し、その名前だけを /home/user/answer.txt に書け。
+  /var/data の下に複数のサブディレクトリがある。その中で最もディスクを使っている「サブディレクトリの名前」を特定し、その名前だけを /home/user/answer.txt に書け。
   (パスではなくディレクトリ名のみ。例: videos)
 
 # 冪等: 毎回サブディレクトリと中の大きさの異なるファイルを作り直す。videos が最大 (8MB)。

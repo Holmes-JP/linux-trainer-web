@@ -6,8 +6,7 @@ category: permissions
 time_estimate_min: 8
 
 description: |
-  /home/user/secret.key は本来「所有者だけが読み書きできる」べき秘密鍵だが、
-  今は他人からも読めてしまう緩い権限になっている。
+  /home/user/secret.key は本来「所有者だけが読み書きできる」べき秘密鍵だが、今は他人からも読めてしまう緩い権限になっている。
   所有者だけがアクセスできる権限 (600 = -rw-------) に修正せよ。
 
 setup:
@@ -21,6 +20,9 @@ check:
   - description: "secret.key の権限が 600 (-rw-------) になっている"
     test: "ls -l /home/user/secret.key"
     expect_stdout_contains: "-rw-------"
+  - description: "鍵の中身が失われていない"
+    test: "grep -q 'PRIVATE-KEY-DATA' /home/user/secret.key"
+    expect_exit: 0
 
 hints:
   - "現在の権限を確認: ls -l /home/user/secret.key (rw-r--r-- は 644 で他人も読める)"

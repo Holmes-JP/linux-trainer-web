@@ -6,8 +6,7 @@ category: permissions
 time_estimate_min: 5
 
 description: |
-  定期バックアップに使う /usr/local/bin/backup.sh を実行しようとすると
-  「Permission denied」になって動かない。実行権限が付いていないのが原因。
+  定期バックアップに使う /usr/local/bin/backup.sh を実行しようとすると「Permission denied」になって動かない。実行権限が付いていないのが原因。
   user がこのスクリプトを実行できるように修復せよ。
 
 # 冪等: 毎回スクリプトを作り直し、実行権限を外した状態 (644) にする。
@@ -33,5 +32,4 @@ hints:
 
 solution: |
   スクリプトに実行権限 (x) が無いため実行できない。
-  `su root` (パスワード: password) で root になり `chmod +x /usr/local/bin/backup.sh`
-  で実行権限を付ければ動く。
+  `su root` (パスワード: password) で root になり `chmod +x /usr/local/bin/backup.sh` で実行権限を付ければ動く。

@@ -6,9 +6,7 @@ category: permissions
 time_estimate_min: 10
 
 description: |
-  /home/user/project 以下のファイルは本来すべて user 所有のはずだが、
-  1つだけ root 所有のファイルが紛れ込んでいる。その root 所有ファイルの「名前」を
-  特定し、名前だけを /home/user/answer.txt に書け (パスではなくファイル名のみ)。
+  /home/user/project 以下のファイルは本来すべて user 所有のはずだが、1つだけ root 所有のファイルが紛れ込んでいる。その root 所有ファイルの「名前」を特定し、名前だけを /home/user/answer.txt に書け (パスではなくファイル名のみ)。
 
 # 冪等: 毎回プロジェクトを作り直し、secret.env だけ root 所有にする。
 setup:

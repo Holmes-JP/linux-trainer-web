@@ -6,9 +6,8 @@ category: services
 time_estimate_min: 10
 
 description: |
-  サービス svc が想定と違うポートで待ち受けてしまう。
-  設定ファイル /etc/svc/config.json の port が 80 になっているが、正しくは 8080 だ。
-  port を 8080 に修正せよ (JSON としては妥当なまま保つこと)。
+  サービス svc が想定と違うポートで待ち受けてしまう。設定ファイル /etc/svc/config.json の port が 80 になっているが、正しくは 8080 だ。
+  port だけを 8080 に修正せよ。JSON として妥当なまま保ち、他のキー (service / workers) は変更しないこと。
 
 # 冪等: 毎回 port=80 の妥当な JSON で作り直す。
 setup:
@@ -30,6 +29,9 @@ check:
   - description: "config.json は妥当な JSON のまま"
     test: "python3 -m json.tool /etc/svc/config.json > /dev/null"
     expect_exit: 0
+  - description: "他のキー (service / workers) が失われていない"
+    test: "grep -q '\"service\"' /etc/svc/config.json && grep -q '\"workers\"' /etc/svc/config.json"
+    expect_exit: 0
 
 hints:
   - "現在の値を確認: cat /etc/svc/config.json (port が 80)"
@@ -37,6 +39,4 @@ hints:
   - "root (su root、パスワード: password) で: sed -i 's/: 80,/: 8080,/' /etc/svc/config.json (または vim で編集)"
 
 solution: |
-  port の値が 80 になっている。`su root` (パスワード: password) で root になり、
-  `sed -i 's/: 80,/: 8080,/' /etc/svc/config.json` で 8080 に直せば完了
-  (vim 等で "port": 8080 に書き換えてもよい)。
+  port の値が 80 になっている。`su root` (パスワード: password) で root になり、`sed -i 's/: 80,/: 8080,/' /etc/svc/config.json` で 8080 に直せば完了 (vim 等で "port": 8080 に書き換えてもよい)。

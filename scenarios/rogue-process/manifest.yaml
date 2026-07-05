@@ -39,5 +39,4 @@ hints:
   - "root (su root、パスワード: password) になって kill <PID> し、実行ファイルは which や ls で場所を確認して rm"
 
 solution: |
-  `pgrep -a cryptominer` で PID を特定し、`su root` (パスワード: password) で root になって
-  `pkill cryptominer` で停止。本体は `rm /usr/local/bin/cryptominer` で削除すれば完了。
+  `pgrep -a cryptominer` で PID を特定し、`su root` (パスワード: password) で root になって `pkill cryptominer` で停止。本体は `rm /usr/local/bin/cryptominer` で削除すれば完了。

@@ -7,9 +7,8 @@ time_estimate_min: 10
 
 description: |
   /var/log/app/huge.log が肥大化してディスクを圧迫している。
-  ただしアプリがこのファイルを開いたまま書き込み続けているため、ファイルを
-  「削除」してしまうとログ出力が壊れてしまう。ファイルは消さずに中身だけ空にして、
-  /var/log/app の合計を 1MB 以下に減らせ (huge.log は残すこと)。
+  ただしこのログは「アプリが開いたまま書き込み続けているファイル」という想定。実運用でこういうファイルを rm すると、プロセスが掴んでいる間は領域が解放されず、ログ出力も壊れてしまう。
+  そこで本ミッションでは削除は禁止。huge.log は残したまま中身だけを空にして、/var/log/app の合計を 1MB 以下に減らせ。
 
 # 冪等: 毎回 9MB のログを作り直す (head -c で上書き)。
 # 注意: /dev/zero は無いので /dev/urandom。du はブロック集計 0 なので du -sb で判定。
@@ -34,6 +33,4 @@ hints:
 
 solution: |
   ファイルを削除せずに中身を空にする (truncate) のが正解。
-  `su root` (パスワード: password) で root になり `: > /var/log/app/huge.log`
-  (または `truncate -s 0 /var/log/app/huge.log`) で中身を空にすれば、
-  ファイルは残したまま容量が解放される。
+  `su root` (パスワード: password) で root になり `: > /var/log/app/huge.log` (または `truncate -s 0 /var/log/app/huge.log`) で中身を空にすれば、ファイルは残したまま容量が解放される。

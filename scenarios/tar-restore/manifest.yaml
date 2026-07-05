@@ -8,8 +8,7 @@ time_estimate_min: 10
 description: |
   設定ファイル /etc/importantapp/settings.conf が消えてしまった。
   ただし /opt/backups/config.tar というバックアップアーカイブに含まれている。
-  アーカイブから settings.conf を取り出し、元の場所 (/etc/importantapp/settings.conf) に
-  復元せよ。
+  アーカイブから settings.conf を取り出し、元の場所 (/etc/importantapp/settings.conf) に復元せよ。
 
 # 冪等: 毎回 設定を作ってアーカイブし直し、本体を消す。
 setup:
@@ -33,6 +32,4 @@ hints:
 
 solution: |
   `tar tf /opt/backups/config.tar` でアーカイブ内のパス (etc/importantapp/settings.conf) を確認。
-  `su root` (パスワード: password) で root になり、
-  `tar xf /opt/backups/config.tar -C / etc/importantapp/settings.conf` で
-  元の場所に展開すれば復元できる。
+  `su root` (パスワード: password) で root になり、`tar xf /opt/backups/config.tar -C / etc/importantapp/settings.conf` で元の場所に展開すれば復元できる。

@@ -6,8 +6,7 @@ category: processes
 time_estimate_min: 10
 
 description: |
-  サーバーに datasync (正規の同期プロセス) と cryptosync (不正なプロセス) が
-  両方動いている。名前が似ているので注意して、不正な cryptosync「だけ」を停止せよ。
+  サーバーに datasync (正規の同期プロセス) と cryptosync (不正なプロセス) が両方動いている。名前が似ているので注意して、不正な cryptosync「だけ」を停止せよ。
   正規の datasync は動かしたまま残すこと (誤って止めないこと)。
 
 # 冪等: 本体を毎回設置し、動いていなければ起動する (どちらかが消えても復活)。
@@ -42,6 +41,4 @@ hints:
 
 solution: |
   datasync は残し、cryptosync だけを止めるのがポイント。
-  `su root` (パスワード: password) で root になり `pkill -x cryptosync`
-  (完全一致) で不正プロセスだけを停止する。`pkill sync` などの部分一致は
-  datasync まで巻き込むので使わない。
+  `su root` (パスワード: password) で root になり `pkill -x cryptosync` (完全一致) で不正プロセスだけを停止する。`pkill sync` などの部分一致は datasync まで巻き込むので使わない。

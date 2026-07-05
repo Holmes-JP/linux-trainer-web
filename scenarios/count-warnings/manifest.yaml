@@ -7,8 +7,7 @@ time_estimate_min: 5
 
 description: |
   アプリのログ /var/log/app/service.log を調べたい。
-  このログの中で "WARN" を含む行の数を数え、その数字だけを
-  /home/user/answer.txt に書き込め。
+  このログの中で "WARN" を含む行の数を数え、その数字だけを /home/user/answer.txt に書き込め。
 
 # 冪等: 毎回同じログを作り直す。WARN 行はちょうど 4 行。
 setup:

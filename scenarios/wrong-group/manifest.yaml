@@ -6,8 +6,7 @@ category: permissions
 time_estimate_min: 10
 
 description: |
-  Web の設定ファイル /var/www/html/config.php は www-data グループのプロセスから
-  読めるべきだが、グループ所有者が root になっているためアクセスできない。
+  Web の設定ファイル /var/www/html/config.php は www-data グループのプロセスから読めるべきだが、グループ所有者が root になっているためアクセスできない。
   このファイルのグループ所有者を www-data に変更せよ。
 
 # 冪等: www-data グループが無ければ作成し、毎回ファイルのグループを root に戻す。
@@ -32,6 +31,4 @@ hints:
 
 solution: |
   `ls -l /var/www/html/config.php` を見るとグループ所有者が root になっている。
-  `su root` (パスワード: password) で root になり
-  `chgrp www-data /var/www/html/config.php` (または chown root:www-data ...) で
-  グループを www-data に変更すれば www-data のプロセスから読めるようになる。
+  `su root` (パスワード: password) で root になり `chgrp www-data /var/www/html/config.php` (または chown root:www-data ...) でグループを www-data に変更すれば www-data のプロセスから読めるようになる。

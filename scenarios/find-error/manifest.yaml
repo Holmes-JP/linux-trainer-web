@@ -7,8 +7,7 @@ time_estimate_min: 5
 
 description: |
   アプリのログ /var/log/app/app.log を調べたい。
-  このログの中で「ERROR」と書かれた行の数を数え、その数字だけを
-  /home/user/answer.txt に書き込め。
+  このログの中で「ERROR」と書かれた行の数を数え、その数字だけを /home/user/answer.txt に書き込め。
 
 # 冪等: 毎回同じログを作り直す。ERROR 行はちょうど 3 行。
 # 注意: for/seq ループや yes|head は hang するため固定内容を heredoc で書く。

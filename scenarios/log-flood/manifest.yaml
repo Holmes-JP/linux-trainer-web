@@ -6,9 +6,9 @@ category: disk
 time_estimate_min: 10
 
 description: |
-  監視から「ディスク使用量が急増している」とアラートが来た。
-  原因は Web アプリのログ肥大化らしい。/var/log/webapp 以下を調査し、
-  肥大化したログを整理してディスクを解放せよ (合計 1MB 以下にする)。
+  監視から「ディスク使用量が急増している」とアラートが来た。原因は Web アプリのログ肥大化らしい。
+  ログを出していた Web アプリは既に停止済みで、溜まったログは保存不要 (消してよい) と確認が取れている。
+  /var/log/webapp 以下を調査し、肥大化したログを「削除」するか「空に切り詰め」て、合計を 1MB 以下にせよ。
 
 # 冪等: 毎回 8MB のログを作り直す (無条件上書き。中断された前回の残骸に影響されない)。
 # 注意: CheerpX では /dev/zero が無く、パイプ (yes|head) や for ループは hang する。
@@ -33,5 +33,5 @@ hints:
 
 solution: |
   `ls -lhS /var/log/webapp` で access.log が 8MB に肥大化しているのが分かる。
-  `su root` (パスワード: password) で root になり、
-  `rm /var/log/webapp/access.log` (または `: > /var/log/webapp/access.log` で切り詰め) すれば完了。
+  `su root` (パスワード: password) で root になり、`rm /var/log/webapp/access.log` (または `: > /var/log/webapp/access.log` で切り詰め) すれば完了。
+  補足: 実運用で「動いているアプリが開いたままのログ」を rm しても、プロセスが掴んでいる間は領域が解放されない。その場合は切り詰め (truncate) が定石 — シナリオ「使用中のログを安全に整理」で扱う。

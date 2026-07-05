@@ -51,8 +51,5 @@ hints:
   - "root (su root、パスワード: password) で不足を用意して起動: mkdir -p /var/lib/aggregator; echo seed > /var/lib/aggregator/seed.dat; service aggregator start"
 
 solution: |
-  `service aggregator start` してもすぐ落ちる。`cat /var/log/aggregator.err` を見ると
-  「data file /var/lib/aggregator/seed.dat is missing」とある。
-  `su root` (パスワード: password) で root になり、
-  `mkdir -p /var/lib/aggregator && echo seed > /var/lib/aggregator/seed.dat` で
-  必須データを用意してから `service aggregator start` で起動すれば常駐する。
+  `service aggregator start` してもすぐ落ちる。`cat /var/log/aggregator.err` を見ると「data file /var/lib/aggregator/seed.dat is missing」とある。
+  `su root` (パスワード: password) で root になり、`mkdir -p /var/lib/aggregator && echo seed > /var/lib/aggregator/seed.dat` で必須データを用意してから `service aggregator start` で起動すれば常駐する。

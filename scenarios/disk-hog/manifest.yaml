@@ -6,8 +6,7 @@ category: disk
 time_estimate_min: 15
 
 description: |
-  /var/data のディスク使用量が急増している。中には巨大な不要ファイルがある一方で、
-  消してはいけない重要ファイル important.db も同居している。
+  /var/data のディスク使用量が急増している。中には巨大な不要ファイルがある一方で、消してはいけない重要ファイル important.db も同居している。
   /var/data の合計サイズを 1MB 以下に減らせ。ただし important.db は残すこと。
   (重要ファイルまで消してしまうと失格)
 

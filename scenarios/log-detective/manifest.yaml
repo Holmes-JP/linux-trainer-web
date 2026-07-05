@@ -7,8 +7,7 @@ time_estimate_min: 10
 
 description: |
   Web サーバーのアクセスログ /var/log/webserver/access.log を調査したい。
-  このログの中で HTTP ステータスコードが 500 (サーバーエラー) だったリクエストの
-  「件数」を数え、その数字だけを /home/user/answer.txt に書き込め。
+  このログの中で HTTP ステータスコードが 500 (サーバーエラー) だったリクエストの「件数」を数え、その数字だけを /home/user/answer.txt に書き込め。
   (ヒント: ステータスコードはリクエスト行の後ろの数値フィールド)
 
 # 冪等: ログは毎回同じ内容で作り直す (無条件上書き)。answer.txt はユーザーが作る。

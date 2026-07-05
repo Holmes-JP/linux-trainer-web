@@ -7,8 +7,7 @@ time_estimate_min: 20
 
 description: |
   アクセスログ /var/log/webserver/access.log を解析する。
-  HTTP ステータス 404 (Not Found) を「最も多く」引き起こした送信元 IP アドレスを特定し、
-  その IP アドレスだけを /home/user/answer.txt に書き込め。
+  HTTP ステータス 404 (Not Found) を「最も多く」引き起こした送信元 IP アドレスを特定し、その IP アドレスだけを /home/user/answer.txt に書き込め。
   (複数のログ行を集計する必要がある)
 
 # 冪等: 毎回同じログを作り直す。404 の最多は 10.0.0.66 (4回)。他は 10.0.0.42(2), 10.0.0.99(1)。

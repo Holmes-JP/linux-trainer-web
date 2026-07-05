@@ -6,8 +6,7 @@ category: filesystem
 time_estimate_min: 5
 
 description: |
-  アプリ myapp (user 権限で動作) は作業ファイルを /var/spool/myapp に書き込むが、
-  このディレクトリが存在せず起動に失敗する。
+  アプリ myapp (user 権限で動作) は作業ファイルを /var/spool/myapp に書き込むが、このディレクトリが存在せず起動に失敗する。
   ディレクトリを作成し、user が書き込める状態にせよ。
 
 # 冪等: 毎回ディレクトリを消して「無い」状態に戻す。
@@ -34,4 +33,4 @@ solution: |
   `su root` (パスワード: password) で root になり、ディレクトリを作って所有者を user にする:
     mkdir -p /var/spool/myapp
     chown user:user /var/spool/myapp
-  (または chmod 777) で user が書き込めるようにすれば完了。
+  所有者が user になれば書き込めるようになり完了。(chmod 777 でも書けるが、誰でも書ける状態は実運用では避ける)

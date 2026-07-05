@@ -29,5 +29,4 @@ hints:
 
 solution: |
   `ls -lh /home/user/downloads` で bigfile.iso が肥大化しているのが分かる。
-  `su root` (パスワード: password) で root になり `rm /home/user/downloads/bigfile.iso`
-  で削除すれば合計は 1MB 以下になる。
+  `su root` (パスワード: password) で root になり `rm /home/user/downloads/bigfile.iso` で削除すれば合計は 1MB 以下になる。

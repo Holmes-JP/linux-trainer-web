@@ -29,5 +29,4 @@ hints:
 
 solution: |
   `getent passwd svc` を見ると末尾のログインシェルが /usr/sbin/nologin になっている。
-  `su root` (パスワード: password) で root になり `usermod -s /bin/bash svc` を実行して
-  シェルを /bin/bash に変更すれば修復完了 (/etc/passwd の svc 行を直接編集してもよい)。
+  `su root` (パスワード: password) で root になり `usermod -s /bin/bash svc` を実行してシェルを /bin/bash に変更すれば修復完了 (/etc/passwd の svc 行を直接編集してもよい)。

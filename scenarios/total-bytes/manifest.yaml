@@ -6,9 +6,7 @@ category: logs
 time_estimate_min: 10
 
 description: |
-  アクセスログ /var/log/webserver/access.log の各行の「最後のフィールド」は
-  そのリクエストで転送したバイト数を表す。全リクエストの転送バイト数の合計を求め、
-  その数字だけを /home/user/answer.txt に書き込め。
+  アクセスログ /var/log/webserver/access.log の各行の「最後のフィールド」はそのリクエストで転送したバイト数を表す。全リクエストの転送バイト数の合計を求め、その数字だけを /home/user/answer.txt に書き込め。
 
 # 冪等: 毎回同じログを作り直す。最後のフィールドの合計は 7250。
 setup:

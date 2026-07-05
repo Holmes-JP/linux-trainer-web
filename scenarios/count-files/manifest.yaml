@@ -6,9 +6,7 @@ category: filesystem
 time_estimate_min: 5
 
 description: |
-  受信ディレクトリ /var/spool/incoming にあるファイルの数を数え、その数だけを
-  /home/user/answer.txt に書け。ただし数えるのは「通常ファイル」だけで、
-  中にあるサブディレクトリは数に含めないこと。
+  受信ディレクトリ /var/spool/incoming にあるファイルの数を数え、その数だけを /home/user/answer.txt に書け。ただし数えるのは「通常ファイル」だけで、中にあるサブディレクトリは数に含めないこと。
 
 # 冪等: 毎回 6 個のファイルと 1 個のサブディレクトリ (数に含めない) を作り直す。
 setup:

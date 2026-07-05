@@ -6,8 +6,7 @@ category: filesystem
 time_estimate_min: 10
 
 description: |
-  ジョブキュー /var/spool/jobs に、処理が中断して残った「空 (サイズ0) のジョブファイル」が
-  散らばっている。空のファイルだけをすべて削除せよ。
+  ジョブキュー /var/spool/jobs に、処理が中断して残った「空 (サイズ0) のジョブファイル」が散らばっている。空のファイルだけをすべて削除せよ。
   中身のある正常なジョブファイルは残すこと。
 
 # 冪等: 毎回 空ファイル群と、中身のある正常ファイルを作り直す。
@@ -35,6 +34,4 @@ hints:
 
 solution: |
   `find /var/spool/jobs -type f -empty` で空ファイルを列挙できる。
-  `su root` (パスワード: password) で root になり
-  `find /var/spool/jobs -type f -empty -delete` とすれば、空ファイルだけを
-  一括削除できる (中身のあるファイルは残る)。
+  `su root` (パスワード: password) で root になり `find /var/spool/jobs -type f -empty -delete` とすれば、空ファイルだけを一括削除できる (中身のあるファイルは残る)。

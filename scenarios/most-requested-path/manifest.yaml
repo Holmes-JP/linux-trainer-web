@@ -6,8 +6,7 @@ category: logs
 time_estimate_min: 10
 
 description: |
-  アクセスログ /var/log/webserver/access.log を調べ、最も多くリクエストされた
-  URL パスを特定し、そのパスだけを /home/user/answer.txt に書き込め。
+  アクセスログ /var/log/webserver/access.log を調べ、最も多くリクエストされた URL パスを特定し、そのパスだけを /home/user/answer.txt に書き込め。
   (パスはリクエスト行 "GET /path HTTP/1.1" の中の /path の部分)
 
 # 冪等: 毎回同じログを作り直す。最多は /api/items (4回)。

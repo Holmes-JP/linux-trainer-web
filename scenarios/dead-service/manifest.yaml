@@ -6,8 +6,7 @@ category: services
 time_estimate_min: 15
 
 description: |
-  このサーバーには監視サービス「sensor-agent」(デーモン本体は /usr/local/bin/sensord) が
-  常駐しているはずだが、停止したまま起動できなくなっている。
+  このサーバーには監視サービス「sensor-agent」(デーモン本体は /usr/local/bin/sensord) が常駐しているはずだが、停止したまま起動できなくなっている。
   init スクリプト (/etc/init.d/sensor-agent) で起動を試みても立ち上がらない。
   原因を調査し、サービスを起動せよ。
   (この環境に systemd は無い。service コマンドか /etc/init.d を使うこと)
@@ -73,7 +72,5 @@ hints:
   - "本体 /usr/local/bin/sensord の実行権限を確認 (ls -l)。root で chmod +x してから再起動"
 
 solution: |
-  `su root` (パスワード: password) で root になり `service sensor-agent start` を実行すると、
-  「/usr/local/bin/sensord is not executable」というエラーが出る。
-  `ls -l /usr/local/bin/sensord` で実行権限 (x) が無いことを確認し、
-  `chmod +x /usr/local/bin/sensord` してから `service sensor-agent start` で起動すれば完了。
+  `su root` (パスワード: password) で root になり `service sensor-agent start` を実行すると、「/usr/local/bin/sensord is not executable」というエラーが出る。
+  `ls -l /usr/local/bin/sensord` で実行権限 (x) が無いことを確認し、`chmod +x /usr/local/bin/sensord` してから `service sensor-agent start` で起動すれば完了。

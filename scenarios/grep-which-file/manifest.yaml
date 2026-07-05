@@ -6,9 +6,7 @@ category: filesystem
 time_estimate_min: 10
 
 description: |
-  /etc/myapp/conf.d/ の中に複数の設定ファイルがある。この中で "DATABASE_URL" という
-  設定キーが書かれているファイルはどれか。そのファイルの「名前」を特定し、
-  名前だけを /home/user/answer.txt に書け (パスではなくファイル名のみ)。
+  /etc/myapp/conf.d/ の中に複数の設定ファイルがある。この中で "DATABASE_URL" という設定キーが書かれているファイルはどれか。そのファイルの「名前」を特定し、名前だけを /home/user/answer.txt に書け (パスではなくファイル名のみ)。
 
 # 冪等: 毎回同じ設定ファイル群を作り直す。DATABASE_URL は db.conf にだけある。
 setup:

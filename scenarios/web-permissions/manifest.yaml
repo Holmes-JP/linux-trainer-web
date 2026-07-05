@@ -6,9 +6,7 @@ category: permissions
 time_estimate_min: 10
 
 description: |
-  Web アプリ (user 権限で動作) が、アップロード保存先 /var/www/html/uploads に
-  ファイルを書き込めずエラーになっている。ディレクトリの所有者・権限を調べ、
-  user がこのディレクトリに書き込めるように修復せよ。
+  Web アプリ (user 権限で動作) が、アップロード保存先 /var/www/html/uploads にファイルを書き込めずエラーになっている。ディレクトリの所有者・権限を調べ、user がこのディレクトリに書き込めるように修復せよ。
 
 # 冪等: 毎回 root 所有・書き込み不可 (755) の状態に戻す。
 setup:
@@ -27,10 +25,9 @@ check:
 hints:
   - "ディレクトリの所有者と権限を確認: ls -ld /var/www/html/uploads"
   - "所有者が root で、その他ユーザーに書き込み権 (w) が無いことが分かる。id で自分のユーザーを確認"
-  - "root (su root、パスワード: password) で所有者を user に変える: chown user:user /var/www/html/uploads (または chmod 777)"
+  - "root (su root、パスワード: password) で所有者を user に変える: chown user:user /var/www/html/uploads"
 
 solution: |
-  `ls -ld /var/www/html/uploads` を見ると root 所有・755 (その他ユーザーは書き込み不可)。
-  アプリは user 権限で動くので書き込めない。
-  `su root` (パスワード: password) で root になり `chown user:user /var/www/html/uploads`
-  (もしくは `chmod 775` / `chmod 777`) で user が書けるようにすれば完了。
+  `ls -ld /var/www/html/uploads` を見ると root 所有・755 (その他ユーザーは書き込み不可)。アプリは user 権限で動くので書き込めない。
+  `su root` (パスワード: password) で root になり `chown user:user /var/www/html/uploads` で所有者を user に変えれば完了。
+  (chmod 777 でも書けるようにはなるが、誰でも書ける状態は改ざんの温床になるため実運用では避ける。所有者を正すのが定石)

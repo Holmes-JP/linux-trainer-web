@@ -6,9 +6,7 @@ category: filesystem
 time_estimate_min: 15
 
 description: |
-  メンテナンス作業のミスで、user のプロジェクトディレクトリ /home/user/project の
-  所有権がディレクトリごと root に変わってしまった。おかげで user 自身が
-  自分のファイルを読み書きできない。所有権を user に戻し、再び読み書きできるようにせよ。
+  メンテナンス作業のミスで、user のプロジェクトディレクトリ /home/user/project の所有権がディレクトリごと root に変わってしまった。おかげで user 自身が自分のファイルを読み書きできない。所有権を user に戻し、再び読み書きできるようにせよ。
 
 # 冪等: 毎回 project 一式を作り直し、root 所有 + 他ユーザーアクセス不可にする。
 setup:

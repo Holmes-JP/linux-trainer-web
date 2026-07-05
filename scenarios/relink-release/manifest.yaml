@@ -6,8 +6,7 @@ category: filesystem
 time_estimate_min: 10
 
 description: |
-  アプリは /opt/app/current 経由で最新リリースを参照するが、この symlink が
-  古いリリース (v1) を指したままで、先ほどデプロイした最新の v3 が反映されていない。
+  アプリは /opt/app/current 経由で最新リリースを参照するが、この symlink が古いリリース (v1) を指したままで、先ほどデプロイした最新の v3 が反映されていない。
   /opt/app/current が v3 (/opt/app/releases/v3) を指すように張り直せ。
 
 # 冪等: 毎回リリース群を用意し、current を古い v1 に向ける。
@@ -35,6 +34,4 @@ hints:
 
 solution: |
   `ls -l /opt/app/current` を見ると古い v1 を指している。最新は v3。
-  `su root` (パスワード: password) で root になり、
-  `ln -sfn /opt/app/releases/v3 /opt/app/current` で current を v3 に張り直せば完了
-  (-s: シンボリック, -f: 上書き, -n: リンク先ディレクトリの中に潜らせない)。
+  `su root` (パスワード: password) で root になり、`ln -sfn /opt/app/releases/v3 /opt/app/current` で current を v3 に張り直せば完了 (-s: シンボリック, -f: 上書き, -n: リンク先ディレクトリの中に潜らせない)。

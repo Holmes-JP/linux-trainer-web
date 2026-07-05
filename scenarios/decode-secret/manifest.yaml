@@ -6,9 +6,7 @@ category: logs
 time_estimate_min: 10
 
 description: |
-  設定ファイル /etc/app/token.b64 に、あるパスワードが Base64 でエンコードされて
-  1行だけ書かれている。これをデコードして元のパスワード (平文) を求め、
-  その文字列だけを /home/user/answer.txt に書け。
+  設定ファイル /etc/app/token.b64 に、あるパスワードが Base64 でエンコードされて 1行だけ書かれている。これをデコードして元のパスワード (平文) を求め、その文字列だけを /home/user/answer.txt に書け。
 
 # 冪等: 毎回 "hunter2" を Base64 エンコードして書き込む (printf で改行なし入力)。
 setup:
