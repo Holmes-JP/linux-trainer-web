@@ -122,7 +122,8 @@ export function parseGlossary(yamlText: string): GlossaryTerm[] {
 // --- fetch 系 (静的配信された content/ を取得する) ---
 
 async function fetchText(path: string): Promise<string> {
-	const res = await fetch(`${base}/content/${path}`);
+	// no-cache: GitHub Pages の max-age=600 で更新が最大10分遅れるのを防ぐ (ETag 再検証)
+	const res = await fetch(`${base}/content/${path}`, { cache: "no-cache" });
 	if (!res.ok) throw new Error(`failed to fetch content/${path}: HTTP ${res.status}`);
 	return res.text();
 }
@@ -143,7 +144,7 @@ export async function loadGlossary(): Promise<GlossaryTerm[]> {
 
 /** scripts/build-content-index.mjs が生成した検索インデックスを取得する */
 export async function loadSearchIndex(): Promise<ContentIndex> {
-	const res = await fetch(`${base}/content/search-index.json`);
+	const res = await fetch(`${base}/content/search-index.json`, { cache: "no-cache" });
 	if (!res.ok) throw new Error(`failed to fetch content/search-index.json: HTTP ${res.status}`);
 	return res.json();
 }

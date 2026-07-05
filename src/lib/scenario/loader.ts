@@ -132,7 +132,9 @@ export function parseIndex(yamlText: string): string[] {
 
 /** 静的配信されたシナリオ一覧 (id の配列) を取得する */
 export async function loadScenarioIndex(): Promise<string[]> {
-	const res = await fetch(`${base}/scenarios/index.yaml`);
+	// no-cache: GitHub Pages は max-age=600 を返すため、デプロイ後も最大10分古い一覧が
+	// 表示されてしまう。毎回 ETag で再検証する (未変更なら 304 なのでコストは小さい)。
+	const res = await fetch(`${base}/scenarios/index.yaml`, { cache: "no-cache" });
 	if (!res.ok) throw new Error(`failed to fetch scenarios/index.yaml: HTTP ${res.status}`);
 	return parseIndex(await res.text());
 }
@@ -140,7 +142,7 @@ export async function loadScenarioIndex(): Promise<string[]> {
 /** 静的配信された manifest を取得して parse する (scenarios/<id>/manifest.yaml) */
 export async function loadScenario(id: string): Promise<Scenario> {
 	const url = `${base}/scenarios/${id}/manifest.yaml`;
-	const res = await fetch(url);
+	const res = await fetch(url, { cache: "no-cache" });
 	if (!res.ok) throw new Error(`failed to fetch ${url}: HTTP ${res.status}`);
 	const scenario = parseManifest(await res.text());
 	if (scenario.id !== id)
