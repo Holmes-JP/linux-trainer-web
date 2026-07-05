@@ -1,7 +1,9 @@
 <script>
-	// 挑戦中に使うコマンド辞典。折りたたみ可。展開すると全コマンドをアルファベット順に列挙する。
+	// 挑戦中に使うコマンド辞典。折りたたみ可 (スライドで滑らかに開閉)。
+	// 展開すると全コマンドをアルファベット順に列挙する。
 	// VM を止めないよう結果は別タブ (/learn?cmd=) で開く。
 	import { onMount } from 'svelte';
+	import { slide } from 'svelte/transition';
 	import { base } from '$app/paths';
 	import { t, FONT_MONO } from '$lib/design/theme';
 	import { loadSearchIndex } from '$lib/learn/loader';
@@ -43,43 +45,45 @@
 	</div>
 
 	{#if expanded}
-		{#if failed}
-			<p style="margin:10px 0 0 0; font-size:12px; color:{t.dim};">
-				辞典を読み込めませんでした。<a href="{base}/learn" target="_blank" rel="noopener" style="color:{t.accent};">解説ページ</a> を開いてください。
-			</p>
-		{:else}
-			<div style="position:relative; margin-top:10px;">
-				<i class="fas fa-magnifying-glass" style="position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:11px; color:{t.dim};"></i>
-				<input
-					class="lookup-search"
-					type="text"
-					placeholder="コマンド名で絞り込む (例: chmod)"
-					bind:value={query}
-					disabled={!ready}
-					style="background:{t.track}; border-color:{t.border}; color:{t.text};"
-				/>
-			</div>
+		<div class="lookup-body" transition:slide={{ duration: 220 }}>
+			{#if failed}
+				<p style="margin:10px 0 0 0; font-size:12px; color:{t.dim};">
+					辞典を読み込めませんでした。<a href="{base}/learn" target="_blank" rel="noopener" style="color:{t.accent};">解説ページ</a> を開いてください。
+				</p>
+			{:else}
+				<div style="position:relative; margin-top:10px;">
+					<i class="fas fa-magnifying-glass" style="position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:11px; color:{t.dim};"></i>
+					<input
+						class="lookup-search"
+						type="text"
+						placeholder="コマンド名で絞り込む (例: chmod)"
+						bind:value={query}
+						disabled={!ready}
+						style="background:{t.track}; border-color:{t.border}; color:{t.text};"
+					/>
+				</div>
 
-			<div class="results scrollbar">
-				{#each hits as c}
-					<a
-						href={cmdHref(c.id)}
-						target="_blank"
-						rel="noopener"
-						class="result"
-						style="border-color:{t.border};"
-						title={c.summary}
-					>
-						<code style="font-family:{FONT_MONO}; color:{t.accent};">{c.id}</code>
-						<span class="result-sum" style="color:{t.dim};">{c.summary}</span>
-						<i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim}; flex-shrink:0;"></i>
-					</a>
-				{/each}
-				{#if query.trim() && hits.length === 0}
-					<p style="margin:4px 0 0 0; font-size:12px; color:{t.dim};">一致するコマンドがありません。</p>
-				{/if}
-			</div>
-		{/if}
+				<div class="results scrollbar">
+					{#each hits as c}
+						<a
+							href={cmdHref(c.id)}
+							target="_blank"
+							rel="noopener"
+							class="result"
+							style="border-color:{t.border};"
+							title={c.summary}
+						>
+							<code style="font-family:{FONT_MONO}; color:{t.accent};">{c.id}</code>
+							<span class="result-sum" style="color:{t.dim};">{c.summary}</span>
+							<i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim}; flex-shrink:0;"></i>
+						</a>
+					{/each}
+					{#if query.trim() && hits.length === 0}
+						<p style="margin:4px 0 0 0; font-size:12px; color:{t.dim};">一致するコマンドがありません。</p>
+					{/if}
+				</div>
+			{/if}
+		</div>
 	{/if}
 </section>
 
@@ -104,7 +108,7 @@
 		font-family: inherit;
 	}
 	.chev {
-		transition: transform 0.15s ease;
+		transition: transform 0.2s ease;
 	}
 	.chev.open {
 		transform: rotate(90deg);
@@ -131,6 +135,9 @@
 	.all-link:hover {
 		color: var(--accent) !important;
 	}
+	.lookup-body {
+		overflow: hidden;
+	}
 	.lookup-search {
 		width: 100%;
 		box-sizing: border-box;
@@ -154,6 +161,8 @@
 		gap: 6px;
 		max-height: 300px;
 		overflow-y: auto;
+		/* 端まで来ても親パネルへスクロールを伝播させない */
+		overscroll-behavior: contain;
 	}
 	.result {
 		display: flex;
