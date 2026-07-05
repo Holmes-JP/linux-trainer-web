@@ -62,6 +62,16 @@ export function markComplete(id: string, elapsedMs?: number): void {
 	});
 }
 
+/** 手動での完了取り消し。1件だけ完了記録を消す。 */
+export function unmarkComplete(id: string): void {
+	progress.update((s) => {
+		if (!s.completed[id]) return s;
+		const next = { ...s.completed };
+		delete next[id];
+		return { ...s, completed: next };
+	});
+}
+
 /** デバッグ・テスト用: 進捗を全消去する */
 export function resetProgress(): void {
 	progress.set({ completed: {} });

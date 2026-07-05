@@ -5,7 +5,7 @@
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { base } from '$app/paths';
 	import { t, FONT_SANS, FONT_MONO } from '$lib/design/theme';
-	import { progress } from '$lib/stores/progress';
+	import { progress, markComplete, unmarkComplete } from '$lib/stores/progress';
 	import { fmtDuration } from '$lib/util/format';
 	import { relatedForScenario } from '$lib/learn/related';
 	import RelatedLinks from '$lib/components/learn/RelatedLinks.svelte';
@@ -125,7 +125,20 @@
 				{/if}
 			</div>
 
-			<!-- Situation -->
+			<!-- 手動で完了 / 取り消し -->
+				<div style="margin-bottom:22px;">
+					{#if record}
+						<button class="manual-done" on:click={() => unmarkComplete(scenarioId)} style="border-color:{t.border}; color:{t.dim};">
+							<i class="fas fa-rotate-left" style="margin-right:7px;"></i>完了を取り消す
+						</button>
+					{:else}
+						<button class="manual-done" on:click={() => markComplete(scenarioId)} style="border-color:{t.accentBorder}; color:{t.accent};">
+							<i class="fas fa-check" style="margin-right:7px;"></i>自分で解決した（手動で完了にする）
+						</button>
+					{/if}
+				</div>
+
+				<!-- Situation -->
 			<section class="card">
 				<h2 class="label" style="color:{t.dim};">状況</h2>
 				<p style="margin:0; font-size:14px; line-height:1.9; white-space:pre-line;">{scenario.description}</p>
@@ -274,6 +287,19 @@
 	}
 	.launch:hover {
 		filter: brightness(1.1);
+	}
+	.manual-done {
+		background: transparent;
+		border: 1px solid;
+		border-radius: 8px;
+		padding: 8px 16px;
+		font-family: var(--font-mono);
+		font-size: 12.5px;
+		cursor: pointer;
+		transition: filter 0.15s ease;
+	}
+	.manual-done:hover {
+		filter: brightness(1.12);
 	}
 	.cmd-chip {
 		display: inline-flex;

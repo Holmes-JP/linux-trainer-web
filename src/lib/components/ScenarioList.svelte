@@ -3,7 +3,7 @@
 	// トップバー / ヒーロー+進捗 / 難易度・カテゴリフィルタ / LEVEL 1-3 の学習パス。
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { base } from '$app/paths';
-	import { progress, resetProgress } from '$lib/stores/progress';
+	import { progress, resetProgress, markComplete, unmarkComplete } from '$lib/stores/progress';
 	import { t, FONT_SANS, FONT_MONO, themeMode, toggleTheme } from '$lib/design/theme';
 	import { fmtDuration } from '$lib/util/format';
 	import AiSettings from '$lib/components/ai/AiSettings.svelte';
@@ -209,7 +209,14 @@
 							class:is-next={s.id === nextId}
 							style="--card-border:{s.id === nextId ? t.accentBorder : t.border};"
 						>
-							<span style="font-family:{FONT_MONO}; font-size:13px; color:{s.completed ? t.accent : t.dim}; width:24px; flex-shrink:0;">{s.num}</span>
+							<button
+									class="card-toggle"
+									title={s.completed ? '完了を取り消す' : '手動で完了にする'}
+									aria-label={s.completed ? '完了を取り消す' : '手動で完了にする'}
+									on:click|preventDefault|stopPropagation={() => (s.completed ? unmarkComplete(s.id) : markComplete(s.id))}
+									style="color:{s.completed ? t.accent : t.dim};"
+								><i class="fas {s.completed ? 'fa-square-check' : 'fa-square'}"></i></button>
+								<span style="font-family:{FONT_MONO}; font-size:13px; color:{s.completed ? t.accent : t.dim}; width:24px; flex-shrink:0;">{s.num}</span>
 							<span class="card-icon" style="color:{diffColor[s.difficulty]};"><i class={s.icon} style="font-size:14px;"></i></span>
 							<span style="flex:1; min-width:0;">
 								<span style="display:block; font-size:14px; font-weight:600; line-height:1.4;">{s.title}</span>
@@ -380,6 +387,20 @@
 	.card:hover {
 		border-color: var(--accent);
 		background: var(--surface-hover);
+	}
+	.card-toggle {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		font-size: 16px;
+		padding: 2px 4px;
+		flex-shrink: 0;
+		line-height: 1;
+		transition: filter 0.15s ease, transform 0.1s ease;
+	}
+	.card-toggle:hover {
+		filter: brightness(1.25);
+		transform: scale(1.12);
 	}
 	.card-icon {
 		width: 34px;
