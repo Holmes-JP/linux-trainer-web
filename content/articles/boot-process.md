@@ -20,6 +20,42 @@ order: 44
 | 4 | init システム (PID 1) | サービスを順に立ち上げる |
 | 5 | ログイン / シェル | 人が操作できる状態になる |
 
+<figure class="diagram">
+<svg viewBox="0 0 460 292" role="img" aria-label="Linux 起動の5段階の図">
+<defs><marker id="bootArrow" markerWidth="9" markerHeight="9" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<line x1="230" y1="54" x2="230" y2="67" stroke="var(--accent)" marker-end="url(#bootArrow)"/>
+<line x1="230" y1="110" x2="230" y2="123" stroke="var(--accent)" marker-end="url(#bootArrow)"/>
+<line x1="230" y1="166" x2="230" y2="179" stroke="var(--accent)" marker-end="url(#bootArrow)"/>
+<line x1="230" y1="222" x2="230" y2="235" stroke="var(--accent)" marker-end="url(#bootArrow)"/>
+<circle cx="28" cy="33" r="13" fill="var(--accent)"/>
+<text x="28" y="38" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accentText)">1</text>
+<rect x="50" y="12" width="380" height="42" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="66" y="31" font-size="13.5" font-weight="700" fill="var(--text)">ファームウェア (BIOS / UEFI)</text>
+<text x="66" y="47" font-size="11" fill="var(--dim)">ハードウェアを初期化し、起動ディスクを探す</text>
+<circle cx="28" cy="89" r="13" fill="var(--accent)"/>
+<text x="28" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accentText)">2</text>
+<rect x="50" y="68" width="380" height="42" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="66" y="87" font-size="13.5" font-weight="700" fill="var(--text)">ブートローダ (GRUB)</text>
+<text x="66" y="103" font-size="11" fill="var(--dim)">カーネルを選んでメモリに読み込む</text>
+<circle cx="28" cy="145" r="13" fill="var(--accent)"/>
+<text x="28" y="150" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accentText)">3</text>
+<rect x="50" y="124" width="380" height="42" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="66" y="143" font-size="13.5" font-weight="700" fill="var(--text)">カーネル + initramfs</text>
+<text x="66" y="159" font-size="11" fill="var(--dim)">ドライバを読み、ルート FS をマウント</text>
+<circle cx="28" cy="201" r="13" fill="var(--accent)"/>
+<text x="28" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accentText)">4</text>
+<rect x="50" y="180" width="380" height="42" rx="8" fill="var(--track)" stroke="var(--accent)" stroke-width="2"/>
+<text x="66" y="199" font-size="13.5" font-weight="700" fill="var(--text)">init システム (PID 1) — systemd 等</text>
+<text x="66" y="215" font-size="11" fill="var(--dim)">サービスを順に立ち上げる</text>
+<circle cx="28" cy="257" r="13" fill="var(--accent)"/>
+<text x="28" y="262" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accentText)">5</text>
+<rect x="50" y="236" width="380" height="42" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text x="66" y="255" font-size="13.5" font-weight="700" fill="var(--text)">ログイン / シェル</text>
+<text x="66" y="271" font-size="11" fill="var(--dim)">人が操作できる状態になる</text>
+</svg>
+<figcaption>図: 電源投入からシェルが使えるまでの5段階。どの段階の問題かを切り分ける地図になる</figcaption>
+</figure>
+
 ## 1. ファームウェア (BIOS / UEFI)
 
 電源が入ると、まずマザーボードに焼き込まれた **ファームウェア** が動く。古くからある **BIOS**、現代の **UEFI** がこれにあたる。役割は、CPU やメモリなど **ハードウェアの最低限の初期化** と、動作チェック、そして「どのディスクから起動するか」を決めて次のバトンを渡すことだ。

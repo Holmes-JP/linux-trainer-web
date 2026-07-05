@@ -141,4 +141,19 @@
 		font-size: 12px;
 		color: var(--dim);
 	}
+	/* インライン SVG 図解 (CSS 変数でテーマ追従) */
+	.prose :global(.diagram) {
+		margin: 22px 0;
+		text-align: center;
+	}
+	.prose :global(.diagram svg) {
+		max-width: 100%;
+		height: auto;
+	}
+	.prose :global(.diagram text) {
+		font-family: var(--font-sans);
+	}
+	.prose :global(.diagram .mono) {
+		font-family: var(--font-mono);
+	}
 </style>

@@ -16,6 +16,47 @@ bin  boot  dev  etc  home  lib  media  mnt  opt  proc
 root  run  sbin  srv  sys  tmp  usr  var
 ```
 
+<figure class="diagram">
+<svg viewBox="0 0 600 330" role="img" aria-label="ディレクトリ構造のツリー図">
+<line x1="55" y1="48" x2="55" y2="303" stroke="var(--border)"/>
+<rect x="20" y="18" width="70" height="30" rx="6" fill="var(--track)" stroke="var(--accent)"/>
+<text class="mono" x="55" y="39" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent)">/</text>
+<line x1="55" y1="72" x2="140" y2="72" stroke="var(--border)"/>
+<rect x="140" y="58" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="76" font-size="13" font-weight="700" fill="var(--accent)">/bin</text>
+<text x="250" y="76" font-size="12" fill="var(--dim)">基本コマンドの実体 (ls, cp, cat)</text>
+<line x1="55" y1="105" x2="140" y2="105" stroke="var(--border)"/>
+<rect x="140" y="91" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="109" font-size="13" font-weight="700" fill="var(--accent)">/etc</text>
+<text x="250" y="109" font-size="12" fill="var(--dim)">システム全体の設定ファイル</text>
+<line x1="55" y1="138" x2="140" y2="138" stroke="var(--border)"/>
+<rect x="140" y="124" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="142" font-size="13" font-weight="700" fill="var(--accent)">/home</text>
+<text x="250" y="142" font-size="12" fill="var(--dim)">一般ユーザーの持ち物 (/home/ユーザー名)</text>
+<line x1="55" y1="171" x2="140" y2="171" stroke="var(--border)"/>
+<rect x="140" y="157" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="175" font-size="13" font-weight="700" fill="var(--accent)">/var</text>
+<text x="250" y="175" font-size="12" fill="var(--dim)">変化するデータ (ログ /var/log ・キャッシュ)</text>
+<line x1="55" y1="204" x2="140" y2="204" stroke="var(--border)"/>
+<rect x="140" y="190" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="208" font-size="13" font-weight="700" fill="var(--accent)">/usr</text>
+<text x="250" y="208" font-size="12" fill="var(--dim)">プログラムやライブラリの本体 (/usr/bin)</text>
+<line x1="55" y1="237" x2="140" y2="237" stroke="var(--border)"/>
+<rect x="140" y="223" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="241" font-size="13" font-weight="700" fill="var(--accent)">/proc</text>
+<text x="250" y="241" font-size="12" fill="var(--dim)">仮想 FS。プロセスやカーネルの情報</text>
+<line x1="55" y1="270" x2="140" y2="270" stroke="var(--border)"/>
+<rect x="140" y="256" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="274" font-size="13" font-weight="700" fill="var(--accent)">/dev</text>
+<text x="250" y="274" font-size="12" fill="var(--dim)">デバイスを表す特殊ファイル (/dev/null)</text>
+<line x1="55" y1="303" x2="140" y2="303" stroke="var(--border)"/>
+<rect x="140" y="289" width="430" height="28" rx="6" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="156" y="307" font-size="13" font-weight="700" fill="var(--accent)">/boot</text>
+<text x="250" y="307" font-size="12" fill="var(--dim)">起動に使うカーネル本体など</text>
+</svg>
+<figcaption>図: / を頂点に主要ディレクトリが枝分かれする (一部を抜粋)</figcaption>
+</figure>
+
 ## 主要ディレクトリ一覧
 
 | ディレクトリ | 何を置く場所か |

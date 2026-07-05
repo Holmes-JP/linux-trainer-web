@@ -12,6 +12,28 @@ Linux のコマンドを触りはじめると、`ls`・`grep`・`sort` のよう
 
 柱になる考え方をひとつずつ見ていこう。
 
+<figure class="diagram">
+<svg viewBox="0 0 600 120" role="img" aria-label="パイプでコマンドをつなぐ図">
+<defs><marker id="pipeArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+<text x="300" y="20" text-anchor="middle" font-size="12" fill="var(--dim)">1つのコマンドの出力が、次のコマンドの入力になる（テキストが共通言語）</text>
+<rect x="8" y="42" width="118" height="44" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="67" y="69" text-anchor="middle" font-size="13" fill="var(--accent)">cat log</text>
+<text class="mono" x="140" y="58" text-anchor="middle" font-size="14" fill="var(--accent)">|</text>
+<line x1="128" y1="64" x2="153" y2="64" stroke="var(--accent)" marker-end="url(#pipeArrow)"/>
+<rect x="156" y="42" width="118" height="44" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="215" y="69" text-anchor="middle" font-size="13" fill="var(--accent)">grep ERROR</text>
+<text class="mono" x="288" y="58" text-anchor="middle" font-size="14" fill="var(--accent)">|</text>
+<line x1="276" y1="64" x2="301" y2="64" stroke="var(--accent)" marker-end="url(#pipeArrow)"/>
+<rect x="304" y="42" width="118" height="44" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="363" y="69" text-anchor="middle" font-size="13" fill="var(--accent)">sort</text>
+<text class="mono" x="436" y="58" text-anchor="middle" font-size="14" fill="var(--accent)">|</text>
+<line x1="424" y1="64" x2="449" y2="64" stroke="var(--accent)" marker-end="url(#pipeArrow)"/>
+<rect x="452" y="42" width="118" height="44" rx="8" fill="var(--surface)" stroke="var(--border)"/>
+<text class="mono" x="511" y="69" text-anchor="middle" font-size="13" fill="var(--accent)">uniq -c</text>
+</svg>
+<figcaption>図: 小さなコマンドをパイプでつなぎ、複雑な集計を1行で組み立てる</figcaption>
+</figure>
+
 ## 1. 一つのことを、うまくやる
 
 各コマンドは **1 つの仕事だけ** を受け持ち、それを確実にこなすことに集中する。`grep` は「探す」だけ、`sort` は「並べる」だけ、`wc` は「数える」だけだ。
