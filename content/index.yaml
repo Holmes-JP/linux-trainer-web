@@ -164,6 +164,9 @@ commands:
   - arp
   - ssh-keygen
 articles:
+  - linux-architecture
+  - directory-structure
+  - unix-philosophy
   - filesystem-and-paths
   - links-and-inode
   - archive-and-compression
@@ -174,4 +177,5 @@ articles:
   - process-monitoring-and-jobs
   - disk-and-mount
   - services-and-daemons
+  - boot-process
   - reading-logs
