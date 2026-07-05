@@ -1,0 +1,28 @@
+name: ss
+summary: ソケット (待受ポート・接続中のコネクション) の状態を表示する
+group: network
+synopsis: "ss [オプション]"
+options:
+  - flag: "-t"
+    desc: TCP ソケットを表示する (-u なら UDP)
+  - flag: "-l"
+    desc: LISTEN 中 (待ち受け) のソケットのみ表示する
+  - flag: "-n"
+    desc: ポートやアドレスを名前解決せず数値のまま表示する
+  - flag: "-p"
+    desc: そのソケットを使っているプロセスを表示する (要権限)
+  - flag: "-a"
+    desc: LISTEN も接続中も含めてすべて表示する
+examples:
+  - cmd: "ss -tlnp"
+    desc: どのプロセスがどのポートで待ち受けているかを一覧する定番
+  - cmd: "ss -tn state established"
+    desc: 現在確立している TCP 接続だけを数値表示で確認する
+  - cmd: "ss -tlnp | grep :80"
+    desc: 80 番ポートを掴んでいるサービスを特定する
+related_commands: [ip, ps, grep]
+note: >-
+  netstat の後継。「ポートが開いているか / 何が掴んでいるか」を調べる
+  現場定番のコマンド。ただしこのブラウザ内 WebVM 演習環境は実サーバーと
+  ソケットの状況が異なり、外部通信も制限されている。ここでは ss の
+  オプションの読み方を、現実のサーバー作業の参照として覚えてほしい。

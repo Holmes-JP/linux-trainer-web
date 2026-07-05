@@ -1,0 +1,27 @@
+name: scp
+summary: SSH の経路を使ってローカルとリモート間でファイルを安全にコピーする
+group: network
+synopsis: "scp [オプション] <コピー元> <コピー先>"
+options:
+  - flag: "-r"
+    desc: ディレクトリを再帰的にコピーする
+  - flag: "-P <ポート>"
+    desc: 接続先ポートを指定する (ssh の -p と違い大文字)
+  - flag: "-i <鍵ファイル>"
+    desc: 認証に使う秘密鍵を指定する
+  - flag: "-C"
+    desc: 転送データを圧縮して送る
+examples:
+  - cmd: "scp file.txt user@203.0.113.10:/tmp/"
+    desc: ローカルのファイルをリモートの /tmp にアップロードする
+  - cmd: "scp user@example.com:/var/log/syslog ."
+    desc: リモートのファイルを手元のカレントディレクトリに取得する
+  - cmd: "scp -r -P 2222 ./site user@example.com:/var/www/"
+    desc: 非標準ポートでディレクトリごと再帰的に転送する
+related_commands: [ssh, curl, tar]
+note: >-
+  リモートとのファイル受け渡しに使う ssh 系ツール。リモート側のパスは
+  "ホスト:パス" の形で書く (コロンを含むので注意)。このブラウザ内 WebVM
+  演習環境はネットワークが制限されており、外部ホストとの転送はできない
+  (または不安定な) ことがある。ここでは scp の書式を、現実のサーバー作業の
+  参照として覚えてほしい。

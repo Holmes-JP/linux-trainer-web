@@ -26,6 +26,11 @@ commands:
   - gunzip
   - dd
   - truncate
+  - zip
+  - unzip
+  - xz
+  - nano
+  - vim
   # text
   - grep
   - head
@@ -48,6 +53,10 @@ commands:
   - nl
   - paste
   - strings
+  - column
+  - comm
+  - rev
+  - jq
   # permissions
   - chmod
   - chown
@@ -86,6 +95,7 @@ commands:
   - mount
   - umount
   - lsblk
+  - blkid
   # logs
   - dmesg
   - last
@@ -96,6 +106,7 @@ commands:
   - service
   - journalctl
   - crontab
+  - at
   # system
   - uname
   - hostname
@@ -108,6 +119,26 @@ commands:
   - source
   - man
   - clear
+  - apt
+  - dpkg
+  - watch
+  - seq
+  - yes
+  - cal
+  - bc
+  - time
+  # network
+  - curl
+  - wget
+  - ping
+  - ip
+  - ss
+  - dig
+  - host
+  - nc
+  - ssh
+  - scp
+  - traceroute
 articles:
   - filesystem-and-paths
   - links-and-inode

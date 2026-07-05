@@ -1,0 +1,28 @@
+name: xz
+summary: LZMA2 アルゴリズムで高い圧縮率を得る圧縮・展開ツール
+group: files
+synopsis: "xz [オプション] <ファイル...>"
+options:
+  - flag: "-d"
+    desc: 圧縮を解除して元に戻す (decompress / unxz と同じ)
+  - flag: "-k"
+    desc: 元ファイルを消さずに残す (keep)。デフォルトは元ファイルを削除する
+  - flag: "-9"
+    desc: 圧縮率を最大にする (-0 が最速・低圧縮、-9 が最遅・高圧縮)
+  - flag: "-T <数>"
+    desc: 指定したスレッド数で並列処理する (-T 0 でCPUコア数に自動)
+  - flag: "-l"
+    desc: 圧縮ファイルの圧縮前後サイズや圧縮率を一覧表示する (list)
+examples:
+  - cmd: xz -k bigfile.log
+    desc: bigfile.log.xz を作りつつ元のログも残す。ログの長期保管に向く
+  - cmd: xz -d archive.tar.xz
+    desc: .tar.xz を .tar に戻す。この後 tar -xf で中身を取り出す
+  - cmd: tar -cJf backup.tar.xz /etc/app
+    desc: tar の -J で xz 圧縮を使い、設定を高圧縮のアーカイブにまとめる
+related_commands: [gzip, gunzip, tar]
+related_articles: [archive-and-compression]
+note: >-
+  gzip より圧縮率が高い反面、圧縮は明確に遅くCPUとメモリを多く食う。
+  「保管して滅多に触らない・転送量を減らしたい」データ向きで、頻繁に
+  読み書きするものには gzip の方が実用的なことが多い。

@@ -1,0 +1,24 @@
+name: bc
+summary: 任意精度で計算できるコマンドライン電卓 (小数計算も可能)
+group: system
+synopsis: "bc [オプション]"
+options:
+  - flag: "-l"
+    desc: 数学関数ライブラリを読み込み、小数の割り算や sqrt などを有効にする
+  - flag: "-q"
+    desc: 起動時のバージョン表示 (バナー) を抑制する
+  - flag: "scale=N"
+    desc: 対話中に指定する変数。小数点以下の桁数を N に設定する
+examples:
+  - cmd: echo "3 * (4 + 5)" | bc
+    desc: 式を標準入力から渡して 27 を得る。シェルスクリプトでの計算に便利
+  - cmd: echo "scale=4; 10 / 3" | bc
+    desc: 小数点以下 4 桁まで求める (3.3333)。bc は既定だと整数切り捨て
+  - cmd: echo "sqrt(2)" | bc -l
+    desc: -l を付けて平方根などの数学関数を使う
+related_commands: [echo]
+related_articles: []
+note: >-
+  シェルの $(( )) は整数しか扱えないが、bc は小数を扱える。ただし割り算は
+  既定で整数に切り捨てられるので、小数がほしいときは scale=N を先に指定
+  するか -l を付けること。

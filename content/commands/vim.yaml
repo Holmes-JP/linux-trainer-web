@@ -1,0 +1,26 @@
+name: vim
+summary: モード切替で高速に編集する高機能ターミナルエディタ (vi の後継)
+group: files
+synopsis: "vim [オプション] [ファイル]"
+options:
+  - flag: "+<行番号>"
+    desc: 起動時に指定した行にカーソルを合わせて開く
+  - flag: "-R"
+    desc: 読み取り専用で開く。誤って書き換えたくないファイルの閲覧に使う
+  - flag: "-d"
+    desc: 2つのファイルを差分表示で開く (vimdiff 相当)
+  - flag: "-p"
+    desc: 複数ファイルをタブページで同時に開く
+examples:
+  - cmd: vim /etc/ssh/sshd_config
+    desc: サーバー設定を編集する。i で入力、Esc で戻り、":wq" で保存して終了
+  - cmd: vim -R /var/log/syslog
+    desc: 読み取り専用で開き、うっかり編集せずログを閲覧・検索する
+  - cmd: vim +80 app.py
+    desc: 80行目を直接開いて、エラーの出た行にすぐ移動する
+related_commands: [nano, cat]
+related_articles: []
+note: >-
+  ノーマルモードとインサートモードがある点が最大の壁。文字を打つには i、
+  戻るには Esc。終了は Esc を押してから ":q" (変更なし) / ":wq" (保存して
+  終了) / ":q!" (保存せず強制終了)。抜けられなくなったら Esc→":q!"→Enter。

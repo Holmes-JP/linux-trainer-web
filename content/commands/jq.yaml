@@ -1,0 +1,26 @@
+name: jq
+summary: JSON を抽出・整形・加工するコマンドラインプロセッサ
+group: text
+synopsis: "jq [オプション] '<フィルタ>' [ファイル...]"
+options:
+  - flag: "-r"
+    desc: 文字列をクォートなしの生 (raw) で出力する。後段のコマンドに渡すとき便利
+  - flag: "-c"
+    desc: 1行のコンパクトな JSON で出力する (compact)
+  - flag: "-e"
+    desc: 結果に応じた終了コードを返す。条件判定やスクリプトで使う
+  - flag: "-S"
+    desc: オブジェクトのキーをソートして出力する
+examples:
+  - cmd: jq . data.json
+    desc: JSON をインデント付きで整形表示する。まず全体を見渡すときの基本形
+  - cmd: curl -s http://api.local/users | jq '.[].name'
+    desc: API 応答から配列内の各要素の name フィールドだけを取り出す
+  - cmd: jq -r '.items[] | .id' data.json
+    desc: 各 id を生の文字列で並べて出力し、そのままループなどに流し込む
+related_commands: [grep, cat]
+related_articles: [finding-and-filtering]
+note: >-
+  JSON を grep で無理に処理せず jq で構造的に扱うのが定石。ただし標準では
+  未インストールのことがあり、この演習環境でも使えない場合がある
+  (`jq: command not found` が出たらそのケース)。

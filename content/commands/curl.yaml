@@ -1,0 +1,32 @@
+name: curl
+summary: URL を指定して HTTP などでデータを送受信する万能転送ツール
+group: network
+synopsis: "curl [オプション] <URL>"
+options:
+  - flag: "-X <メソッド>"
+    desc: HTTP メソッドを指定する (GET / POST / PUT / DELETE など)
+  - flag: "-H <ヘッダ>"
+    desc: リクエストヘッダを追加する (認証トークンや Content-Type など)
+  - flag: "-d <データ>"
+    desc: リクエストボディを送る (指定すると自動的に POST になる)
+  - flag: "-o <ファイル>"
+    desc: 取得内容をファイルに保存する (-O なら URL のファイル名で保存)
+  - flag: "-i"
+    desc: レスポンスヘッダも本文と一緒に表示する (-I ならヘッダのみ)
+  - flag: "-L"
+    desc: リダイレクト (3xx) を自動で追跡する
+examples:
+  - cmd: "curl -i https://example.com/"
+    desc: ステータスコードとヘッダを含めて応答を確認する
+  - cmd: "curl -X POST -H \"Content-Type: application/json\" -d '{\"k\":\"v\"}' https://api.example.com/items"
+    desc: JSON ボディを POST で送って API を叩く
+  - cmd: "curl -H \"Authorization: Bearer xxxxx\" https://api.example.com/me"
+    desc: 認証トークンをヘッダに載せて保護された API を取得する
+  - cmd: "curl -L -o page.html https://example.com/"
+    desc: リダイレクトを追ってページをファイルに保存する
+related_commands: [wget, jq, grep]
+note: >-
+  現実のサーバー作業では API 疎通確認やヘルスチェックの定番。ただし
+  このブラウザ内 WebVM 演習環境はネットワークが制限されており、外部への
+  実通信はできない (または不安定な) ことがある。ここでは curl の書式と
+  オプションの使い方を、現実のサーバー作業の参照として覚えてほしい。

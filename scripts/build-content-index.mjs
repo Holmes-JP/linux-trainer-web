@@ -14,7 +14,7 @@ import { load } from "js-yaml";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const contentDir = join(root, "content");
 
-const GROUPS = ["files", "text", "permissions", "processes", "disk", "services", "logs", "system"];
+const GROUPS = ["files", "text", "permissions", "processes", "disk", "services", "logs", "system", "network"];
 const SCENARIO_CATEGORIES = ["filesystem", "permissions", "processes", "disk", "services", "logs"];
 
 const errors = [];

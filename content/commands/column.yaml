@@ -1,0 +1,25 @@
+name: column
+summary: 入力を桁揃えの表形式に整形して読みやすく表示する
+group: text
+synopsis: "column [オプション] [ファイル...]"
+options:
+  - flag: "-t"
+    desc: 各列の幅を揃えて表 (テーブル) として整形する。最もよく使う
+  - flag: "-s <文字>"
+    desc: 列の区切り文字を指定する (CSV なら -s,)。-t と併用する
+  - flag: "-N <名前>"
+    desc: 列に見出しを付ける (カンマ区切りで複数指定)
+  - flag: "-o <文字>"
+    desc: 出力時の列と列の区切り文字を指定する
+examples:
+  - cmd: column -t /etc/fstab
+    desc: 空白がバラバラなマウント設定を桁揃えして一目で読めるようにする
+  - cmd: "column -t -s: /etc/passwd"
+    desc: コロン区切りの passwd を列に分けて、ユーザ情報を見やすく並べる
+  - cmd: mount | column -t
+    desc: mount の出力をパイプで受け取り、デバイスとマウント先を整列表示する
+related_commands: [cut, paste]
+related_articles: [finding-and-filtering]
+note: >-
+  あくまで見た目を整えるための表示用ツールで、データ加工には向かない。
+  区切りが崩れた出力でも -t -s で列に分ければ格段に読みやすくなる。

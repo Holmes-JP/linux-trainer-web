@@ -1,0 +1,26 @@
+name: watch
+summary: 指定したコマンドを一定間隔で繰り返し実行し、結果を画面で監視する
+group: system
+synopsis: "watch [オプション] <コマンド>"
+options:
+  - flag: "-n <秒>"
+    desc: 実行間隔を秒で指定する (既定は 2 秒)
+  - flag: "-d"
+    desc: 前回からの差分をハイライト表示する。変化した箇所が一目で分かる
+  - flag: "-t"
+    desc: 上部のヘッダ (時刻・間隔) を表示しない
+  - flag: "-g"
+    desc: 出力が変化したら watch を終了する
+examples:
+  - cmd: watch -n 1 'ls -l /var/log'
+    desc: 1 秒ごとにログディレクトリを再表示し、ファイルの増減を監視する
+  - cmd: watch -d free -h
+    desc: メモリ使用量の変化を差分ハイライトで追う
+  - cmd: watch -n 5 'df -h /'
+    desc: 5 秒間隔でルートの空き容量を監視し、埋まっていく様子を見る
+related_commands: [top]
+related_articles: [process-monitoring-and-jobs]
+note: >-
+  watch はコマンドを止めるまで繰り返し続ける。終了は Ctrl+C。クォートで
+  囲まないとパイプ (|) やリダイレクトが watch ではなくシェルに解釈される
+  ので、複雑なコマンドは 'シングルクォート' で囲むと安全。

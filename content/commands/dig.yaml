@@ -1,0 +1,28 @@
+name: dig
+summary: DNS サーバーへ問い合わせ、名前解決の結果を詳しく表示する
+group: network
+synopsis: "dig [@DNSサーバー] <名前> [レコード種別]"
+options:
+  - flag: "+short"
+    desc: 余計な情報を省き、答え (IP など) だけを簡潔に表示する
+  - flag: "@<サーバー>"
+    desc: 問い合わせ先の DNS サーバーを指定する (例 @8.8.8.8)
+  - flag: "-x <IP>"
+    desc: 逆引き (IP からホスト名を引く) を行う
+  - flag: "+trace"
+    desc: ルートから順に辿って解決過程を表示する
+examples:
+  - cmd: "dig example.com"
+    desc: A レコード (IPv4 アドレス) を詳細つきで問い合わせる
+  - cmd: "dig +short example.com"
+    desc: 結果の IP アドレスだけを1行で取り出す
+  - cmd: "dig @8.8.8.8 example.com MX"
+    desc: 特定の DNS サーバーにメール (MX) レコードを問い合わせる
+  - cmd: "dig -x 8.8.8.8"
+    desc: IP アドレスから逆引きでホスト名を調べる
+related_commands: [host, ping, curl]
+note: >-
+  DNS の切り分けで最も情報量が多いツール。ただしこのブラウザ内 WebVM
+  演習環境はネットワークが制限されており、外部 DNS への問い合わせはできない
+  (または不安定な) ことがある。ここでは dig の書式 (種別指定や +short) を、
+  現実のサーバー作業の参照として覚えてほしい。簡易確認なら host が手軽。

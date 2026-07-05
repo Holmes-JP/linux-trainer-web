@@ -1,0 +1,26 @@
+name: ping
+summary: 相手ホストへ ICMP を送り、到達性と応答時間を確認する
+group: network
+synopsis: "ping [オプション] <ホスト>"
+options:
+  - flag: "-c <回数>"
+    desc: 指定回数だけ送って自動終了する (付けないと無限に送り続ける)
+  - flag: "-i <秒>"
+    desc: 送信間隔を秒で指定する
+  - flag: "-W <秒>"
+    desc: 応答待ちのタイムアウトを指定する
+  - flag: "-s <バイト>"
+    desc: 送るパケットのサイズを変える
+examples:
+  - cmd: "ping -c 4 8.8.8.8"
+    desc: 4 回だけ送って到達性と往復時間 (RTT) を確認する
+  - cmd: "ping -c 3 example.com"
+    desc: ホスト名で試し、名前解決と到達性をまとめて確認する
+  - cmd: "ping -i 0.2 -c 10 192.168.1.1"
+    desc: 間隔を詰めて短時間に複数回試す
+related_commands: [traceroute, dig, ip]
+note: >-
+  「そもそも相手に届くか」を最初に確認する定番コマンド。ただし
+  このブラウザ内 WebVM 演習環境はネットワークが制限されており、外部への
+  ICMP は通らない (または不安定な) ことがある。ここでは ping の使い方と
+  読み方 (RTT や損失率) を、現実のサーバー作業の参照として覚えてほしい。

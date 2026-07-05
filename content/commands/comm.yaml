@@ -1,0 +1,26 @@
+name: comm
+summary: ソート済みの2ファイルを行単位で比較し、共通行・片方だけの行を出し分ける
+group: text
+synopsis: "comm [オプション] <ファイル1> <ファイル2>"
+options:
+  - flag: "-1"
+    desc: 1列目 (ファイル1だけにある行) を表示しない
+  - flag: "-2"
+    desc: 2列目 (ファイル2だけにある行) を表示しない
+  - flag: "-3"
+    desc: 3列目 (両方に共通する行) を表示しない
+  - flag: "-12"
+    desc: -1 と -2 を併せて指定し、共通行だけを表示する
+examples:
+  - cmd: comm -12 a.txt b.txt
+    desc: 両方のファイルに共通する行だけを抜き出す (積集合)
+  - cmd: comm -23 a.txt b.txt
+    desc: a.txt にだけあって b.txt には無い行を抽出する (差集合)
+  - cmd: comm -3 old.txt new.txt
+    desc: 共通行を隠し、どちらか一方にしかない変化点だけを浮かび上がらせる
+related_commands: [diff, sort, uniq]
+related_articles: [finding-and-filtering]
+note: >-
+  入力は必ず両方とも sort 済みである必要がある。ソートされていないと
+  結果が壊れるので、事前に `sort file > file.sorted` するか、
+  `comm <(sort a) <(sort b)` のようにプロセス置換で渡すと安全。

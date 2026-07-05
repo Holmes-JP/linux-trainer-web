@@ -1,0 +1,24 @@
+name: rev
+summary: 各行の文字の並びを左右反転して出力する
+group: text
+synopsis: "rev [ファイル...]"
+options:
+  - flag: "(オプションなし)"
+    desc: 引数やパイプで受け取った各行を、そのまま文字単位で逆順にして出す
+  - flag: "<ファイル>"
+    desc: 指定ファイルの各行を反転する。複数指定すると順に処理する
+  - flag: "--help"
+    desc: 使い方を表示する
+examples:
+  - cmd: echo "hello" | rev
+    desc: '"olleh" と表示される。反転の動作を確かめる最小の例'
+  - cmd: rev names.txt
+    desc: ファイルの各行を左右反転して表示する
+  - cmd: echo "/var/log/syslog" | rev | cut -d/ -f1 | rev
+    desc: パスを反転→先頭要素を切り出し→再反転で、末尾のファイル名だけを取り出す
+related_commands: [tr]
+related_articles: [finding-and-filtering]
+note: >-
+  単体では地味だが、行末側の要素を切り出したいときに「反転 → cut →
+  再反転」というテクニックで威力を発揮する。行の順序ではなく各行内の
+  文字並びを反転する点に注意 (行の逆順は tac)。

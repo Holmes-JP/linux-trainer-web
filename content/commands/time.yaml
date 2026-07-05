@@ -1,0 +1,25 @@
+name: time
+summary: コマンドの実行にかかった時間 (実時間・CPU 時間) を計測する
+group: system
+synopsis: "time <コマンド> [引数...]"
+options:
+  - flag: "real"
+    desc: 出力される項目。開始から終了までの実経過時間 (体感の待ち時間)
+  - flag: "user"
+    desc: ユーザー空間で消費した CPU 時間
+  - flag: "sys"
+    desc: カーネル (システムコール処理) で消費した CPU 時間
+examples:
+  - cmd: time sleep 2
+    desc: 実行後に real 約 2 秒と表示され、time の見方を確認できる
+  - cmd: time grep -r password /etc
+    desc: 検索処理にどれだけ時間がかかるかを測る
+  - cmd: time ./script.sh
+    desc: スクリプトの実行時間を計測し、遅い処理を洗い出す
+related_commands: [ps]
+related_articles: [process-monitoring-and-jobs]
+note: >-
+  多くのシェルには time が組み込み (キーワード) として用意されており、単に
+  コマンドの前に付けるだけで計測できる。real は待ち時間、user+sys が実際に
+  CPU を使った時間。real が大きいのに CPU 時間が小さいなら、I/O 待ちなど
+  で止まっている時間が長いと判断できる。

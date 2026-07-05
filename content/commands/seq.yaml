@@ -1,0 +1,25 @@
+name: seq
+summary: 連続した数値の並びを生成して 1 行ずつ出力する
+group: system
+synopsis: "seq [オプション] [開始] [増分] 終了"
+options:
+  - flag: "-w"
+    desc: 桁数を揃えるため先頭を 0 で埋める (01, 02, ... のように)
+  - flag: "-s <文字列>"
+    desc: 各数値の区切り文字を指定する (既定は改行)
+  - flag: "-f <書式>"
+    desc: printf 形式の書式で各数値を整形する
+examples:
+  - cmd: seq 5
+    desc: 1 から 5 までを 1 行ずつ出力する
+  - cmd: seq 2 2 10
+    desc: 2 から 10 まで 2 刻み (2 4 6 8 10) で出力する
+  - cmd: seq -w 1 3
+    desc: ゼロ埋めで 01 02 03 と桁を揃えて出力する
+  - cmd: for i in $(seq 1 3); do echo "回 $i"; done
+    desc: ループ回数の生成に使う定番。1〜3 の繰り返し処理を回す
+related_commands: [echo, xargs]
+related_articles: []
+note: >-
+  seq はループ回数の生成やテストデータ作りに便利。xargs や for と組み合わ
+  せると「同じ処理を N 回」「連番ファイルを作る」といった作業を一行で書ける。

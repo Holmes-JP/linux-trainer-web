@@ -1,0 +1,20 @@
+name: cal
+summary: カレンダーを端末に表示する
+group: system
+synopsis: "cal [オプション] [月] [年]"
+options:
+  - flag: "-3"
+    desc: 前月・今月・翌月の 3 か月分を並べて表示する
+  - flag: "-y"
+    desc: 指定年 (省略時は今年) の 12 か月ぶんを一覧表示する
+  - flag: "-m"
+    desc: 週の始まりを月曜にする (既定は日曜始まり)
+examples:
+  - cmd: cal
+    desc: 今月のカレンダーを表示し、今日の日付が反転表示される
+  - cmd: cal 12 2026
+    desc: 2026 年 12 月のカレンダーを表示する
+  - cmd: cal -3
+    desc: 先月・今月・来月をまとめて表示し、前後の予定を確認する
+related_commands: [date]
+related_articles: []

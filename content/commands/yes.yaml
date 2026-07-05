@@ -1,0 +1,22 @@
+name: yes
+summary: 指定した文字列 (既定は y) を延々と出力し続ける
+group: system
+synopsis: "yes [文字列]"
+options:
+  - flag: "(引数なし)"
+    desc: 何も指定しないと y を無限に出力し続ける
+  - flag: "<文字列>"
+    desc: 指定した文字列を無限に繰り返し出力する
+examples:
+  - cmd: yes | rm -i *.tmp
+    desc: 削除の確認プロンプトに自動で y を送り、対話なしで処理する
+  - cmd: yes n | some-command
+    desc: 逆に全部 n で答えさせたいときは文字列に n を指定する
+  - cmd: yes "test line" | head -5
+    desc: 同じ行を大量に生成し、head で必要な数だけ取り出す (テストデータ作成)
+related_commands: [echo, xargs]
+related_articles: []
+note: >-
+  yes は主にパイプで確認プロンプトへ自動的に y を送る用途で使う。単体で
+  実行すると出力が止まらないので、その場合は Ctrl+C で停止する。head や
+  他コマンドにパイプする場合は、相手が読み終えれば yes も自動的に終わる。

@@ -7,6 +7,7 @@ export const GROUP_LABELS = {
 	disk: 'ディスク',
 	services: 'サービス',
 	logs: 'ログ',
-	system: 'システム'
+	system: 'システム',
+	network: 'ネットワーク'
 };
 export const GROUP_ORDER = Object.keys(GROUP_LABELS);

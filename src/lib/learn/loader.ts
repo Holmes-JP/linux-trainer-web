@@ -12,7 +12,8 @@ const GROUPS: CommandGroup[] = [
 	"disk",
 	"services",
 	"logs",
-	"system"
+	"system",
+	"network"
 ];
 
 class ContentError extends Error {

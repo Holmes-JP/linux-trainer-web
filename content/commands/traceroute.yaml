@@ -1,0 +1,27 @@
+name: traceroute
+summary: 目的ホストまで経由するルーター (ホップ) を順に表示して経路を可視化する
+group: network
+synopsis: "traceroute [オプション] <ホスト>"
+options:
+  - flag: "-n"
+    desc: ホスト名を解決せず IP アドレスのまま表示する (速い)
+  - flag: "-m <数>"
+    desc: 辿る最大ホップ数 (TTL の上限) を指定する
+  - flag: "-w <秒>"
+    desc: 各ホップの応答待ちタイムアウトを指定する
+  - flag: "-I"
+    desc: UDP ではなく ICMP を使って探索する
+examples:
+  - cmd: "traceroute example.com"
+    desc: 目的地までの経路を1ホップずつ表示する
+  - cmd: "traceroute -n 8.8.8.8"
+    desc: 名前解決を省いて素早く経路と各ホップの遅延を見る
+  - cmd: "traceroute -m 15 example.com"
+    desc: 最大ホップ数を制限して途中までの経路を調べる
+related_commands: [ping, ip, dig]
+note: >-
+  「どこで通信が止まっているか」を切り分けるときに使う。ping が届かない
+  ときの次の一手になりやすい。ただしこのブラウザ内 WebVM 演習環境は
+  ネットワークが制限されており、外部への経路探索はできない (または不安定な)
+  ことがある。ここでは traceroute の読み方を、現実のサーバー作業の参照として
+  覚えてほしい。

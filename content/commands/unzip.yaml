@@ -1,0 +1,28 @@
+name: unzip
+summary: ZIP アーカイブの中身を一覧・展開する
+group: files
+synopsis: "unzip [オプション] <アーカイブ.zip> [ファイル...]"
+options:
+  - flag: "-l"
+    desc: 展開せずに中身のファイル一覧とサイズを表示する (list)
+  - flag: "-d <ディレクトリ>"
+    desc: 指定したディレクトリに展開する (省略時はカレント)
+  - flag: "-o"
+    desc: 既存ファイルを問い合わせなしで上書きする (overwrite)
+  - flag: "-P <パスワード>"
+    desc: パスワード付き ZIP をコマンドラインで指定して展開する
+  - flag: "-q"
+    desc: 展開したファイル名の逐一表示を抑制する (quiet)
+examples:
+  - cmd: unzip -l release.zip
+    desc: 展開する前に中身を確認し、目当てのファイルが入っているか確かめる
+  - cmd: unzip release.zip -d /tmp/extract
+    desc: カレントを汚さないよう /tmp に展開し、必要なファイルだけ取り出す
+  - cmd: unzip -o patch.zip
+    desc: 上書き確認をスキップして、既存ファイルへパッチ一式を一気に反映する
+related_commands: [zip, tar, gzip]
+related_articles: [archive-and-compression]
+note: >-
+  いきなりカレントで展開するとファイルをばら撒くので、まず -l で中身を
+  確認し、-d で展開先を明示するのが安全。中身が1フォルダにまとまって
+  いない ZIP を展開すると散らかりやすい点に注意。

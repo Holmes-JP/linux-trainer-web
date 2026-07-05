@@ -1,0 +1,24 @@
+name: host
+summary: ホスト名と IP の対応を手軽に調べる DNS 問い合わせツール
+group: network
+synopsis: "host [オプション] <名前 | IP> [DNSサーバー]"
+options:
+  - flag: "-t <種別>"
+    desc: 問い合わせるレコード種別を指定する (A / MX / NS / TXT など)
+  - flag: "-a"
+    desc: 取得できる全レコードをまとめて表示する
+  - flag: "-v"
+    desc: 詳細 (verbose) 表示にする
+examples:
+  - cmd: "host example.com"
+    desc: ホスト名から IP アドレスを引く (最も基本的な使い方)
+  - cmd: "host 8.8.8.8"
+    desc: IP アドレスから逆引きでホスト名を調べる
+  - cmd: "host -t MX example.com"
+    desc: メール配送先 (MX レコード) を確認する
+related_commands: [dig, ping, curl]
+note: >-
+  dig より出力が短く、素早く名前解決だけ確認したいときに向く。ただし
+  このブラウザ内 WebVM 演習環境はネットワークが制限されており、外部 DNS への
+  問い合わせはできない (または不安定な) ことがある。ここでは host の使い方を、
+  現実のサーバー作業の参照として覚えてほしい。詳しく見たいときは dig を使う。

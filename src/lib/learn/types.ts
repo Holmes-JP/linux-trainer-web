@@ -10,7 +10,8 @@ export type CommandGroup =
 	| "disk"
 	| "services"
 	| "logs"
-	| "system";
+	| "system"
+	| "network";
 
 export interface CommandOption {
 	flag: string;

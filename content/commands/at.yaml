@@ -1,0 +1,28 @@
+name: at
+summary: 指定した日時に一度だけコマンドを実行するよう予約する
+group: services
+synopsis: "at [オプション] <時刻指定>"
+options:
+  - flag: "-l"
+    desc: 予約済みジョブの一覧を表示する (atq と同じ)
+  - flag: "-d <番号>"
+    desc: 指定番号の予約ジョブを削除する (atrm と同じ)
+  - flag: "-c <番号>"
+    desc: 指定ジョブが実行する内容 (コマンド本体) を表示する
+  - flag: "-f <ファイル>"
+    desc: 実行内容を対話入力ではなくファイルから読み込む
+examples:
+  - cmd: "at 10:00"
+    desc: 今日の 10:00 に実行するジョブを予約。プロンプトでコマンドを入力し Ctrl+D で確定
+  - cmd: "echo 'systemctl restart nginx' | at 23:30"
+    desc: 23:30 に nginx を再起動する予約をパイプで一発登録する
+  - cmd: "at now + 5 minutes"
+    desc: 5 分後に実行する予約。now + の相対指定も使える
+  - cmd: at -l
+    desc: 予約済みジョブの一覧と実行予定時刻を確認する
+related_commands: [crontab, service]
+related_articles: [services-and-daemons]
+note: >-
+  at は「一度だけ」の予約実行 (繰り返しは crontab)。予約したジョブは atd
+  デーモンが実行するため、atd が動いていないと時刻になっても実行されない。
+  service atd status などで稼働を確認すること。

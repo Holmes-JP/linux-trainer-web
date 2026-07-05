@@ -1,0 +1,26 @@
+name: nano
+summary: 初心者向けのシンプルなターミナルテキストエディタ
+group: files
+synopsis: "nano [オプション] [ファイル]"
+options:
+  - flag: "-l"
+    desc: 行番号を左端に表示する
+  - flag: "-w"
+    desc: 長い行を折り返さず、そのまま横に伸ばす (設定ファイル編集で崩れ防止)
+  - flag: "-m"
+    desc: マウス操作を有効にする (カーソル移動・範囲選択)
+  - flag: "+<行番号>"
+    desc: 起動時に指定した行にカーソルを合わせて開く
+examples:
+  - cmd: nano /etc/hosts
+    desc: ホスト名の対応を手早く書き換える。設定ファイルの軽い編集に向く
+  - cmd: nano -l script.sh
+    desc: 行番号付きで開き、エラーメッセージの行を探しながら直す
+  - cmd: nano +40 app.conf
+    desc: 40行目を直接開いて、目的の設定行にすぐたどり着く
+related_commands: [vim, cat]
+related_articles: []
+note: >-
+  画面下部に主要な操作 (^X = Ctrl+X など、^ は Ctrl の意味) が常時表示
+  されるのが最大の利点。保存して終了するには Ctrl+X → 保存するか聞かれ
+  たら Y → Enter。まず抜けたいだけなら Ctrl+X で戻れる。

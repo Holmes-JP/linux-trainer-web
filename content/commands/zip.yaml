@@ -1,0 +1,27 @@
+name: zip
+summary: ファイルやディレクトリを ZIP 形式のアーカイブに圧縮してまとめる
+group: files
+synopsis: "zip [オプション] <出力.zip> <ファイル...>"
+options:
+  - flag: "-r"
+    desc: ディレクトリを中身ごと再帰的に圧縮する。フォルダをまとめるときはほぼ必須
+  - flag: "-e"
+    desc: パスワードを付けて暗号化する (入力を求められる)
+  - flag: "-9"
+    desc: 圧縮率を最大にする (-0 は無圧縮で格納のみ)
+  - flag: "-j"
+    desc: ディレクトリ階層を捨てて、ファイル名だけで格納する (junk paths)
+  - flag: "-x"
+    desc: 指定したパターンのファイルを圧縮対象から除外する
+examples:
+  - cmd: zip -r site-backup.zip /var/www/html
+    desc: 公開ディレクトリを丸ごと ZIP にまとめてバックアップする
+  - cmd: zip -e secret.zip report.pdf
+    desc: パスワード付き ZIP を作り、メール添付など受け渡し前提のファイルを保護する
+  - cmd: zip -r logs.zip /var/log -x "*.gz"
+    desc: ログを固めつつ、既に圧縮済みの .gz は除外して二重圧縮を避ける
+related_commands: [unzip, tar, gzip]
+related_articles: [archive-and-compression]
+note: >-
+  Windows とのやり取りで最も相性が良い圧縮形式。tar.gz と違い ZIP は
+  1ファイルごとに圧縮するため部分展開に強い。展開は unzip を使う。

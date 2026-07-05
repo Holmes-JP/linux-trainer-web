@@ -1,0 +1,26 @@
+name: blkid
+summary: ブロックデバイスの UUID・ラベル・ファイルシステム種別を表示する
+group: disk
+synopsis: "blkid [オプション] [デバイス]"
+options:
+  - flag: "(引数なし)"
+    desc: 認識されている全ブロックデバイスの UUID と種別を一覧表示する
+  - flag: "-o value"
+    desc: 属性名を省いて値だけ出力する (-s と併用してスクリプト向けに)
+  - flag: "-s <属性>"
+    desc: 表示する属性を絞る (UUID / TYPE / LABEL など)
+  - flag: "-L <ラベル>"
+    desc: 指定ラベルを持つデバイス名を逆引きする
+examples:
+  - cmd: blkid
+    desc: 全パーティションの UUID とファイルシステム種別 (ext4 等) を一覧表示する
+  - cmd: "blkid -s UUID -o value /dev/sda1"
+    desc: /dev/sda1 の UUID だけを取り出す。/etc/fstab に書く値の確認に使う
+  - cmd: sudo blkid /dev/sdb1
+    desc: 特定パーティションの種別とラベルを調べ、マウント前に中身を確認する
+related_commands: [lsblk, mount, df]
+related_articles: [disk-and-mount]
+note: >-
+  /etc/fstab ではデバイス名 (/dev/sda1) が起動ごとに変わる可能性があるため、
+  blkid で得た UUID を使ってマウント対象を固定するのが定番。デバイスの
+  一覧構造を見たいときは lsblk と併用すると分かりやすい。

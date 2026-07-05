@@ -1,0 +1,34 @@
+name: apt
+summary: Debian / Ubuntu 系のパッケージを検索・導入・更新・削除する
+group: system
+synopsis: "apt <サブコマンド> [パッケージ...]"
+options:
+  - flag: "update"
+    desc: パッケージ一覧 (どのソフトがどのバージョンで配布されているか) を最新化する
+  - flag: "install <パッケージ>"
+    desc: パッケージと依存関係をまとめて導入する
+  - flag: "remove <パッケージ>"
+    desc: パッケージを削除する (purge なら設定ファイルごと消す)
+  - flag: "upgrade"
+    desc: 導入済みパッケージを新しいバージョンへまとめて更新する
+  - flag: "search <語>"
+    desc: 名前・説明にキーワードを含むパッケージを検索する
+  - flag: "list --installed"
+    desc: 現在導入済みのパッケージ一覧を表示する
+examples:
+  - cmd: sudo apt update
+    desc: 何か入れる前にまず実行。一覧が古いと install が失敗することがある
+  - cmd: sudo apt install nginx
+    desc: Web サーバー nginx を依存関係ごと導入する
+  - cmd: apt search openssh
+    desc: openssh 関連のパッケージ名を調べてから install する
+  - cmd: sudo apt remove --purge apache2
+    desc: apache2 を設定ファイルごと完全に削除する
+related_commands: [dpkg]
+related_articles: [services-and-daemons]
+note: >-
+  apt は Debian / Ubuntu 系で最も使うパッケージ管理コマンド。ただしこの
+  ブラウザ内 WebVM 演習環境はネットワークが制限されており、実際の
+  パッケージ導入まではできない場合がある。ここでは現実のサーバー作業の
+  参照として、サブコマンドの意味と流れ (update → install → 確認) をつかむ
+  目的で読んでほしい。

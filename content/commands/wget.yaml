@@ -1,0 +1,29 @@
+name: wget
+summary: URL からファイルをダウンロードする (再帰取得も可能な) 転送ツール
+group: network
+synopsis: "wget [オプション] <URL>"
+options:
+  - flag: "-O <ファイル>"
+    desc: 保存先ファイル名を指定する (- で標準出力に流す)
+  - flag: "-c"
+    desc: 途中で切れたダウンロードを続きから再開する
+  - flag: "-q"
+    desc: 進捗などのメッセージを出さない (静かに実行)
+  - flag: "-r"
+    desc: リンクを辿って再帰的に取得する (サイトのミラーなど)
+  - flag: "--limit-rate=<速度>"
+    desc: ダウンロード速度を制限する (例 200k)
+examples:
+  - cmd: "wget https://example.com/archive.tar.gz"
+    desc: ファイルをカレントディレクトリにそのまま保存する
+  - cmd: "wget -O latest.tar.gz https://example.com/releases/latest"
+    desc: 保存名を指定して分かりやすいファイル名で落とす
+  - cmd: "wget -c https://example.com/big.iso"
+    desc: 大きいファイルの中断したダウンロードを続きから再開する
+related_commands: [curl, tar, gzip]
+note: >-
+  現実のサーバーでは配布物やインストーラの取得によく使う。ただし
+  このブラウザ内 WebVM 演習環境はネットワークが制限されており、外部への
+  実ダウンロードはできない (または不安定な) ことがある。ここでは wget の
+  書式を、現実のサーバー作業の参照として覚えてほしい。curl と役割は近いが、
+  wget は「ファイルを落とす」用途に向く。

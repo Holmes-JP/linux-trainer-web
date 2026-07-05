@@ -1,0 +1,28 @@
+name: ip
+summary: ネットワークインターフェース・アドレス・ルーティングを表示/設定する
+group: network
+synopsis: "ip [オプション] <オブジェクト> <コマンド>"
+options:
+  - flag: "addr"
+    desc: インターフェースに割り当てられた IP アドレスを表示する (省略形 a)
+  - flag: "link"
+    desc: インターフェース自体の状態 (UP/DOWN や MAC) を表示する
+  - flag: "route"
+    desc: ルーティングテーブル (どこ宛てをどこへ送るか) を表示する
+  - flag: "neigh"
+    desc: ARP/近隣テーブル (IP と MAC の対応) を表示する
+  - flag: "-br"
+    desc: 出力を簡潔な1行表示にする (-br addr など)
+examples:
+  - cmd: "ip addr"
+    desc: 自分の IP アドレスを確認する (旧 ifconfig の代替)
+  - cmd: "ip -br addr"
+    desc: インターフェースごとの状態と IP を1行で一覧する
+  - cmd: "ip route"
+    desc: デフォルトゲートウェイなど経路設定を確認する
+related_commands: [ss, ping, hostname]
+note: >-
+  現代の Linux では ifconfig に代わる標準ツール。自分のアドレスや経路を
+  調べる作業でまず使う。このブラウザ内 WebVM 演習環境ではインターフェースや
+  経路が実サーバーとは異なり、外部通信も制限されている。ここでは ip の
+  サブコマンド構成を、現実のサーバー作業の参照として覚えてほしい。

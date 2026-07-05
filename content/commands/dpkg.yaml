@@ -1,0 +1,32 @@
+name: dpkg
+summary: Debian パッケージ (.deb) を直接操作し導入状況を調べる低レベルツール
+group: system
+synopsis: "dpkg [オプション] [.deb ファイル / パッケージ名]"
+options:
+  - flag: "-i <ファイル.deb>"
+    desc: ローカルの .deb ファイルを直接導入する (依存は自動解決しない)
+  - flag: "-r <パッケージ>"
+    desc: パッケージを削除する (-P なら設定ごと purge)
+  - flag: "-l [パターン]"
+    desc: 導入済みパッケージを一覧表示する。状態列 ii が正常導入
+  - flag: "-L <パッケージ>"
+    desc: そのパッケージが配置したファイルの一覧を表示する
+  - flag: "-S <パス>"
+    desc: 指定ファイルがどのパッケージ由来かを逆引きする
+examples:
+  - cmd: dpkg -l | grep ssh
+    desc: ssh 関連の導入済みパッケージとバージョンを確認する
+  - cmd: sudo dpkg -i ./mytool_1.0_amd64.deb
+    desc: 手元にダウンロードした .deb を直接インストールする
+  - cmd: dpkg -L nginx
+    desc: nginx がどこに設定ファイルやバイナリを置いたか調べる
+  - cmd: dpkg -S /usr/bin/curl
+    desc: /usr/bin/curl がどのパッケージから来たのかを逆引きする
+related_commands: [apt]
+related_articles: [services-and-daemons]
+note: >-
+  dpkg は apt より低レベルで、依存関係を自動解決しない (足りない依存は
+  自分で入れる)。日常の導入は apt を使い、dpkg は .deb を直接扱うときや
+  導入状況の調査に使う。なおこのブラウザ内 WebVM 演習環境は
+  ネットワークが制限されており、実際のパッケージ導入はできない場合が
+  ある。現実のサーバー作業の参照として読んでほしい。
