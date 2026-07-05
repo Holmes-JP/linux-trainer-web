@@ -3,6 +3,7 @@
 	//  - API 未設定: 4サービスを新しいタブで開く (自分のアカウント)
 	//  - API 設定済: 「ここで聞く」でページ内チャット + 外部リンクも併記
 	import '@fortawesome/fontawesome-free/css/all.min.css';
+	import { base } from '$app/paths';
 	import { t, FONT_MONO } from '$lib/design/theme';
 	import { aiSettings, isChatReady, PROVIDER_LABEL } from '$lib/ai/settings';
 	import { HANDOFF_TARGETS } from '$lib/ai/handoff';
@@ -68,7 +69,7 @@
 				<div class="ai-targets">
 					{#each HANDOFF_TARGETS as target}
 						<button class="ai-target" on:click={() => handoff(target)} style="border-color:{t.border}; color:{t.text};">
-							<i class={target.icon} style="color:{t.accent};"></i>{target.label}
+							<img src="{base}/ai-icons/{target.iconFile}" alt="" width="18" height="18" class="ai-fav" />{target.label}
 							<i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim}; margin-left:auto;"></i>
 						</button>
 					{/each}
@@ -222,6 +223,11 @@
 	}
 	.ai-target:hover {
 		border-color: var(--accent);
+	}
+	.ai-fav {
+		border-radius: 4px;
+		flex-shrink: 0;
+		display: block;
 	}
 	.ai-cfg {
 		width: 100%;

@@ -3,7 +3,8 @@
 export interface HandoffTarget {
 	key: string;
 	label: string;
-	icon: string;
+	/** static/ai-icons/ 配下の本物のファビコン名 */
+	iconFile: string;
 	build: (prompt: string) => string;
 }
 
@@ -11,25 +12,25 @@ export const HANDOFF_TARGETS: HandoffTarget[] = [
 	{
 		key: "chatgpt",
 		label: "ChatGPT",
-		icon: "fas fa-comment-dots",
+		iconFile: "chatgpt.png",
 		build: (p) => `https://chatgpt.com/?q=${encodeURIComponent(p)}`
 	},
 	{
 		key: "claude",
 		label: "Claude",
-		icon: "fas fa-robot",
+		iconFile: "claude.png",
 		build: (p) => `https://claude.ai/new?q=${encodeURIComponent(p)}`
 	},
 	{
 		key: "gemini",
 		label: "Gemini",
-		icon: "fas fa-gem",
+		iconFile: "gemini.png",
 		build: (p) => `https://gemini.google.com/app?q=${encodeURIComponent(p)}`
 	},
 	{
 		key: "perplexity",
 		label: "Perplexity",
-		icon: "fas fa-magnifying-glass",
+		iconFile: "perplexity.png",
 		build: (p) => `https://www.perplexity.ai/search?q=${encodeURIComponent(p)}`
 	}
 ];

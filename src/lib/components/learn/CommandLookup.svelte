@@ -1,6 +1,6 @@
 <script>
-	// 挑戦中に使うコマンド辞典の検索。VM を止めないよう結果は別タブ (/learn?cmd=) で開く。
-	// search-index.json から command doc だけを対象に部分一致検索する。
+	// 挑戦中に使うコマンド辞典。折りたたみ可。展開すると全コマンドをアルファベット順に列挙する。
+	// VM を止めないよう結果は別タブ (/learn?cmd=) で開く。
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { t, FONT_MONO } from '$lib/design/theme';
@@ -10,6 +10,7 @@
 	let commands = [];
 	let ready = false;
 	let failed = false;
+	let expanded = false;
 	let query = '';
 
 	onMount(async () => {
@@ -22,11 +23,9 @@
 		}
 	});
 
-	// クエリ空なら人気どころを数件だけ提示。入力中は部分一致で最大 8 件。
-	const SUGGESTED = ['chmod', 'grep', 'ps', 'find', 'systemctl', 'tar'];
-	$: hits = query.trim()
-		? searchDocs(commands, query, 8).map((h) => h.doc)
-		: commands.filter((c) => SUGGESTED.includes(c.id)).sort((a, b) => SUGGESTED.indexOf(a.id) - SUGGESTED.indexOf(b.id));
+	// クエリ空 → 全コマンドをアルファベット順。入力中 → 部分一致 (最大30件)。
+	$: allSorted = commands.slice().sort((a, b) => a.id.localeCompare(b.id));
+	$: hits = query.trim() ? searchDocs(commands, query, 30).map((h) => h.doc) : allSorted;
 
 	function cmdHref(id) {
 		return `${base}/learn?cmd=${encodeURIComponent(id)}`;
@@ -34,57 +33,53 @@
 </script>
 
 <section class="lookup" style="border-bottom:1px solid {t.border};">
-	<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;">
-		<h2 class="label" style="color:{t.dim}; margin:0;">コマンド辞典</h2>
-		<a
-			href="{base}/learn"
-			target="_blank"
-			rel="noopener"
-			class="all-link"
-			style="color:{t.dim};"
-		>すべて見る <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;"></i></a>
+	<div class="lookup-head">
+		<button class="lookup-toggle" on:click={() => (expanded = !expanded)} style="color:{t.text};" aria-expanded={expanded}>
+			<i class="fas fa-chevron-right chev" class:open={expanded} style="color:{t.dim}; font-size:10px;"></i>
+			<span class="label" style="color:{t.dim};">コマンド辞典</span>
+			<span class="count" style="color:{t.dim};">{commands.length}</span>
+		</button>
+		<a href="{base}/learn" target="_blank" rel="noopener" class="all-link" style="color:{t.dim};">すべて見る <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;"></i></a>
 	</div>
 
-	{#if failed}
-		<p style="margin:0; font-size:12px; color:{t.dim};">
-			辞典を読み込めませんでした。<a href="{base}/learn" target="_blank" rel="noopener" style="color:{t.accent};">解説ページ</a> を開いてください。
-		</p>
-	{:else}
-		<div style="position:relative;">
-			<i class="fas fa-magnifying-glass" style="position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:11px; color:{t.dim};"></i>
-			<input
-				class="lookup-search"
-				type="text"
-				placeholder="コマンド名で調べる (例: chmod)"
-				bind:value={query}
-				disabled={!ready}
-				style="background:{t.track}; border-color:{t.border}; color:{t.text};"
-			/>
-		</div>
+	{#if expanded}
+		{#if failed}
+			<p style="margin:10px 0 0 0; font-size:12px; color:{t.dim};">
+				辞典を読み込めませんでした。<a href="{base}/learn" target="_blank" rel="noopener" style="color:{t.accent};">解説ページ</a> を開いてください。
+			</p>
+		{:else}
+			<div style="position:relative; margin-top:10px;">
+				<i class="fas fa-magnifying-glass" style="position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:11px; color:{t.dim};"></i>
+				<input
+					class="lookup-search"
+					type="text"
+					placeholder="コマンド名で絞り込む (例: chmod)"
+					bind:value={query}
+					disabled={!ready}
+					style="background:{t.track}; border-color:{t.border}; color:{t.text};"
+				/>
+			</div>
 
-		{#if !query.trim()}
-			<p style="margin:8px 0 6px 0; font-size:11px; color:{t.dim};">よく使うコマンド:</p>
+			<div class="results scrollbar">
+				{#each hits as c}
+					<a
+						href={cmdHref(c.id)}
+						target="_blank"
+						rel="noopener"
+						class="result"
+						style="border-color:{t.border};"
+						title={c.summary}
+					>
+						<code style="font-family:{FONT_MONO}; color:{t.accent};">{c.id}</code>
+						<span class="result-sum" style="color:{t.dim};">{c.summary}</span>
+						<i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim}; flex-shrink:0;"></i>
+					</a>
+				{/each}
+				{#if query.trim() && hits.length === 0}
+					<p style="margin:4px 0 0 0; font-size:12px; color:{t.dim};">一致するコマンドがありません。</p>
+				{/if}
+			</div>
 		{/if}
-
-		<div class="results">
-			{#each hits as c}
-				<a
-					href={cmdHref(c.id)}
-					target="_blank"
-					rel="noopener"
-					class="result"
-					style="border-color:{t.border};"
-					title={c.summary}
-				>
-					<code style="font-family:{FONT_MONO}; color:{t.accent};">{c.id}</code>
-					<span class="result-sum" style="color:{t.dim};">{c.summary}</span>
-					<i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim}; flex-shrink:0;"></i>
-				</a>
-			{/each}
-			{#if query.trim() && hits.length === 0}
-				<p style="margin:4px 0 0 0; font-size:12px; color:{t.dim};">一致するコマンドがありません。</p>
-			{/if}
-		</div>
 	{/if}
 </section>
 
@@ -92,11 +87,37 @@
 	.lookup {
 		padding: 16px 20px;
 	}
+	.lookup-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+	.lookup-toggle {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		font-family: inherit;
+	}
+	.chev {
+		transition: transform 0.15s ease;
+	}
+	.chev.open {
+		transform: rotate(90deg);
+	}
 	.label {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 11px;
 		font-weight: 500;
 		letter-spacing: 0.14em;
+	}
+	.count {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 11px;
 	}
 	.all-link {
 		font-size: 11px;
@@ -104,6 +125,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 4px;
+		flex-shrink: 0;
 		transition: color 0.15s ease;
 	}
 	.all-link:hover {
@@ -130,7 +152,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 6px;
-		max-height: 220px;
+		max-height: 300px;
 		overflow-y: auto;
 	}
 	.result {
