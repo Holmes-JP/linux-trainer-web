@@ -22,15 +22,15 @@
 		errorMsg = '';
 		messages = [...messages, { role: 'user', content }];
 		loading = true;
-		await scrollDown();
+		await scrollDown(); // 自分の送信時のみ末尾へ寄せる
 		try {
 			const reply = await askAI($aiSettings, messages);
 			messages = [...messages, { role: 'assistant', content: reply }];
+			// AI の返答では自動スクロールしない (読んでいる位置を保つ)
 		} catch (e) {
 			errorMsg = e?.message ?? String(e);
 		} finally {
 			loading = false;
-			await scrollDown();
 		}
 	}
 
@@ -111,15 +111,19 @@
 		padding: 20px;
 	}
 	.ai-card {
-		width: 100%;
-		max-width: 560px;
+		width: 560px;
+		max-width: 92vw;
 		height: 78vh;
-		max-height: 720px;
+		min-width: 320px;
+		min-height: 320px;
+		max-height: 90vh;
 		border: 1px solid;
 		border-radius: 12px;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		/* ドラッグで拡大縮小 (右下ハンドル) */
+		resize: both;
 		font-family: var(--font-sans);
 	}
 	.ai-head {

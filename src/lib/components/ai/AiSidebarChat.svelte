@@ -9,8 +9,8 @@
 	import { askAI } from '$lib/ai/client';
 	import { renderAiMarkdown } from '$lib/ai/markdown';
 
-	/** 「この課題のヒントを聞く」で送る文脈込みプロンプト */
-	export let seedPrompt = '';
+	/** 現在の課題 (title/description)。AI に状況を伝えるのに使う */
+	export let scenario = null;
 
 	let expanded = true;
 	let messages = [];
@@ -21,21 +21,48 @@
 
 	$: providerShort = PROVIDER_LABEL[$aiSettings.provider].split(' ')[0];
 
+	// 端末 (xterm) の見えている出力を読み取り、AI に「今の画面」を渡す。
+	function readTerminal() {
+		if (typeof document === 'undefined') return '';
+		const rows = document.querySelectorAll('#console .xterm-rows > div');
+		if (!rows.length) return '';
+		const text = Array.from(rows)
+			.map((r) => (r.textContent || '').replace(/\s+$/, ''))
+			.join('\n')
+			.replace(/\n{2,}/g, '\n')
+			.replace(/^\n+|\n+$/g, '');
+		// 末尾 ~40 行だけ (直近の状況)
+		return text.split('\n').slice(-40).join('\n');
+	}
+
+	function buildSystemExtra() {
+		const parts = [];
+		if (scenario) parts.push(`現在の課題: ${scenario.title}\n${scenario.description}`);
+		const term = readTerminal();
+		if (term)
+			parts.push(
+				'端末の最近の出力 (これがユーザーの今の画面です。ここから現状を判断してください):\n```\n' +
+					term +
+					'\n```'
+			);
+		return parts.join('\n\n');
+	}
+
 	async function send(text) {
 		const content = text.trim();
 		if (!content || loading) return;
 		errorMsg = '';
 		messages = [...messages, { role: 'user', content }];
 		loading = true;
-		await scrollDown();
+		await scrollDown(); // 自分の送信時のみ末尾へ寄せる
 		try {
-			const reply = await askAI($aiSettings, messages);
+			const reply = await askAI($aiSettings, messages, buildSystemExtra());
 			messages = [...messages, { role: 'assistant', content: reply }];
+			// AI の返答では自動スクロールしない (読んでいる位置を保つ)
 		} catch (e) {
 			errorMsg = e?.message ?? String(e);
 		} finally {
 			loading = false;
-			await scrollDown();
 		}
 	}
 	async function scrollDown() {
@@ -86,9 +113,9 @@
 				{/if}
 			</div>
 
-			{#if seedPrompt && messages.length === 0}
-				<button class="ai-sb-hint" on:click={() => send(seedPrompt)} disabled={loading} style="border-color:{t.accentBorder}; color:{t.accent};">
-					<i class="far fa-lightbulb" style="margin-right:6px;"></i>この課題のヒントを聞く
+			{#if scenario && messages.length === 0}
+				<button class="ai-sb-hint" on:click={() => send('いま何をすればいいですか？現在の状態を踏まえて、次に実行すべきコマンドを教えてください。')} disabled={loading} style="border-color:{t.accentBorder}; color:{t.accent};">
+					<i class="far fa-lightbulb" style="margin-right:6px;"></i>いま何をすべきか聞く
 				</button>
 			{/if}
 
@@ -145,7 +172,11 @@
 	}
 	.ai-sb-msgs {
 		margin-top: 10px;
-		max-height: 320px;
+		/* 高さはドラッグで拡大縮小できる (右下ハンドル) */
+		height: 300px;
+		min-height: 120px;
+		max-height: 75vh;
+		resize: vertical;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		display: flex;

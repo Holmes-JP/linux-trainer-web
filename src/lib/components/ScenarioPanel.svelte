@@ -83,7 +83,7 @@
 		<!-- AI: API 有効ならサイドバー常駐チャット、未設定なら受け渡しボタン -->
 		{#if scenario}
 			{#if chatReady}
-				<AiSidebarChat seedPrompt={aiPrompt} />
+				<AiSidebarChat {scenario} />
 			{:else}
 				<section style="padding:14px 20px; border-bottom:1px solid {t.border}; display:flex; justify-content:center;">
 					<AskAI prompt={aiPrompt} label="AIにヒントをもらう" />

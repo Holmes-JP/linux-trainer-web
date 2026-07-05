@@ -8,18 +8,35 @@ export interface ChatMessage {
 }
 
 const SYSTEM_PROMPT =
-	"あなたは Linux を学ぶ人を助けるアシスタントです。日本語で、初心者にもわかるように簡潔に説明してください。" +
-	"コマンドの説明には短い具体例を添えてください。トラブルシューティング演習の質問には、いきなり答えを出さず、" +
-	"まず考え方のヒントを段階的に示し、最後に必要なら解法をまとめてください。";
+	"あなたは Linux を学ぶ人を助けるアシスタントです。日本語で、初心者にもわかるように簡潔に答えてください。\n" +
+	"これはブラウザ内の『実際の Linux 端末』で行うトラブルシューティング演習です。ユーザーは目の前の端末を操作しながら質問しています。\n" +
+	"一般的な学習ステップの列挙 (『まず ls を学び、次に…』のような教科書的な内容) は避け、いま目の前の状況で『次に何をすべきか』を具体的に答えてください。\n" +
+	"『まず何をすればいい?』のような質問には、まず現在の状態を調べるコマンドを 1〜3 個、短い理由とともに勧めてください " +
+	"(例: pwd で現在地、id/whoami で自分の権限、ls -la で対象の権限・所有者、ps aux でプロセス、cat/less で設定やログの中身)。\n" +
+	"答えを一気に全部与えず、次の一手を短く示してください。与えられた『現在の課題』と『端末の最近の出力』を必ず踏まえ、その状況に即して答えてください。" +
+	"端末の出力がまだほとんど無い (起動直後) 場合は、まず状態把握のコマンドから勧めてください。";
 
-/** 選択中プロバイダにチャット送信し、アシスタントの応答テキストを返す。 */
-export async function askAI(settings: AiSettings, messages: ChatMessage[]): Promise<string> {
+/** 選択中プロバイダにチャット送信し、アシスタントの応答テキストを返す。
+ *  systemExtra には「現在の課題」「端末の最近の出力」など、その時点の状況を渡す。 */
+export async function askAI(
+	settings: AiSettings,
+	messages: ChatMessage[],
+	systemExtra?: string
+): Promise<string> {
 	return settings.provider === "anthropic"
-		? askAnthropic(settings, messages)
-		: askOpenAI(settings, messages);
+		? askAnthropic(settings, messages, systemExtra)
+		: askOpenAI(settings, messages, systemExtra);
 }
 
-async function askAnthropic(s: AiSettings, messages: ChatMessage[]): Promise<string> {
+function systemFor(extra?: string): string {
+	return extra && extra.trim() ? `${SYSTEM_PROMPT}\n\n${extra}` : SYSTEM_PROMPT;
+}
+
+async function askAnthropic(
+	s: AiSettings,
+	messages: ChatMessage[],
+	systemExtra?: string
+): Promise<string> {
 	const res = await fetch("https://api.anthropic.com/v1/messages", {
 		method: "POST",
 		headers: {
@@ -32,7 +49,7 @@ async function askAnthropic(s: AiSettings, messages: ChatMessage[]): Promise<str
 		body: JSON.stringify({
 			model: s.anthropicModel || "claude-opus-4-8",
 			max_tokens: 2048,
-			system: SYSTEM_PROMPT,
+			system: systemFor(systemExtra),
 			messages: messages.map((m) => ({ role: m.role, content: m.content }))
 		})
 	});
@@ -45,7 +62,11 @@ async function askAnthropic(s: AiSettings, messages: ChatMessage[]): Promise<str
 	return text || "(空の応答が返りました)";
 }
 
-async function askOpenAI(s: AiSettings, messages: ChatMessage[]): Promise<string> {
+async function askOpenAI(
+	s: AiSettings,
+	messages: ChatMessage[],
+	systemExtra?: string
+): Promise<string> {
 	const res = await fetch("https://api.openai.com/v1/chat/completions", {
 		method: "POST",
 		headers: {
@@ -54,7 +75,7 @@ async function askOpenAI(s: AiSettings, messages: ChatMessage[]): Promise<string
 		},
 		body: JSON.stringify({
 			model: s.openaiModel || "gpt-4o-mini",
-			messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages]
+			messages: [{ role: "system", content: systemFor(systemExtra) }, ...messages]
 		})
 	});
 	if (!res.ok) throw new Error(await errText(res));
