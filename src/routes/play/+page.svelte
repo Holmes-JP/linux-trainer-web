@@ -62,6 +62,7 @@
 	let errorMsg = '';
 	let mounted = false;
 	let bootStalled = false; // 起動が長引いているか (再読み込みを促す用)
+	let showTimer = true; // ヘッダの経過時間表示 (クリックで切り替え)
 
 	// 自動テスト (scripts/play-e2e.mjs 等) から状態を観測するためのフック
 	function publishState() {
@@ -248,8 +249,8 @@
 				{/if}
 			</div>
 			{#if solveStartMs}
-				<div style="flex-shrink:0; font-family:{FONT_MONO}; font-size:11px; color:{passed ? t.accent : t.dim};" title="経過時間 (Ctrl+Enter で採点)">
-					<i class="far fa-clock" style="margin-right:5px;"></i>{fmtDuration(elapsedMs)}
+				<div class="timer-toggle" role="button" tabindex="0" on:click={() => (showTimer = !showTimer)} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), (showTimer = !showTimer))} style="flex-shrink:0; font-family:{FONT_MONO}; font-size:11px; color:{passed ? t.accent : t.dim};" title={showTimer ? '経過時間を隠す (クリック)' : '経過時間を表示 (クリック)'}>
+					<i class="far fa-clock" style="margin-right:5px;"></i>{showTimer ? fmtDuration(elapsedMs) : '--:--'}
 				</div>
 			{/if}
 			<div style="display:flex; align-items:center; gap:8px; flex-shrink:0; font-family:{FONT_MONO}; font-size:11px; color:{ph.color};">
@@ -264,14 +265,6 @@
 				on:click={togglePanel}
 				style="color:{t.dim};"
 			><i class="fas {panelCollapsed ? 'fa-angles-left' : 'fa-angles-right'}"></i></button>
-				<a
-					href="{base}/learn"
-					target="_blank"
-					rel="noopener"
-					class="learn-link"
-					title="解説・コマンド辞典を別タブで開く (VM は保持されます)"
-					style="color:{t.accent}; border-color:{t.accentBorder}; background:{t.accentDim};"
-				><i class="fas fa-book-open" style="font-size:12px;"></i><span class="hide-mobile">解説</span></a>
 			</header>
 
 		<div class="challenge-body">
@@ -338,22 +331,16 @@
 	.backlink:hover {
 		color: var(--text, #e4ede7) !important;
 	}
-	.learn-link {
-		display: flex;
-		align-items: center;
-		gap: 7px;
-		flex-shrink: 0;
-		text-decoration: none;
-		font-size: 13px;
-		font-weight: 600;
-		border: 1px solid;
-		border-radius: 999px;
-		padding: 5px 13px;
-		transition: filter 0.15s ease, border-color 0.15s ease;
+	.timer-toggle {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 2px 4px;
+		border-radius: 4px;
+		transition: opacity 0.15s ease;
 	}
-	.learn-link:hover {
-		filter: brightness(1.12);
-		border-color: var(--accent) !important;
+	.timer-toggle:hover {
+		opacity: 0.7;
 	}
 	.panel-toggle {
 		background: transparent;
