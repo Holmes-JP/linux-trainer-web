@@ -250,7 +250,7 @@
 	}
 	.ai-ta {
 		flex: 1;
-		resize: none;
+		resize: vertical;
 		font-family: var(--font-sans);
 		font-size: 13.5px;
 		line-height: 1.5;
@@ -258,7 +258,8 @@
 		border-radius: 8px;
 		border: 1px solid;
 		outline: none;
-		max-height: 120px;
+		min-height: 38px;
+		max-height: 220px;
 	}
 	.ai-ta:focus {
 		border-color: var(--accent);

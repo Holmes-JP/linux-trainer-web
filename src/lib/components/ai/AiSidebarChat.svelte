@@ -37,7 +37,19 @@
 
 	function buildSystemExtra() {
 		const parts = [];
-		if (scenario) parts.push(`現在の課題: ${scenario.title}\n${scenario.description}`);
+		if (scenario) {
+			parts.push(`現在の課題: ${scenario.title}\n${scenario.description}`);
+			if (scenario.hints?.length)
+				parts.push(
+					'この課題のヒント (ユーザーには一度に全部見せず、行き詰まったら順に小出しにする):\n' +
+						scenario.hints.map((h, i) => `${i + 1}. ${h}`).join('\n')
+				);
+			if (scenario.solution)
+				parts.push(
+					'模範解法 (答え。あなたの背景理解用。ユーザーには安易に教えず、まず自力で気づけるよう誘導する。どうしても行き詰まったときだけ段階的に):\n' +
+						scenario.solution
+				);
+		}
 		const term = readTerminal();
 		if (term)
 			parts.push(
@@ -94,7 +106,7 @@
 
 	{#if expanded}
 		<div class="ai-sb-body" transition:slide={{ duration: 220 }}>
-			<div class="ai-sb-msgs scrollbar" bind:this={scroller}>
+			<div class="ai-sb-msgs scrollbar" class:has-msgs={messages.length > 0 || loading} bind:this={scroller}>
 				{#if messages.length === 0 && !loading}
 					<p class="ai-sb-empty" style="color:{t.dim};">端末を見ながら、このページ内で AI に相談できます。</p>
 				{/if}
@@ -172,9 +184,8 @@
 	}
 	.ai-sb-msgs {
 		margin-top: 10px;
-		/* 高さはドラッグで拡大縮小できる (右下ハンドル) */
-		height: 300px;
-		min-height: 120px;
+		/* 中身に合わせて縮み、増えたら max まで伸びてスクロール。右下ハンドルで拡大縮小も可 */
+		min-height: 0;
 		max-height: 75vh;
 		resize: vertical;
 		overflow-y: auto;
@@ -182,6 +193,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+	}
+	/* メッセージがあるときだけ、少し余裕のある高さを確保 */
+	.ai-sb-msgs.has-msgs {
+		min-height: 180px;
 	}
 	.ai-sb-empty {
 		margin: 4px 0;
@@ -237,7 +252,7 @@
 	}
 	.ai-sb-ta {
 		flex: 1;
-		resize: none;
+		resize: vertical;
 		font-family: var(--font-sans);
 		font-size: 12.5px;
 		line-height: 1.5;
@@ -245,7 +260,8 @@
 		border-radius: 7px;
 		border: 1px solid;
 		outline: none;
-		max-height: 100px;
+		min-height: 34px;
+		max-height: 200px;
 	}
 	.ai-sb-ta:focus {
 		border-color: var(--accent);
