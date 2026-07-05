@@ -6,9 +6,12 @@
 	import { progress, resetProgress } from '$lib/stores/progress';
 	import { t, FONT_SANS, FONT_MONO, themeMode, toggleTheme } from '$lib/design/theme';
 	import { fmtDuration } from '$lib/util/format';
+	import AiSettings from '$lib/components/ai/AiSettings.svelte';
 
 	/** Scenario[] (loader が読み込んだ manifest メタ) */
 	export let scenarios = [];
+
+	let showAiSettings = false;
 
 	let diff = 'all';
 	let cat = 'all';
@@ -100,6 +103,13 @@
 			<span class="powered" style="font-family:{FONT_MONO}; font-size:12px; color:{t.dim};">POWERED BY WEBVM / CHEERPX</span>
 			<button
 				class="theme-toggle"
+				title="AI 設定"
+				aria-label="AI 設定"
+				on:click={() => (showAiSettings = true)}
+				style="color:{t.dim};"
+			><i class="fas fa-robot"></i></button>
+			<button
+				class="theme-toggle"
 				title="テーマ切り替え (ライト/ダーク)"
 				aria-label="テーマ切り替え"
 				on:click={toggleTheme}
@@ -107,6 +117,10 @@
 			><i class="fas {$themeMode === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
 		</div>
 	</header>
+
+	{#if showAiSettings}
+		<AiSettings on:close={() => (showAiSettings = false)} />
+	{/if}
 
 	<div class="container">
 		<!-- Hero / progress -->

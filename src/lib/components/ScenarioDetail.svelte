@@ -9,6 +9,7 @@
 	import { fmtDuration } from '$lib/util/format';
 	import { relatedForScenario } from '$lib/learn/related';
 	import RelatedLinks from '$lib/components/learn/RelatedLinks.svelte';
+	import AskAI from '$lib/components/ai/AskAI.svelte';
 
 	export let scenario = null;
 	export let scenarioId = '';
@@ -87,6 +88,9 @@
 
 	$: cmds = scenario ? commandsByCategory[scenario.category] ?? [] : [];
 	$: firstHint = scenario?.hints?.[0] ?? null;
+	$: aiPrompt = scenario
+		? `Linux のトラブルシューティング演習に取り組んでいます。いきなり答えではなく、原因を切り分けるための考え方のヒントを段階的に教えてください。\n\n課題: ${scenario.title}\n状況: ${scenario.description}`
+		: '';
 </script>
 
 <main class="detail-root scrollbar">
@@ -178,7 +182,12 @@
 				</ul>
 			</section>
 
-			<!-- Related learn docs (取得できたときだけ出る) -->
+			<!-- AI にヒントをもらう -->
+				<div style="display:flex; justify-content:center; margin-bottom:18px;">
+					<AskAI prompt={aiPrompt} label="AIにヒントをもらう" />
+				</div>
+
+				<!-- Related learn docs (取得できたときだけ出る) -->
 			{#if relatedDocs.length}
 				<RelatedLinks heading="関連する解説 — 仕組みから調べる" articles={relArticles} commands={relCommands} />
 			{/if}

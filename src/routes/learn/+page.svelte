@@ -12,7 +12,10 @@
 	import LearnHub from '$lib/components/learn/LearnHub.svelte';
 	import CommandDoc from '$lib/components/learn/CommandDoc.svelte';
 	import ArticleDoc from '$lib/components/learn/ArticleDoc.svelte';
+	import AiSettings from '$lib/components/ai/AiSettings.svelte';
 	import { loadCommandDoc, loadArticle, loadSearchIndex } from '$lib/learn/loader';
+
+	let showAiSettings = false;
 
 	let mode = null; // 'hub' | 'command' | 'article' (onMount で確定)
 	let index = null;
@@ -67,6 +70,13 @@
 			{/if}
 			<button
 				class="theme-toggle"
+				title="AI 設定"
+				aria-label="AI 設定"
+				on:click={() => (showAiSettings = true)}
+				style="color:{t.dim};"
+			><i class="fas fa-robot"></i></button>
+			<button
+				class="theme-toggle"
 				title="テーマ切り替え (ライト/ダーク)"
 				aria-label="テーマ切り替え"
 				on:click={toggleTheme}
@@ -74,6 +84,10 @@
 			><i class="fas {$themeMode === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
 		</div>
 	</header>
+
+	{#if showAiSettings}
+		<AiSettings on:close={() => (showAiSettings = false)} />
+	{/if}
 
 	<div class="container" class:narrow={mode === 'command' || mode === 'article'}>
 		{#if mode === null}

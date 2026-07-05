@@ -3,11 +3,16 @@
 	import { t, FONT_MONO } from '$lib/design/theme';
 	import RelatedLinks from './RelatedLinks.svelte';
 	import { GROUP_LABELS } from './groups';
+	import AskAI from '$lib/components/ai/AskAI.svelte';
 
 	/** CommandDoc (learn/types.ts) */
 	export let doc;
 	/** ContentIndex — 関連リンクのタイトル解決に使う */
 	export let index = null;
+
+	$: aiPrompt = `Linux の \`${doc.name}\` コマンドについて、初心者にもわかるように説明してください。代表的なオプションと、実用的な使用例をいくつか、コマンド例つきで教えてください。`;
+	$: explainUrl = `https://explainshell.com/explain?cmd=${encodeURIComponent(doc.name)}`;
+	$: manUrl = `https://manpages.debian.org/${encodeURIComponent(doc.name)}`;
 
 	$: articleTitle = (slug) =>
 		index?.docs.find((d) => d.type === 'article' && d.id === slug)?.title ?? slug;
@@ -23,7 +28,11 @@
 	<h1 style="margin:0; font-family:{FONT_MONO}; font-size:26px; font-weight:700; color:{t.accent};">{doc.name}</h1>
 	<span style="font-family:{FONT_MONO}; font-size:11px; color:{t.dim}; border:1px solid {t.border}; border-radius:4px; padding:2px 10px;">{GROUP_LABELS[doc.group] ?? doc.group}</span>
 </div>
-<p style="margin:0 0 24px 0; font-size:14.5px; line-height:1.8;">{doc.summary}</p>
+<p style="margin:0 0 14px 0; font-size:14.5px; line-height:1.8;">{doc.summary}</p>
+
+<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+	<AskAI prompt={aiPrompt} label="このコマンドをAIに聞く" />
+</div>
 
 <!-- Synopsis -->
 <section class="card" style="background:{t.surface}; border-color:{t.border};">
@@ -71,6 +80,19 @@
 	</section>
 {/if}
 
+<!-- 外部の詳しい資料 -->
+<section class="card" style="background:{t.surface}; border-color:{t.border};">
+	<h2 class="label" style="color:{t.dim};">もっと詳しく（外部サイト）</h2>
+	<div style="display:flex; flex-wrap:wrap; gap:8px;">
+		<a href={explainUrl} target="_blank" rel="noopener" class="ext" style="border-color:{t.border}; color:{t.text};">
+			<i class="fas fa-wand-magic-sparkles" style="color:{t.accent}; font-size:11px;"></i>explainshell<span style="color:{t.dim};">（コマンドを注釈表示）</span><i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim};"></i>
+		</a>
+		<a href={manUrl} target="_blank" rel="noopener" class="ext" style="border-color:{t.border}; color:{t.text};">
+			<i class="fas fa-book" style="color:{t.accent}; font-size:11px;"></i>Debian man ページ<i class="fas fa-arrow-up-right-from-square" style="font-size:9px; color:{t.dim};"></i>
+		</a>
+	</div>
+</section>
+
 <RelatedLinks
 	commands={doc.related_commands ?? []}
 	articles={relArticles}
@@ -94,6 +116,20 @@
 		font-weight: 500;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
+	}
+	.ext {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		border: 1px solid;
+		border-radius: 999px;
+		padding: 6px 14px;
+		font-size: 12.5px;
+		text-decoration: none;
+		transition: border-color 0.15s ease;
+	}
+	.ext:hover {
+		border-color: var(--accent);
 	}
 	code.synopsis,
 	code.example {

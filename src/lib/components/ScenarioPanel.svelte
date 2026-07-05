@@ -7,6 +7,7 @@
 	import { base } from '$app/paths';
 	import { t, FONT_MONO } from '$lib/design/theme';
 	import CommandLookup from '$lib/components/learn/CommandLookup.svelte';
+	import AskAI from '$lib/components/ai/AskAI.svelte';
 
 	export let scenario = null;
 	/** booting → setting-up → ready → checking → ready / setup-failed */
@@ -41,6 +42,10 @@
 	$: passCount = raw ? raw.filter((r) => r.pass).length + '/' + raw.length + ' PASS' : '未採点';
 	$: checkLabel = checking ? '判定中…' : '▶ CHECK — 修復できたか採点する';
 
+	$: aiPrompt = scenario
+		? `Linux のトラブルシューティング演習に取り組んでいます。いきなり答えではなく、原因を切り分けるための考え方のヒントを段階的に教えてください。\n\n課題: ${scenario.title}\n状況: ${scenario.description}`
+		: '';
+
 	$: hints = scenario?.hints ?? [];
 	$: shownHints = hints.slice(0, revealed).map((text, i) => ({ text, num: '0' + (i + 1) }));
 	$: moreHints = revealed < hints.length;
@@ -70,6 +75,13 @@
 				<p style="margin:0; color:{t.dim};">シナリオを読み込み中…</p>
 			{/if}
 		</section>
+
+		<!-- AI にヒント (別タブ or ページ内) -->
+		{#if scenario}
+			<section style="padding:14px 20px; border-bottom:1px solid {t.border}; display:flex; justify-content:center;">
+				<AskAI prompt={aiPrompt} label="AIにヒントをもらう" />
+			</section>
+		{/if}
 
 		<!-- コマンド辞典 (別タブで開くので VM は保持される) -->
 		<CommandLookup />
