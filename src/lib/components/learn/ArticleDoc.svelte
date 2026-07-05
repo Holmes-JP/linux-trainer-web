@@ -1,6 +1,7 @@
 <script>
 	// 仕組み解説記事の表示 (/learn?article=<slug>)。
 	// 本文は Markdown → HTML (marked)。コンテンツは自リポジトリで執筆する信頼済みテキスト。
+	import { base } from '$app/paths';
 	import { t } from '$lib/design/theme';
 	import { renderMarkdown } from '$lib/learn/markdown';
 	import RelatedLinks from './RelatedLinks.svelte';
@@ -9,6 +10,10 @@
 	export let article;
 	/** ContentIndex — 関連シナリオのタイトル解決に使う */
 	export let index = null;
+
+	// 記事内画像は /article-images/... のようなルート絶対で書く。
+	// GitHub Pages のサブパス配信 (base=/linux-trainer-web) でも壊れないよう base を前置する。
+	$: bodyHtml = renderMarkdown(article.body).replaceAll('src="/', `src="${base}/`);
 
 	$: relScenarios = [
 		// 明示指定 + カテゴリ一致 (byScenario の逆を辿る) をシンプルに: byScenario を全走査
@@ -24,7 +29,7 @@
 <p style="margin:0 0 28px 0; font-size:14px; line-height:1.8; color:{t.dim};">{article.summary}</p>
 
 <div class="prose">
-	{@html renderMarkdown(article.body)}
+	{@html bodyHtml}
 </div>
 
 <div style="height:1px; background:{t.border}; margin:36px 0 24px 0;"></div>
@@ -118,5 +123,22 @@
 		border: none;
 		border-top: 1px solid var(--border);
 		margin: 28px 0;
+	}
+	.prose :global(figure) {
+		margin: 20px 0;
+		text-align: center;
+	}
+	.prose :global(img) {
+		max-width: min(100%, 420px);
+		height: auto;
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		display: block;
+		margin: 0 auto;
+	}
+	.prose :global(figcaption) {
+		margin-top: 8px;
+		font-size: 12px;
+		color: var(--dim);
 	}
 </style>
