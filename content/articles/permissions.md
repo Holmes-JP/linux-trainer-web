@@ -92,10 +92,3 @@ rwx  =  4+2+1 = 7
 1. `ls -l` で「誰の持ち物で、どの立場にどの権限があるか」を見る
 2. 自分の立場を `id` で確認する (ユーザー名と所属グループ)
 3. ずれているものを直す — 権限なら `chmod`、持ち主なら `chown`
-
-## まとめ図
-
-<figure>
-  <img src="/article-images/permissions-rwx.png" alt="Linux のファイル権限 rwx の図解。所有者・グループ・その他の3つの立場と、644・755 の代表的な権限の例。" loading="lazy" />
-  <figcaption>図: ファイル権限 (rwx) の要点 — 所有者 / グループ / その他 と 644・755 の例</figcaption>
-</figure>
