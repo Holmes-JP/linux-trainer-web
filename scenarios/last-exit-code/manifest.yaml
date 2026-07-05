@@ -1,0 +1,49 @@
+id: last-exit-code
+verify_fix: "echo 7 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "バッチの最終実行結果"
+difficulty: easy
+category: logs
+time_estimate_min: 5
+
+description: |
+  夜間バッチが失敗したらしい。実行のたびに /var/log/batch/run.log へ「RESULT exit_code=数字」の行が追記されており、一番下 (最終行) が最新の実行結果だ。
+  最新の実行の exit_code の数字だけを /home/user/answer.txt に書け。
+  (過去の実行の RESULT 行も混ざっている。必ず「最後の1行」を見ること)
+
+# 冪等: 毎回同じログを作り直す。最終行の exit_code は 7 (途中に 0 や 2 の decoy 行あり)。
+# 注意: for/seq ループや yes|head は CheerpX で hang するため固定内容を heredoc で書く。
+setup:
+  - description: "過去の実行履歴を含むバッチログを設置する"
+    cmd: |
+      mkdir -p /var/log/batch
+      cat > /var/log/batch/run.log <<'EOF'
+      2026-07-01 02:00:01 INFO  batch start
+      2026-07-01 02:03:44 RESULT exit_code=0
+      2026-07-02 02:00:01 INFO  batch start
+      2026-07-02 02:03:41 RESULT exit_code=0
+      2026-07-03 02:00:01 INFO  batch start
+      2026-07-03 02:03:52 RESULT exit_code=2
+      2026-07-04 02:00:01 INFO  batch start
+      2026-07-04 02:03:47 RESULT exit_code=0
+      2026-07-05 02:00:01 INFO  batch start
+      2026-07-05 02:01:13 ERROR db connection refused
+      2026-07-05 02:01:13 RESULT exit_code=7
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に最新実行の exit_code (7) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "7"
+    run_as: user
+
+hints:
+  - "ファイルの末尾だけ見るコマンド: tail。最終行だけなら tail -n 1 /var/log/batch/run.log"
+  - "行から数字だけ取り出す: cut -d= -f2 (= で区切った2番目)。tail -n 1 ... | cut -d= -f2"
+  - "取り出した数字を書き込む: echo 7 > /home/user/answer.txt"
+
+solution: |
+  最終行を見るには tail を使う:
+    tail -n 1 /var/log/batch/run.log
+  → 「2026-07-05 02:01:13 RESULT exit_code=7」。= の右側を取り出すなら `tail -n 1 /var/log/batch/run.log | cut -d= -f2` で 7。
+  `echo 7 > /home/user/answer.txt` で答えを書けば完了。
+  (grep exit_code だと過去の実行も全部出てしまう。「最新 = 最終行」は tail の出番)

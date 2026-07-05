@@ -16,7 +16,7 @@ examples:
     desc: 圧縮済みの過去ログを横断して、件数の推移を比べる
 related_commands: [grep, gzip, gunzip, less]
 related_articles: []
-related_scenarios: [log-detective, find-error]
+related_scenarios: [log-detective, find-error, rotated-log]
 note: >-
   logrotate で app.log.2.gz のように圧縮された古いログは cat や grep では
   読めない。gunzip で展開する必要はなく、zgrep なら圧縮のまま検索できる

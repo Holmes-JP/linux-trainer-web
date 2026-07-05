@@ -24,7 +24,7 @@ examples:
     desc: 大きな変更の前に、設定ディレクトリを丸ごとバックアップしておく
 related_commands: [gzip, gunzip, cp, file]
 related_articles: []
-related_scenarios: [tar-restore]
+related_scenarios: [tar-restore, tar-backup]
 note: >-
   覚え方は「作るは czf、見るは tzf、出すは xzf」。いきなりカレントに
   展開するとファイルをばら撒いて上書き事故になりがちなので、

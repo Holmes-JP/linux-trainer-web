@@ -18,7 +18,7 @@ examples:
     desc: 行頭のタイムスタンプ部分だけを切り出して時間帯を眺める
 related_commands: [awk, sort, uniq, tr]
 related_articles: []
-related_scenarios: [top-offender, unique-visitors]
+related_scenarios: [top-offender, unique-visitors, last-exit-code]
 note: >-
   cut は区切り文字が連続すると「空の列」として数える。空白の数が
   揃っていないログでは列がずれるので、そういうときは連続空白を

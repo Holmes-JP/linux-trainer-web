@@ -1,0 +1,53 @@
+id: config-drift
+verify_fix: "echo timeout > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "基準からズレた設定を探す"
+difficulty: medium
+category: filesystem
+time_estimate_min: 10
+
+description: |
+  アプリの調子が悪い。設定ファイル /etc/app/server.conf は配布時の基準ファイル /etc/app/server.conf.dist と同じ内容のはずだが、誰かが1箇所だけ値を変えてしまったらしい。
+  2つのファイルを比較し、値が食い違っている設定の「キー名」を特定して、キー名だけを /home/user/answer.txt に書け。
+  (例: 食い違いが port=80 と port=8080 なら答えは port)
+
+# 冪等: 毎回両ファイルを作り直す。食い違いは timeout の1箇所だけ (30 → 3)。
+setup:
+  - description: "基準ファイルと、1箇所だけ値が違う設定ファイルを設置する"
+    cmd: |
+      mkdir -p /etc/app
+      cat > /etc/app/server.conf.dist <<'EOF'
+      host=0.0.0.0
+      port=8443
+      workers=4
+      timeout=30
+      log_level=info
+      cache=on
+      retries=5
+      EOF
+      cat > /etc/app/server.conf <<'EOF'
+      host=0.0.0.0
+      port=8443
+      workers=4
+      timeout=3
+      log_level=info
+      cache=on
+      retries=5
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に食い違っているキー名 (timeout) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "timeout"
+    run_as: user
+
+hints:
+  - "2つのファイルの違いを表示するコマンド: diff /etc/app/server.conf /etc/app/server.conf.dist"
+  - "diff の出力で < は1つ目のファイルの行、> は2つ目のファイルの行。違う行だけが表示される"
+  - "違っていたのは timeout の行。キー名だけを書く: echo timeout > /home/user/answer.txt"
+
+solution: |
+  2つのファイルの比較は diff の出番:
+    diff /etc/app/server.conf /etc/app/server.conf.dist
+  → 「< timeout=3」「> timeout=30」だけが表示され、timeout の値がズレていると分かる。
+  `echo timeout > /home/user/answer.txt` で答えを書けば完了。
+  (目視で見比べてもよいが、行数が多い実務のファイルでは diff が確実)

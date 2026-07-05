@@ -14,7 +14,7 @@ examples:
     desc: サービスが読む環境ファイルを自分のシェルにも読み込み、echo $ENABLED などで値を確かめる
 related_commands: [export, env, alias, echo]
 related_articles: []
-related_scenarios: [env-toggle]
+related_scenarios: [env-toggle, missing-env]
 note: >-
   sh app.env のように実行すると「子プロセス」で走るため、設定された変数は
   手元のシェルに残らない。source は現在のシェルにそのまま反映されるのが

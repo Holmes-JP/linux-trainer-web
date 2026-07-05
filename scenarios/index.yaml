@@ -62,3 +62,9 @@ scenarios:
   - secure-key-perms
   - first-error-line
   - verify-checksum
+  - last-exit-code
+  - config-drift
+  - rotated-log
+  - cron-backdoor
+  - missing-env
+  - tar-backup

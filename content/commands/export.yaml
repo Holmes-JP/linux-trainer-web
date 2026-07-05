@@ -16,7 +16,7 @@ examples:
     desc: 目的の変数がちゃんと環境変数として export されているかを確認する
 related_commands: [env, echo, source, type]
 related_articles: []
-related_scenarios: [env-toggle]
+related_scenarios: [env-toggle, missing-env]
 note: >-
   export しただけのシェル変数 (VAR=1) は子プロセスに渡らない — この違いが
   「シェルでは見えるのにプログラムからは見えない」トラブルの原因になりがち。

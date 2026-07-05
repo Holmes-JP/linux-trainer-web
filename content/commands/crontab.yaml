@@ -20,7 +20,7 @@ examples:
     desc: root に登録されたジョブを確認する (システム的な定期処理の定番置き場)
 related_commands: [service, date, ps, cat]
 related_articles: []
-related_scenarios: []
+related_scenarios: [cron-backdoor]
 note: >-
   crontab は「予約表」の編集コマンドで、実際に時刻どおりコマンドを実行するのは
   cron デーモンの仕事 (service cron status で稼働確認)。ユーザーの予約表のほか、

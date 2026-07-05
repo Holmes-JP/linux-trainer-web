@@ -20,7 +20,7 @@ examples:
     desc: 1 行目のヘッダを飛ばして、データ行だけを集計に回す
 related_commands: [head, less, grep]
 related_articles: []
-related_scenarios: [log-detective, truncate-log]
+related_scenarios: [log-detective, truncate-log, last-exit-code]
 note: >-
   -f は Ctrl+C で終了する。「-n 20」は末尾 20 行、「-n +20」は
   20 行目以降 — マイナスとプラスで意味が変わるので注意。

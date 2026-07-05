@@ -20,7 +20,7 @@ examples:
     desc: 元ファイルを残したまま圧縮版を作る
 related_commands: [gunzip, tar, df, ls]
 related_articles: []
-related_scenarios: [tar-restore]
+related_scenarios: [tar-restore, rotated-log]
 note: >-
   gzip は「1ファイルの圧縮」専門で、複数ファイルをまとめる機能はない。
   ディレクトリごと固めたいときは tar と組み合わせる (tar -czf)。

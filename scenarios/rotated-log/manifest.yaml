@@ -1,0 +1,54 @@
+id: rotated-log
+verify_fix: "echo 3 > /home/user/answer.txt"  # 模範修復 (テスト専用・UI 非表示)
+title: "圧縮されたログの調査"
+difficulty: medium
+category: logs
+time_estimate_min: 10
+
+description: |
+  先月ローテートされた古いログは gzip 圧縮されて /var/log/app/app.log.1.gz として保管されている。
+  この圧縮ログの中で "FATAL" を含む行の数を数え、その数字だけを /home/user/answer.txt に書け。
+  (調べるのは圧縮された app.log.1.gz の方。今の app.log ではない。圧縮ファイルは cat では読めない)
+
+# 冪等: 毎回 平文を作り直して gzip -f で圧縮し直す (既存の .gz があっても上書き)。
+# 注意: 圧縮側の FATAL はちょうど 3 行。現行 app.log に FATAL 1 行の decoy を置き、
+#       対象を取り違えると 1 になるようにしてある。
+setup:
+  - description: "圧縮済みの旧ログと現行ログを設置する"
+    cmd: |
+      mkdir -p /var/log/app
+      cat > /var/log/app/app.log.1 <<'EOF'
+      2026-06-28 10:00:00 INFO  service started
+      2026-06-28 11:52:10 FATAL out of memory, aborting
+      2026-06-28 11:53:01 INFO  service restarted
+      2026-06-29 03:14:22 WARN  slow query detected
+      2026-06-29 18:40:05 FATAL disk write failed
+      2026-06-29 18:41:00 INFO  service restarted
+      2026-06-30 09:00:00 INFO  healthcheck ok
+      2026-06-30 23:59:59 FATAL unhandled exception in worker
+      2026-06-30 23:59:59 INFO  shutting down for rotation
+      EOF
+      gzip -f /var/log/app/app.log.1
+      cat > /var/log/app/app.log <<'EOF'
+      2026-07-05 00:00:01 INFO  service started
+      2026-07-05 00:10:44 FATAL config reload failed (recovered)
+      2026-07-05 00:11:00 INFO  healthcheck ok
+      EOF
+
+check:
+  - description: "/home/user/answer.txt に圧縮ログ内の FATAL 件数 (3) が書かれている"
+    test: "cat /home/user/answer.txt"
+    expect_stdout_equals: "3"
+    run_as: user
+
+hints:
+  - "圧縮ファイルは cat で読めない。展開せずに中身を見る: zcat /var/log/app/app.log.1.gz"
+  - "数えるには grep -c と組み合わせる: zcat /var/log/app/app.log.1.gz | grep -c FATAL (zgrep -c FATAL でも同じ)"
+  - "結果の 3 を書き込む: echo 3 > /home/user/answer.txt"
+
+solution: |
+  gzip 圧縮されたログは zcat (または zgrep) で展開せずに読める:
+    zcat /var/log/app/app.log.1.gz | grep -c FATAL
+  → 3 (zgrep -c FATAL /var/log/app/app.log.1.gz でも同じ)。
+  `echo 3 > /home/user/answer.txt` で答えを書けば完了。
+  (gunzip で展開してから grep してもよいが、zcat なら元の .gz を残したまま調査できる)

@@ -1,0 +1,54 @@
+id: missing-env
+verify_fix: "echo 'export APP_HOME=/opt/app' > /etc/profile.d/app.sh"  # 模範修復 (テスト専用・UI 非表示)
+title: "環境変数が設定されていない"
+difficulty: medium
+category: services
+time_estimate_min: 10
+
+description: |
+  アプリの起動コマンド /usr/local/bin/startapp を実行すると「APP_HOME is not set」というエラーで失敗する。
+  このサーバーではアプリ用の環境変数を /etc/profile.d/app.sh で定義する運用ルールだが、そのファイルが消えてしまっている。
+  /etc/profile.d/app.sh で APP_HOME=/opt/app を定義 (export) し、startapp が正常に起動する (APP_STARTED と表示される) ようにせよ。
+
+# 冪等: startapp とアプリ本体のディレクトリを毎回設置し、環境ファイルを消して壊す。
+# 注意: startapp は自分で /etc/profile.d/app.sh を source するので、check はログインシェルに依存しない。
+setup:
+  - description: "startapp を設置し、環境ファイルを消して起動失敗する状態にする"
+    cmd: |
+      mkdir -p /opt/app /etc/profile.d
+      cat > /usr/local/bin/startapp <<'EOF'
+      #!/bin/sh
+      [ -f /etc/profile.d/app.sh ] && . /etc/profile.d/app.sh
+      if [ -z "$APP_HOME" ]; then
+        echo "ERROR: APP_HOME is not set (define it in /etc/profile.d/app.sh)" >&2
+        exit 1
+      fi
+      if [ ! -d "$APP_HOME" ]; then
+        echo "ERROR: APP_HOME=$APP_HOME is not a directory" >&2
+        exit 1
+      fi
+      echo "APP_STARTED home=$APP_HOME"
+      EOF
+      chmod 755 /usr/local/bin/startapp
+      rm -f /etc/profile.d/app.sh
+
+check:
+  - description: "user が startapp を実行でき APP_STARTED が表示される"
+    test: "/usr/local/bin/startapp"
+    expect_stdout_contains: "APP_STARTED"
+    run_as: user
+  - description: "/etc/profile.d/app.sh に APP_HOME=/opt/app が定義されている"
+    test: "grep -q 'APP_HOME=/opt/app' /etc/profile.d/app.sh"
+    expect_exit: 0
+
+hints:
+  - "まず実行してエラーを読む: /usr/local/bin/startapp (どのファイルに定義すべきかがエラーに書いてある)"
+  - "環境変数の定義は export APP_HOME=/opt/app という1行を書けばよい"
+  - "root (su root、パスワード: password) で: echo 'export APP_HOME=/opt/app' > /etc/profile.d/app.sh → startapp を再実行して確認"
+
+solution: |
+  `/usr/local/bin/startapp` を実行すると「APP_HOME is not set (define it in /etc/profile.d/app.sh)」と出る。
+  `su root` (パスワード: password) で root になり、環境ファイルを作る:
+    echo 'export APP_HOME=/opt/app' > /etc/profile.d/app.sh
+  再び startapp を実行して「APP_STARTED home=/opt/app」と出れば完了。
+  (/etc/profile.d/ はログインシェルが全ユーザー共通で読み込む環境定義の置き場所。アプリの起動スクリプトが自分で source する構成もよくある)

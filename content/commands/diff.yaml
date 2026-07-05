@@ -18,7 +18,7 @@ examples:
     desc: 設定ディレクトリ全体で、変更されたファイルがどれかを洗い出す
 related_commands: [cat, less, sed, md5sum]
 related_articles: []
-related_scenarios: [broken-json, wrong-json-value]
+related_scenarios: [broken-json, wrong-json-value, config-drift]
 note: >-
   出力が何もなければ 2 つは同一。-u 形式では「-」が第 1 ファイル側、
   「+」が第 2 ファイル側の行を表す。「バックアップがあるなら、直す前に

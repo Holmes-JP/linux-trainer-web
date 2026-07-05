@@ -1,0 +1,48 @@
+id: cron-backdoor
+verify_fix: "rm -f /etc/cron.d/sysupdate /opt/.cache/updater.sh"  # 模範修復 (テスト専用・UI 非表示)
+title: "cron に仕込まれた不正ジョブ"
+difficulty: hard
+category: services
+time_estimate_min: 15
+
+description: |
+  侵入調査で、攻撃者が cron (定期実行の仕組み) に不正なジョブを仕込んでいたことが分かった。/etc/cron.d/ にある設定のどれかが、隠し場所に置かれたスクリプトを5分おきに実行するようになっている。
+  次の2点を処理して持続化を断て:
+    1. 不正な cron 設定ファイルを /etc/cron.d/ から削除する
+    2. その設定が実行していたスクリプト本体も探し出して削除する
+  正規のジョブ設定 (ログローテート) は削除しないこと。
+  (この環境では cron デーモン自体は止めてあるが、設定と本体が残る限り本番復帰時に再発してしまう)
+
+# 冪等: 毎回 不正な cron 設定 + スクリプト本体 + 正規設定を無条件で作り直す。
+setup:
+  - description: "不正な cron ジョブと正規のジョブを設置する"
+    cmd: |
+      mkdir -p /etc/cron.d /opt/.cache
+      printf '*/5 * * * * root /opt/.cache/updater.sh >/dev/null 2>&1\n' > /etc/cron.d/sysupdate
+      printf '#!/bin/sh\n# system updater (fake)\nnice -n 19 miner --pool badpool.example:3333\n' > /opt/.cache/updater.sh
+      chmod 755 /opt/.cache/updater.sh
+      printf '0 3 * * * root /usr/sbin/logrotate /etc/logrotate.conf\n' > /etc/cron.d/logrotate-app
+
+check:
+  - description: "不正な cron 設定 (sysupdate) が削除されている"
+    test: "[ ! -f /etc/cron.d/sysupdate ]"
+    expect_exit: 0
+  - description: "スクリプト本体 /opt/.cache/updater.sh が削除されている"
+    test: "[ ! -f /opt/.cache/updater.sh ]"
+    expect_exit: 0
+  - description: "正規のログローテート設定は残っている"
+    test: "[ -f /etc/cron.d/logrotate-app ]"
+    expect_exit: 0
+
+hints:
+  - "cron の設定置き場を確認: ls -l /etc/cron.d/ → 各ファイルを cat で読む (実行するコマンドが書いてある)"
+  - "sysupdate が実行している /opt/.cache/updater.sh の中身を見ると、正体はマイナー起動スクリプトだと分かる"
+  - "root (su root、パスワード: password) で両方削除: rm /etc/cron.d/sysupdate /opt/.cache/updater.sh (logrotate-app は正規なので残す)"
+
+solution: |
+  `ls -l /etc/cron.d/` で設定を列挙し、`cat /etc/cron.d/sysupdate` を読むと /opt/.cache/updater.sh を5分おきに実行している。
+  `cat /opt/.cache/updater.sh` で中身がマイナー起動 (不正) だと確認できる。
+  `su root` (パスワード: password) で root になり、設定と本体の両方を削除する:
+    rm /etc/cron.d/sysupdate
+    rm /opt/.cache/updater.sh
+  正規の logrotate-app は残す。cron の持続化は「設定」と「実体」の両方を消して初めて駆除完了になる。

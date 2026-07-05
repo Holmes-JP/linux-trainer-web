@@ -1,0 +1,43 @@
+id: tar-backup
+verify_fix: "tar cf /opt/backups/blogapp-conf.tar -C / etc/blogapp"  # 模範修復 (テスト専用・UI 非表示)
+title: "メンテ前のバックアップ作成"
+difficulty: easy
+category: filesystem
+time_estimate_min: 8
+
+description: |
+  これから設定変更のメンテナンスを行うため、事前バックアップを取っておきたい。
+  ブログアプリの設定ディレクトリ /etc/blogapp の一式を、tar アーカイブ /opt/backups/blogapp-conf.tar として作成せよ。
+  元の /etc/blogapp のファイルは変更・削除しないこと。
+
+# 冪等: 毎回 設定ファイル一式を作り直し、アーカイブを消した「未バックアップ」状態に戻す。
+setup:
+  - description: "設定ファイル一式を用意し、アーカイブが無い状態にする"
+    cmd: |
+      mkdir -p /etc/blogapp /opt/backups
+      printf 'site_name=myblog\ntheme=dark\n' > /etc/blogapp/main.conf
+      printf 'max_upload_mb=16\ncache=on\n' > /etc/blogapp/server.conf
+      rm -f /opt/backups/blogapp-conf.tar
+
+check:
+  - description: "アーカイブに設定ファイルが両方含まれている"
+    test: "tar tf /opt/backups/blogapp-conf.tar | grep -q 'main.conf' && tar tf /opt/backups/blogapp-conf.tar | grep -q 'server.conf'"
+    expect_exit: 0
+  - description: "アーカイブの中身に実際の設定内容が入っている"
+    test: "tar -xOf /opt/backups/blogapp-conf.tar | grep -q 'site_name=myblog'"
+    expect_exit: 0
+  - description: "元の /etc/blogapp は変更されず残っている"
+    test: "grep -q 'site_name=myblog' /etc/blogapp/main.conf && grep -q 'max_upload_mb=16' /etc/blogapp/server.conf"
+    expect_exit: 0
+
+hints:
+  - "アーカイブの作成は tar cf <作成先.tar> <対象>。例: tar cf /opt/backups/blogapp-conf.tar /etc/blogapp"
+  - "作れたか中身を一覧して確認: tar tf /opt/backups/blogapp-conf.tar"
+  - "/opt/backups への書き込みには root 権限が要る (su root、パスワード: password)"
+
+solution: |
+  `su root` (パスワード: password) で root になり、tar の c (create) でアーカイブを作る:
+    tar cf /opt/backups/blogapp-conf.tar /etc/blogapp
+  「Removing leading /」という表示は仕様 (展開時の事故防止で先頭の / を外している) なので問題ない。
+  `tar tf /opt/backups/blogapp-conf.tar` で main.conf と server.conf が入っていれば完了。
+  (c=作成 / t=一覧 / x=展開。tar-restore シナリオで扱った取り出しと対になる操作)

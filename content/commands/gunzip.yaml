@@ -20,7 +20,7 @@ examples:
     desc: 圧縮済みの古いログを展開せずに中身だけ検索する
 related_commands: [gzip, tar, grep, file]
 related_articles: []
-related_scenarios: [tar-restore]
+related_scenarios: [tar-restore, rotated-log]
 note: >-
   gunzip は gzip -d と同じもの。.tar.gz は gunzip すると .tar が残るだけ
   なので、最初から tar -xzf で一度に展開するほうが手数が少ない。
