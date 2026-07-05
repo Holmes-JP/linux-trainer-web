@@ -194,9 +194,11 @@
 		flex-direction: column;
 		gap: 10px;
 	}
-	/* メッセージがあるときだけ、少し余裕のある高さを確保 */
+	/* メッセージがあるときは固定高さの独立スクロール領域にする
+	   (高さ無制限で伸びてパネルごと動くのを防ぐ。右下ハンドルで変更可) */
 	.ai-sb-msgs.has-msgs {
-		min-height: 180px;
+		height: 300px;
+		min-height: 120px;
 	}
 	.ai-sb-empty {
 		margin: 4px 0;
