@@ -5,6 +5,7 @@
 	import { t, FONT_MONO } from '$lib/design/theme';
 	import { aiSettings, PROVIDER_LABEL } from '$lib/ai/settings';
 	import { askAI } from '$lib/ai/client';
+	import { renderAiMarkdown } from '$lib/ai/markdown';
 
 	export let initialPrompt = '';
 
@@ -65,9 +66,11 @@
 		<div class="ai-msgs scrollbar" bind:this={scroller}>
 			{#each messages as m}
 				<div class="ai-msg {m.role}">
-					<div class="ai-bubble" style={m.role === 'user'
-						? `background:${t.accentDim}; border-color:${t.accentBorder};`
-						: `background:${t.track}; border-color:${t.border};`}>{m.content}</div>
+					{#if m.role === 'user'}
+						<div class="ai-bubble" style="background:{t.accentDim}; border-color:{t.accentBorder};">{m.content}</div>
+					{:else}
+						<div class="ai-bubble md" style="background:{t.track}; border-color:{t.border};">{@html renderAiMarkdown(m.content)}</div>
+					{/if}
 				</div>
 			{/each}
 			{#if loading}
@@ -157,6 +160,74 @@
 		line-height: 1.75;
 		white-space: pre-wrap;
 		word-break: break-word;
+	}
+	.ai-bubble.md {
+		white-space: normal;
+	}
+	.ai-bubble.md :global(p) {
+		margin: 0 0 10px 0;
+	}
+	.ai-bubble.md :global(p:last-child) {
+		margin-bottom: 0;
+	}
+	.ai-bubble.md :global(h1),
+	.ai-bubble.md :global(h2),
+	.ai-bubble.md :global(h3),
+	.ai-bubble.md :global(h4) {
+		font-size: 14px;
+		font-weight: 700;
+		margin: 14px 0 7px 0;
+		line-height: 1.4;
+	}
+	.ai-bubble.md :global(ul),
+	.ai-bubble.md :global(ol) {
+		margin: 0 0 10px 0;
+		padding-left: 22px;
+	}
+	.ai-bubble.md :global(li) {
+		margin-bottom: 4px;
+	}
+	.ai-bubble.md :global(code) {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		background: var(--termBg);
+		color: var(--accent);
+		border-radius: 4px;
+		padding: 1px 5px;
+	}
+	.ai-bubble.md :global(pre) {
+		background: var(--termBg);
+		border: 1px solid var(--termBorder);
+		border-radius: 8px;
+		padding: 12px 14px;
+		overflow-x: auto;
+		margin: 0 0 10px 0;
+	}
+	.ai-bubble.md :global(pre code) {
+		background: transparent;
+		color: var(--termText);
+		padding: 0;
+		font-size: 12px;
+		line-height: 1.7;
+	}
+	.ai-bubble.md :global(a) {
+		color: var(--accent);
+	}
+	.ai-bubble.md :global(table) {
+		border-collapse: collapse;
+		font-size: 12px;
+		margin: 0 0 10px 0;
+	}
+	.ai-bubble.md :global(th),
+	.ai-bubble.md :global(td) {
+		border: 1px solid var(--border);
+		padding: 5px 9px;
+		text-align: left;
+	}
+	.ai-bubble.md :global(blockquote) {
+		margin: 0 0 10px 0;
+		padding: 2px 0 2px 12px;
+		border-left: 2px solid var(--accentBorder);
 	}
 	.ai-err {
 		border: 1px solid;

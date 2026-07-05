@@ -8,6 +8,10 @@
 	import { t, FONT_MONO } from '$lib/design/theme';
 	import CommandLookup from '$lib/components/learn/CommandLookup.svelte';
 	import AskAI from '$lib/components/ai/AskAI.svelte';
+	import AiSidebarChat from '$lib/components/ai/AiSidebarChat.svelte';
+	import { aiSettings, isChatReady } from '$lib/ai/settings';
+
+	$: chatReady = isChatReady($aiSettings);
 
 	export let scenario = null;
 	/** booting → setting-up → ready → checking → ready / setup-failed */
@@ -76,11 +80,15 @@
 			{/if}
 		</section>
 
-		<!-- AI にヒント (別タブ or ページ内) -->
+		<!-- AI: API 有効ならサイドバー常駐チャット、未設定なら受け渡しボタン -->
 		{#if scenario}
-			<section style="padding:14px 20px; border-bottom:1px solid {t.border}; display:flex; justify-content:center;">
-				<AskAI prompt={aiPrompt} label="AIにヒントをもらう" />
-			</section>
+			{#if chatReady}
+				<AiSidebarChat seedPrompt={aiPrompt} />
+			{:else}
+				<section style="padding:14px 20px; border-bottom:1px solid {t.border}; display:flex; justify-content:center;">
+					<AskAI prompt={aiPrompt} label="AIにヒントをもらう" />
+				</section>
+			{/if}
 		{/if}
 
 		<!-- コマンド辞典 (別タブで開くので VM は保持される) -->
