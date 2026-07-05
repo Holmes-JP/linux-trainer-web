@@ -1,0 +1,27 @@
+name: lsof
+summary: 開かれているファイル・ソケットと、それを掴んでいるプロセスを一覧する
+group: processes
+synopsis: "lsof [オプション]"
+options:
+  - flag: "-i"
+    desc: ネットワーク接続 (ソケット) を表示する。-i:80 でポート指定も可
+  - flag: "-p <PID>"
+    desc: 指定プロセスが開いているファイルだけを表示する
+  - flag: "-u <ユーザー>"
+    desc: 指定ユーザーが開いているファイルに絞る
+  - flag: "+D <ディレクトリ>"
+    desc: そのディレクトリ配下で開かれているファイルを探す
+examples:
+  - cmd: "lsof -i :80"
+    desc: 80 番ポートを掴んでいるプロセスを特定する
+  - cmd: lsof -p 1234
+    desc: PID 1234 が開いているファイル・ソケットを列挙する
+  - cmd: "lsof +D /var/log"
+    desc: アンマウントを邪魔している「使用中ファイル」を探す
+related_commands: [ss, ps, kill]
+related_articles: [process-monitoring-and-jobs]
+note: >-
+  「どのプロセスがこのファイル/ポートを使っているか」を調べる強力な
+  ツールだが、このブラウザ内 WebVM 演習環境では未インストールだったり
+  ネットワークが制限されていて結果が実サーバーと異なる。ここでは
+  オプションの読み方を、現実のサーバー作業の参照として覚えてほしい。

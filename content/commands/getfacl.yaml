@@ -1,0 +1,25 @@
+name: getfacl
+summary: ファイル・ディレクトリのアクセス制御リスト (ACL) を表示する
+group: permissions
+synopsis: "getfacl [オプション] <パス>"
+options:
+  - flag: "-R"
+    desc: ディレクトリ配下を再帰的に表示する
+  - flag: "-a"
+    desc: アクセス ACL のみ表示する (デフォルト ACL は除く)
+  - flag: "-d"
+    desc: ディレクトリのデフォルト ACL を表示する
+examples:
+  - cmd: getfacl report.txt
+    desc: 通常のパーミッションに加え、個別ユーザーへの ACL 設定を確認する
+  - cmd: getfacl -R /srv/share
+    desc: 共有ディレクトリ配下の ACL をまとめて点検する
+  - cmd: "getfacl file | setfacl --set-file=- other"
+    desc: あるファイルの ACL を別ファイルに丸ごとコピーする
+related_commands: [setfacl, ls, chmod]
+related_articles: [permissions]
+note: >-
+  chmod の rwx より細かく「ユーザー/グループごとの権限」を確認できる。
+  ただしこのブラウザ内 WebVM 演習環境ではファイルシステムが ACL 非対応
+  だったり未インストールのことがある。ここでは読み方を、現実のサーバー
+  作業の参照として覚えてほしい。

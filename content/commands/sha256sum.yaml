@@ -1,0 +1,23 @@
+name: sha256sum
+summary: ファイルの SHA-256 ハッシュ値を計算・照合する
+group: text
+synopsis: "sha256sum [オプション] [ファイル...]"
+options:
+  - flag: "-c <ファイル>"
+    desc: ハッシュ一覧ファイルと照合し、改ざん・破損がないか検証する
+  - flag: "-b"
+    desc: バイナリモードで読み込む
+  - flag: "--quiet"
+    desc: 照合時に OK 行を出さず、失敗だけ報告する
+examples:
+  - cmd: sha256sum ubuntu.iso
+    desc: ダウンロードした ISO のハッシュを計算し、配布元の値と一致するか確かめる
+  - cmd: sha256sum -c SHA256SUMS
+    desc: 配布元のハッシュ一覧と手元のファイルを一括照合する
+  - cmd: sha256sum *.tar.gz > checksums.txt
+    desc: 複数アーカイブのハッシュを記録し、後の整合性チェックに備える
+related_commands: [md5sum, base64]
+related_articles: [archive-and-compression]
+note: >-
+  ファイルが途中で壊れていないか・改ざんされていないかの整合性確認に使う。
+  md5sum より衝突に強く、配布物の検証には SHA-256 を選ぶのが現在の推奨。

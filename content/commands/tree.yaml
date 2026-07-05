@@ -1,0 +1,26 @@
+name: tree
+summary: ディレクトリ構造をツリー (枝分かれ図) で表示する
+group: files
+synopsis: "tree [オプション] [パス]"
+options:
+  - flag: "-L <階層数>"
+    desc: 表示する階層の深さを制限する
+  - flag: "-a"
+    desc: 隠しファイルも含めて表示する
+  - flag: "-d"
+    desc: ディレクトリだけを表示する (ファイルは省く)
+  - flag: "-f"
+    desc: 各項目をフルパスで表示する
+examples:
+  - cmd: tree -L 2 /var/www
+    desc: 2階層までに絞ってディレクトリ構成を俯瞰する
+  - cmd: tree -d /etc
+    desc: ディレクトリだけを表示し、設定ツリーの骨格を把握する
+  - cmd: tree -a -L 1 ~
+    desc: ホーム直下を隠しファイル込みで1階層だけ一覧する
+related_commands: [ls, find]
+related_articles: [filesystem-and-paths]
+note: >-
+  ディレクトリ階層を視覚的に把握するのに便利だが、標準では入っていないことが多く、
+  この演習環境では未インストールのことがある (現実のサーバー用の参照)。
+  無い場合は ls -R や find で代替できる。

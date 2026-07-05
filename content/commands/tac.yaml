@@ -1,0 +1,23 @@
+name: tac
+summary: ファイルを行単位で逆順 (最終行から先頭行へ) に表示する
+group: text
+synopsis: "tac [オプション] [ファイル...]"
+options:
+  - flag: "-s <文字列>"
+    desc: 行の区切り文字を変更する (デフォルトは改行)
+  - flag: "-r"
+    desc: 区切り文字を正規表現として扱う
+  - flag: "-b"
+    desc: 区切り文字を各行の末尾ではなく先頭に付けて扱う
+examples:
+  - cmd: tac /var/log/syslog
+    desc: ログを最新行から順に読む。上から古い順のファイルを新しい順で確認したいとき
+  - cmd: tac access.log | head -n 20
+    desc: 末尾20行を新しい順に表示する。tail と違い並びが逆になる
+  - cmd: "printf 'a\\nb\\nc\\n' | tac"
+    desc: 標準入力を受け取り、行の並びをまるごと反転させる
+related_commands: [cat, rev, head]
+related_articles: [reading-logs]
+note: >-
+  cat がファイルをそのまま連結するのに対し、tac は行の並びを逆にする
+  (cat を逆から綴った名前)。文字単位で1行を反転する rev とは別物なので混同しないこと。

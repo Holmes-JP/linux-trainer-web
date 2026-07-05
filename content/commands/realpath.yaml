@@ -1,0 +1,25 @@
+name: realpath
+summary: 相対パスやシンボリックリンクを解決して絶対パスを表示する
+group: files
+synopsis: "realpath [オプション] [パス...]"
+options:
+  - flag: "-s"
+    desc: シンボリックリンクを辿らず、記述どおりの絶対パスに正規化する
+  - flag: "-e"
+    desc: 実在するパスのみ出力する (存在しなければエラー)
+  - flag: "-m"
+    desc: 存在しないパスでもエラーにせず正規化する
+  - flag: "--relative-to=<基準>"
+    desc: 指定ディレクトリからの相対パスに変換する
+examples:
+  - cmd: realpath ./logs/../config/app.conf
+    desc: "`..` を含む相対パスを、実体を指す絶対パスに正規化する"
+  - cmd: realpath /etc/nginx/sites-enabled/default
+    desc: シンボリックリンクを辿り、リンク先の本体ファイルの絶対パスを得る
+  - cmd: realpath --relative-to=/var/www ./html/index.php
+    desc: 特定ディレクトリを基準にした相対パスへ変換する
+related_commands: [readlink, dirname, basename]
+related_articles: [filesystem-and-paths, links-and-inode]
+note: >-
+  リンクや相対表記を実体の絶対パスに解決する。似た readlink はリンク自体の
+  情報を見るのが主目的で、realpath は「最終的にどこを指すか」を確定するのに向く。

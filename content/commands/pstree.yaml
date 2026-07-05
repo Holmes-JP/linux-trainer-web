@@ -1,0 +1,25 @@
+name: pstree
+summary: プロセスの親子関係をツリー状に表示する
+group: processes
+synopsis: "pstree [オプション] [PID または ユーザー名]"
+options:
+  - flag: "-p"
+    desc: 各プロセスの PID を併記する
+  - flag: "-a"
+    desc: 起動時のコマンドライン引数も表示する
+  - flag: "-u"
+    desc: ユーザーが切り替わる箇所に uid を表示する
+  - flag: "-s <PID>"
+    desc: 指定 PID の親方向の系譜 (先祖) も表示する
+examples:
+  - cmd: pstree -p
+    desc: PID 付きで全プロセスの親子関係を俯瞰する
+  - cmd: pstree -p sshd
+    desc: sshd から派生したプロセス群を親子関係で追う
+  - cmd: pstree -aps 1234
+    desc: PID 1234 の先祖と引数をたどり、誰に起動されたか調べる
+related_commands: [ps, pgrep]
+related_articles: [process-monitoring-and-jobs]
+note: >-
+  ps が一覧なのに対し pstree は「どのプロセスが何を生んだか」を
+  木構造で見せてくれる。プロセスの発生源をたどりたいときに便利。

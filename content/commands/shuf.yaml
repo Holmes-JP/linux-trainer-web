@@ -1,0 +1,25 @@
+name: shuf
+summary: 行をランダムに並べ替える (シャッフルする)
+group: text
+synopsis: "shuf [オプション] [ファイル...]"
+options:
+  - flag: "-n <個数>"
+    desc: 並べ替えた中から指定した行数だけ出力する
+  - flag: "-e"
+    desc: ファイルではなく引数として渡した値をシャッフル対象にする
+  - flag: "-i <下限>-<上限>"
+    desc: 指定した範囲の整数を生成してシャッフルする
+  - flag: "-r"
+    desc: 重複を許して繰り返し出力する (ランダム抽選)
+examples:
+  - cmd: shuf hosts.txt
+    desc: ホスト一覧をランダムに並べ替え、順番の偏りをなくす
+  - cmd: shuf -n 1 candidates.txt
+    desc: 候補から1行だけランダムに選ぶ。抽選やサンプリングに便利
+  - cmd: shuf -i 1-100 -n 5
+    desc: 1〜100 の中から重複なしで5つの乱数を選ぶ
+related_commands: [sort, head]
+related_articles: []
+note: >-
+  行をランダム化する用途のコマンド。逆に決まった順に並べたいときは sort、
+  先頭だけ取りたいときは head を使う。テスト用のサンプル抽出に重宝する。

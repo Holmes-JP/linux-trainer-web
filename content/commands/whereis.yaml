@@ -1,0 +1,23 @@
+name: whereis
+summary: コマンドの実行ファイル・ソース・マニュアルの場所を探す
+group: system
+synopsis: "whereis [オプション] <名前>"
+options:
+  - flag: "-b"
+    desc: 実行ファイル (バイナリ) の場所だけを探す
+  - flag: "-m"
+    desc: マニュアルページの場所だけを探す
+  - flag: "-s"
+    desc: ソースファイルの場所だけを探す
+examples:
+  - cmd: whereis ls
+    desc: ls のバイナリ・マニュアル・ソースの場所をまとめて表示する
+  - cmd: whereis -b python3
+    desc: python3 の実行ファイルの場所だけに絞って確認する
+  - cmd: whereis -m grep
+    desc: grep の man ページがどこに置かれているかを調べる
+related_commands: [which, type]
+related_articles: [filesystem-and-paths]
+note: >-
+  which が PATH 上の実行ファイル1つを返すのに対し、whereis はバイナリ・man・
+  ソースを標準的な場所から広く探す。シェル組み込みか外部コマンドかを見分けるなら type。

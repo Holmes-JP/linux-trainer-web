@@ -1,0 +1,26 @@
+name: mktemp
+summary: 衝突しない一時ファイル・一時ディレクトリを安全に作成する
+group: files
+synopsis: "mktemp [オプション] [テンプレート]"
+options:
+  - flag: "-d"
+    desc: ファイルではなく一時ディレクトリを作成する
+  - flag: "-p <ディレクトリ>"
+    desc: 一時ファイルを作る親ディレクトリを指定する
+  - flag: "-t"
+    desc: テンプレートを一時ディレクトリ配下のパスとして扱う
+  - flag: "--suffix=<接尾辞>"
+    desc: 生成名の末尾に拡張子などを付ける
+examples:
+  - cmd: mktemp
+    desc: /tmp に一意な一時ファイルを作り、その絶対パスを表示する
+  - cmd: mktemp -d
+    desc: 一時作業用のディレクトリを作成する。展開先やビルド領域に使う
+  - cmd: 'tmp=$(mktemp) && echo "作業ファイル: $tmp"'
+    desc: 生成したパスを変数に受け取り、スクリプト内で安全に使い回す
+related_commands: [touch, rm]
+related_articles: [filesystem-and-paths]
+note: >-
+  固定名の一時ファイルはシンボリックリンク攻撃や上書き事故の温床になるため、
+  スクリプトでは touch で決め打ちせず mktemp で一意名を得るのが安全。
+  使い終わったら rm で確実に消すこと。

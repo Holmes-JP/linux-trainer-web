@@ -1,0 +1,25 @@
+name: split
+summary: 大きなファイルを複数の小さなファイルに分割する
+group: text
+synopsis: "split [オプション] [入力ファイル] [接頭辞]"
+options:
+  - flag: "-l <行数>"
+    desc: 指定した行数ごとに分割する
+  - flag: "-b <サイズ>"
+    desc: 指定したバイトサイズごとに分割する (例 10M, 500k)
+  - flag: "-n <個数>"
+    desc: 全体を指定した個数に等分する
+  - flag: "-d"
+    desc: 分割ファイルの連番を数字 (aa,ab ではなく 00,01) にする
+examples:
+  - cmd: split -l 1000 access.log part_
+    desc: 巨大なログを1000行ずつに分け、part_aa, part_ab... を作る
+  - cmd: split -b 50M backup.tar.gz chunk_
+    desc: 50MBごとに分割し、サイズ上限のあるストレージに載せやすくする
+  - cmd: split -n 4 -d data.csv seg_
+    desc: データを4等分し、seg_00〜seg_03 に振り分けて並列処理に渡す
+related_commands: [cat, wc]
+related_articles: [archive-and-compression]
+note: >-
+  巨大ファイルを扱いやすいサイズに割るためのコマンド。分割した断片は
+  cat で順に連結すれば元に戻せる (cat part_* > original)。

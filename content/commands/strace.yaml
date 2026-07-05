@@ -1,0 +1,27 @@
+name: strace
+summary: プロセスが呼び出すシステムコールを追跡して表示する
+group: processes
+synopsis: "strace [オプション] <コマンド または -p PID>"
+options:
+  - flag: "-p <PID>"
+    desc: 既に動いているプロセスにアタッチして追跡する
+  - flag: "-f"
+    desc: fork した子プロセスも追跡する
+  - flag: "-e trace=<集合>"
+    desc: 追跡するシステムコールを絞る (例 -e trace=open,read)
+  - flag: "-o <ファイル>"
+    desc: 出力を画面ではなくファイルに書き出す
+examples:
+  - cmd: strace -f ./myapp
+    desc: プログラムを起動しつつ全システムコールを追う
+  - cmd: strace -p 1234
+    desc: 動作中の PID 1234 に後から接続して挙動を観察する
+  - cmd: strace -e trace=open,read cat file.txt
+    desc: ファイルの open/read だけに絞って、どこを読んでいるか調べる
+related_commands: [ps, lsof]
+related_articles: [process-monitoring-and-jobs]
+note: >-
+  「なぜ動かない/どのファイルを探しているのか」を最深部で暴くデバッグ用
+  ツール。ただしこのブラウザ内 WebVM 演習環境では未インストールのことが
+  多い。ここではオプションの読み方を、現実のサーバー作業の参照として
+  覚えてほしい。

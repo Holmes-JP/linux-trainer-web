@@ -1,0 +1,25 @@
+name: ssh-keygen
+summary: SSH 認証用の公開鍵・秘密鍵ペアを生成・管理する
+group: network
+synopsis: "ssh-keygen [オプション]"
+options:
+  - flag: "-t <種別>"
+    desc: 鍵の種類を指定する (ed25519 推奨、他に rsa など)
+  - flag: "-C <コメント>"
+    desc: 鍵に識別用コメント (メールアドレス等) を付ける
+  - flag: "-f <ファイル>"
+    desc: 出力する鍵ファイルのパスを指定する
+  - flag: "-p"
+    desc: 既存の秘密鍵のパスフレーズを変更する
+examples:
+  - cmd: 'ssh-keygen -t ed25519 -C "me@example.com"'
+    desc: 現代的で安全な ed25519 鍵ペアを作成する
+  - cmd: ssh-keygen -t rsa -b 4096
+    desc: 4096bit の RSA 鍵ペアを作成する (ed25519 非対応環境向け)
+  - cmd: ssh-keygen -p -f ~/.ssh/id_ed25519
+    desc: 既存の秘密鍵にパスフレーズを設定/変更する
+related_commands: [ssh, scp]
+note: >-
+  公開鍵認証で使う鍵ペアを作るコマンド。秘密鍵は絶対に他人へ渡さず、
+  漏洩時の保険としてパスフレーズを付けることを強く推奨する。公開鍵
+  (.pub) を接続先の ~/.ssh/authorized_keys に登録して使う。

@@ -1,0 +1,23 @@
+name: pidof
+summary: 指定した実行ファイル名で動いているプロセスの PID を調べる
+group: processes
+synopsis: "pidof [オプション] <プログラム名>"
+options:
+  - flag: "-s"
+    desc: 複数一致しても最初の 1 つの PID だけを返す
+  - flag: "-x"
+    desc: シェルスクリプトを実行しているプロセスも対象に含める
+  - flag: "-o <PID>"
+    desc: 指定した PID を結果から除外する
+examples:
+  - cmd: pidof nginx
+    desc: nginx のワーカー/マスターの PID をまとめて取得する
+  - cmd: pidof -s sshd
+    desc: sshd の代表プロセスの PID を 1 つだけ得る
+  - cmd: kill $(pidof myapp)
+    desc: 名前から PID を求めてそのままシグナルを送る
+related_commands: [pgrep, pkill]
+related_articles: [processes-and-signals]
+note: >-
+  pgrep と似ているが、pidof は「実行ファイル名の完全一致」で探す。
+  部分一致や条件指定をしたいときは pgrep のほうが柔軟。

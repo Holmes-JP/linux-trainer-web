@@ -1,0 +1,23 @@
+name: fold
+summary: 長い行を指定した幅で折り返して表示する
+group: text
+synopsis: "fold [オプション] [ファイル...]"
+options:
+  - flag: "-w <桁数>"
+    desc: 折り返す幅 (1行あたりの文字数) を指定する (デフォルト80)
+  - flag: "-s"
+    desc: 単語の途中で切らず、空白位置で折り返す
+  - flag: "-b"
+    desc: 文字数ではなくバイト数で数えて折り返す
+examples:
+  - cmd: fold -w 40 notes.txt
+    desc: 1行を40桁に折り返して、横に長すぎるテキストを読みやすくする
+  - cmd: fold -s -w 60 article.txt
+    desc: 単語を分断せずに60桁で折り返し、英文を自然な位置で改行する
+  - cmd: cat longline.txt | fold -w 72
+    desc: 標準入力を72桁で整形する。メール本文の幅合わせなどに使う
+related_commands: [cut, nl]
+related_articles: []
+note: >-
+  fold は「幅で機械的に折り返す」だけで、段落を整形する fmt とは異なる。
+  列を切り出す cut や行番号を振る nl と組み合わせて整形パイプを組むことが多い。

@@ -1,0 +1,21 @@
+name: printenv
+summary: 環境変数の値を表示する
+group: system
+synopsis: "printenv [オプション] [変数名...]"
+options:
+  - flag: "<変数名>"
+    desc: 指定した環境変数の値だけを表示する
+  - flag: "-0"
+    desc: 各項目を改行ではなく NUL 文字で区切って出力する
+examples:
+  - cmd: printenv
+    desc: 現在設定されている環境変数をすべて一覧表示する
+  - cmd: printenv PATH
+    desc: PATH の中身だけを取り出し、コマンド検索パスを確認する
+  - cmd: printenv HOME USER
+    desc: 複数の変数をまとめて確認する。スクリプトの前提チェックに使う
+related_commands: [env, export]
+related_articles: []
+note: >-
+  printenv は環境変数の値を確認するのに使う。引数なしの env でも一覧は見られるが、
+  値を変数に渡すなら printenv、変数を設定・エクスポートするなら export を使う。

@@ -1,0 +1,23 @@
+name: expand
+summary: タブ文字をスペースに変換して表示する
+group: text
+synopsis: "expand [オプション] [ファイル...]"
+options:
+  - flag: "-t <桁数>"
+    desc: タブ幅を指定する (デフォルトは8桁)
+  - flag: "-i"
+    desc: 行頭のタブだけを変換し、途中のタブはそのまま残す
+  - flag: "-t <リスト>"
+    desc: カンマ区切りでタブ位置を個別指定する
+examples:
+  - cmd: expand -t 4 source.py
+    desc: タブを4スペースに変換して、環境差でずれるインデントを揃える
+  - cmd: expand -i Makefile
+    desc: 行頭のタブだけスペース化し、コマンド行のタブ以外を整える
+  - cmd: cat data.tsv | expand -t 12
+    desc: タブ区切りデータの桁を12幅に広げて見やすく整列する
+related_commands: [tr, cut, nl]
+related_articles: []
+note: >-
+  expand はタブ→スペースの一方向変換。逆にスペースをタブへ戻すには unexpand を使う。
+  文字単位で置換する tr でも近いことはできるが、桁揃えは expand が正確。

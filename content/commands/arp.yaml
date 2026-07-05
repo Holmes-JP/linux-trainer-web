@@ -1,0 +1,24 @@
+name: arp
+summary: ARP テーブル (IP と MAC アドレスの対応表) を表示・操作する
+group: network
+synopsis: "arp [オプション]"
+options:
+  - flag: "-n"
+    desc: 名前解決せず IP アドレスを数値のまま表示する
+  - flag: "-a"
+    desc: BSD 形式で全エントリを一覧表示する
+  - flag: "-d <ホスト>"
+    desc: 指定エントリを ARP テーブルから削除する (要権限)
+examples:
+  - cmd: arp -n
+    desc: 同一ネットワーク上の IP と MAC の対応を一覧する
+  - cmd: arp -a
+    desc: 現在キャッシュされている ARP エントリをまとめて確認する
+  - cmd: arp -d 192.168.1.10
+    desc: 古くなったエントリを削除して再解決させる
+related_commands: [ip, ping]
+note: >-
+  同一 LAN 上の端末を把握するのに使うが、今は ip neigh が後継。この
+  ブラウザ内 WebVM 演習環境では外部ネットワークが制限され実際の
+  ARP テーブルは得られない。ここではオプションの読み方を、現実の
+  サーバー作業の参照として覚えてほしい。

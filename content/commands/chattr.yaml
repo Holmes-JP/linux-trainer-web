@@ -1,0 +1,25 @@
+name: chattr
+summary: ext系ファイルシステムの拡張属性 (変更禁止など) を設定する
+group: permissions
+synopsis: "chattr [オプション] <±属性> <パス>"
+options:
+  - flag: "+i"
+    desc: 変更不可 (immutable) 属性を付与し、削除・改名・書込を禁止する
+  - flag: "-i"
+    desc: 変更不可属性を解除する
+  - flag: "+a"
+    desc: 追記のみ (append only) を許可し、上書き・削除を禁止する
+  - flag: "-R"
+    desc: ディレクトリ配下へ再帰的に適用する
+examples:
+  - cmd: chattr +i /etc/resolv.conf
+    desc: 設定ファイルを変更不可にして誤削除・上書きを防ぐ
+  - cmd: chattr -i /etc/resolv.conf
+    desc: 変更不可を解除して再び編集できるようにする
+  - cmd: chattr +a /var/log/audit.log
+    desc: ログを追記専用にして改ざん (上書き削除) を防ぐ
+related_commands: [lsattr, chmod]
+related_articles: [permissions]
+note: >-
+  chmod の rwx とは別レイヤーの属性で、root でも +i のままでは
+  変更できなくなる強力な保護。設定内容は lsattr で確認する。

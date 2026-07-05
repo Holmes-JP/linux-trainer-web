@@ -1,0 +1,23 @@
+name: lsattr
+summary: ext系ファイルシステムの拡張属性 (変更不可など) を表示する
+group: permissions
+synopsis: "lsattr [オプション] [パス]"
+options:
+  - flag: "-a"
+    desc: 隠しファイルを含めて表示する
+  - flag: "-d"
+    desc: ディレクトリ自身の属性を表示する (中身ではなく)
+  - flag: "-R"
+    desc: ディレクトリ配下を再帰的に表示する
+examples:
+  - cmd: lsattr /etc/resolv.conf
+    desc: そのファイルに immutable (i) などの属性が付いているか確認する
+  - cmd: lsattr -d /etc
+    desc: ディレクトリ自体に設定された属性を確認する
+  - cmd: lsattr -R /var/log
+    desc: ログ配下で追記専用 (a) 等が付いたファイルを洗い出す
+related_commands: [chattr, ls]
+related_articles: [permissions]
+note: >-
+  ls では見えない chattr の属性 (i / a など) を確認するためのコマンド。
+  「なぜ root でも消せないのか」を調べるときにまず打つ。

@@ -1,0 +1,28 @@
+name: netstat
+summary: ネットワーク接続・待受ポート・ルーティング情報を表示する (旧来ツール)
+group: network
+synopsis: "netstat [オプション]"
+options:
+  - flag: "-t"
+    desc: TCP の接続を表示する (-u なら UDP)
+  - flag: "-l"
+    desc: LISTEN 中 (待ち受け) のソケットのみ表示する
+  - flag: "-n"
+    desc: 名前解決せずアドレス・ポートを数値のまま表示する
+  - flag: "-p"
+    desc: ソケットを使っているプロセス名/PID を表示する (要権限)
+  - flag: "-r"
+    desc: ルーティングテーブルを表示する
+examples:
+  - cmd: "netstat -tlnp"
+    desc: どのプロセスがどのポートで待ち受けているか一覧する
+  - cmd: "netstat -tn"
+    desc: 確立中の TCP 接続を数値表示で確認する
+  - cmd: "netstat -rn"
+    desc: ルーティングテーブル (デフォルトゲートウェイ等) を確認する
+related_commands: [ss, ip, lsof]
+note: >-
+  古くから使われるが今は非推奨気味で、多くのディストリでは標準搭載
+  されなくなった。後継は ss (ソケット) と ip (ルーティング)。この
+  ブラウザ内 WebVM 演習環境では未インストール/結果が実サーバーと
+  異なることがある。オプションは現実のサーバー作業の参照として覚えてほしい。

@@ -1,0 +1,27 @@
+name: setfacl
+summary: ファイル・ディレクトリのアクセス制御リスト (ACL) を設定・変更する
+group: permissions
+synopsis: "setfacl [オプション] <ACL指定> <パス>"
+options:
+  - flag: "-m <ACL>"
+    desc: ACL エントリを追加・変更する (例 -m u:alice:rw)
+  - flag: "-x <ACL>"
+    desc: 指定した ACL エントリを削除する
+  - flag: "-b"
+    desc: すべての拡張 ACL を削除して通常権限だけに戻す
+  - flag: "-R"
+    desc: ディレクトリ配下へ再帰的に適用する
+examples:
+  - cmd: "setfacl -m u:alice:rw report.txt"
+    desc: 所有者以外の alice にだけ読み書きを個別に許可する
+  - cmd: "setfacl -x u:alice report.txt"
+    desc: alice への個別 ACL を取り消す
+  - cmd: "setfacl -R -m g:dev:rx /srv/app"
+    desc: dev グループにディレクトリ配下の閲覧・実行を一括付与する
+related_commands: [getfacl, chmod]
+related_articles: [permissions]
+note: >-
+  chmod では表せない「特定ユーザーだけに権限」を実現する。設定後は
+  getfacl で確認する。ただしこのブラウザ内 WebVM 演習環境では
+  ファイルシステムが ACL 非対応だったり未インストールのことがある。
+  ここでは書式を、現実のサーバー作業の参照として覚えてほしい。

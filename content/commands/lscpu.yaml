@@ -1,0 +1,24 @@
+name: lscpu
+summary: CPU のアーキテクチャ・コア数・キャッシュなどの情報を表示する
+group: system
+synopsis: "lscpu [オプション]"
+options:
+  - flag: "-e"
+    desc: 論理 CPU ごとの情報を表形式で並べて表示する
+  - flag: "-p"
+    desc: パース向けにカンマ区切りで出力する
+  - flag: "-J"
+    desc: 結果を JSON 形式で出力する
+examples:
+  - cmd: lscpu
+    desc: CPU モデル・コア/スレッド数・アーキテクチャを一覧で確認する
+  - cmd: lscpu | grep -i "^cpu(s)"
+    desc: 論理 CPU 数だけを抜き出し、並列度の見積もりに使う
+  - cmd: lscpu -e
+    desc: コアとソケットの対応を表で確認し、NUMA 構成を把握する
+related_commands: [free, uname]
+related_articles: []
+note: >-
+  サーバーの CPU 構成を素早く把握するためのコマンド (/proc/cpuinfo を整形して見せる)。
+  ただし環境によっては未インストールのことがある (現実のサーバー用の参照)。
+  無い場合は cat /proc/cpuinfo で代替できる。

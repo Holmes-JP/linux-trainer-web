@@ -1,0 +1,24 @@
+name: nslookup
+summary: DNS に問い合わせてホスト名と IP アドレスを相互解決する
+group: network
+synopsis: "nslookup [オプション] <名前 または IP> [DNSサーバー]"
+options:
+  - flag: "-type=<種別>"
+    desc: 問い合わせるレコード種別を指定する (A / MX / TXT / NS など)
+  - flag: "-query=<種別>"
+    desc: -type と同じくレコード種別を指定する別表記
+  - flag: "<DNSサーバー>"
+    desc: 引数末尾に問い合わせ先の DNS サーバーを指定する
+examples:
+  - cmd: nslookup example.com
+    desc: ドメインの IP アドレス (A レコード) を調べる
+  - cmd: "nslookup -type=MX example.com"
+    desc: メール配送先 (MX レコード) を確認する
+  - cmd: nslookup example.com 8.8.8.8
+    desc: 問い合わせ先を Google DNS に指定して名前解決する
+related_commands: [dig, host, ping]
+note: >-
+  DNS の疎通確認に使えるが、出力が読みにくく後継は dig / host が推奨。
+  このブラウザ内 WebVM 演習環境では外部ネットワークが制限され名前解決
+  できないことが多い。ここでは使い方を、現実のサーバー作業の参照として
+  覚えてほしい。

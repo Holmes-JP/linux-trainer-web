@@ -31,6 +31,9 @@ commands:
   - xz
   - nano
   - vim
+  - realpath
+  - tree
+  - mktemp
   # text
   - grep
   - head
@@ -57,6 +60,12 @@ commands:
   - comm
   - rev
   - jq
+  - tac
+  - fold
+  - expand
+  - split
+  - shuf
+  - sha256sum
   # permissions
   - chmod
   - chown
@@ -73,6 +82,10 @@ commands:
   - userdel
   - groupadd
   - getent
+  - getfacl
+  - setfacl
+  - chattr
+  - lsattr
   # processes
   - ps
   - top
@@ -89,6 +102,10 @@ commands:
   - uptime
   - sleep
   - timeout
+  - pstree
+  - pidof
+  - lsof
+  - strace
   # disk
   - df
   - du
@@ -127,6 +144,9 @@ commands:
   - cal
   - bc
   - time
+  - whereis
+  - lscpu
+  - printenv
   # network
   - curl
   - wget
@@ -139,6 +159,10 @@ commands:
   - ssh
   - scp
   - traceroute
+  - netstat
+  - nslookup
+  - arp
+  - ssh-keygen
 articles:
   - filesystem-and-paths
   - links-and-inode
