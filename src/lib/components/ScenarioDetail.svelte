@@ -133,7 +133,7 @@
 						</button>
 					{:else}
 						<button class="manual-done" on:click={() => markComplete(scenarioId)} style="border-color:{t.accentBorder}; color:{t.accent};">
-							<i class="fas fa-check" style="margin-right:7px;"></i>自分で解決した（手動で完了にする）
+							<i class="fas fa-check" style="margin-right:7px;"></i>解決済み
 						</button>
 					{/if}
 				</div>
